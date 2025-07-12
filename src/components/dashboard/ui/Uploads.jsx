@@ -100,7 +100,7 @@ export default function Uploads({ type = 'image', New = false, contentType = '',
       </div>
 
       <div className="mt-4">
-        {fileList.length === 0 && <p className="text-gray-500 text-sm">No uploaded {type}s yet!</p>}
+        {fileList.length === 0 && <p className="text-gray-500 text-sm">No uploaded {type === 'audio' ? 'Podcast' : 'Image'} yet!</p>}
         
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-2 custom-scrollbar max-h-60 overflow-y-auto p-1 rounded">
           {fileList.map((url, i) => {

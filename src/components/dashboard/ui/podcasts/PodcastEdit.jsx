@@ -146,12 +146,23 @@ export default function PodcastEdit() {
           ]}
         />
 
-        <Uploads
-          type="image"
-          contentType="podcasts"
-          UploadKey={meta.UploadKey}
-          onUpload={handleUploadKey}
-        />
+        <div className='grid gap-3'>
+          <Uploads
+            type="image"
+            New={true}
+            contentType="podcasts"
+            UploadKey={meta.UploadKey}
+            onUpload={handleUploadKey}
+          />
+
+          <Uploads
+            type="audio"
+            New={true}
+            contentType="podcasts"
+            UploadKey={meta.UploadKey}
+            onUpload={handleUploadKey}
+          />
+        </div>
       </div>
 
       <ContentMDEditor
