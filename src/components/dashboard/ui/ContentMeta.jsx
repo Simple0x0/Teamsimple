@@ -4,7 +4,7 @@ import 'react-datepicker/dist/react-datepicker.css';
 import style from '../../../app/Style';
 import ContributorSelector from './selectors/ContributorSelector';
 
-export default function ContentMeta({ meta = {}, onChange, mode = 'new', fields = {}, statusinput= [] }) {
+export default function ContentMeta({ contentType = '', meta = {}, onChange, mode = 'new', fields = {}, statusinput= [] }) {
   const [isSlugEdited, setIsSlugEdited] = useState(false);
 
   const handleChange = (field, value) => {
@@ -125,9 +125,12 @@ export default function ContentMeta({ meta = {}, onChange, mode = 'new', fields 
       {fields.BoxCreator && renderInput('Box Creator', 'BoxCreator', 'e.g. S0meBody3z0')}
       {fields.ip && renderInput('IP Address', 'IPAddress', 'e.g. 192.168.1.100')}
       {fields.reference && renderInput('Reference URL', 'Reference', 'https://reference.com')}
+      {fields.AudioURL && renderInput('Podcast URL', 'AudioURL', 'https://podcast.com')}
       {fields.repo && renderInput('Repository URL', 'RepoURL', 'https://github.com/repo')}
       {fields.demo && renderInput('Demo URL', 'DemoURL', 'https://demo.com')}
       {fields.progress && renderSelect('Completion Level ( % )', 'ProgressPercentage', Array.from({ length: 21 }, (_, i) => { const value = i * 5; return { value: value.toString(), label: value.toString() };}) )}
+      {fields.EpisodeNumber && renderInput('Episode Number', 'EpisodeNumber', '0 - *')}
+      {fields.Duration && renderInput('Duration ( minutes )', 'Duration', '*')}
       {fields.StartDate && renderDatePicker('Project Start Date', 'StartDate')}
       {fields.EndDate && renderDatePicker('Project End Date', 'EndDate')}
       {fields.contributor && (
@@ -135,7 +138,11 @@ export default function ContentMeta({ meta = {}, onChange, mode = 'new', fields 
           selected={contributorsParsed}
           onChange={handleContributorsChange}
           allowAdd={true}
-          label={meta.MachineName ? 'WriteUp Author' : 'Contributor'}
+          label = {
+                meta.MachineName ? 'WriteUp Author' :
+                contentType == "Podcast" ? 'Speakers' :
+                'Contributor'
+              }
         />
       )}
     </div>

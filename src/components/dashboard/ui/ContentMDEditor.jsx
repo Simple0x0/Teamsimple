@@ -80,11 +80,13 @@ export default function ContentMDEditor({
 
       <div className={s.controls}>
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 mb-6">
-          <TagSelector
-            selected={selectedTags}
-            onChange={setSelectedTags}
-            allowAdd={true}
-          />
+          {contentType !== 'Podcast' && (
+            <TagSelector
+              selected={selectedTags}
+              onChange={setSelectedTags}
+              allowAdd={true}
+            />
+          )}
           <CategorySelector
             selected={selectedCategory}
             onChange={setSelectedCategory}

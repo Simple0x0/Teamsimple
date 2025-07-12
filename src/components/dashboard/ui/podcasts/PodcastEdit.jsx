@@ -126,6 +126,7 @@ export default function PodcastEdit() {
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
         <ContentMeta
+          contentType="Podcast"
           meta={meta}
           onChange={handleMetaChange}
           mode="edit"
