@@ -1,0 +1,143 @@
+import React, { useMemo, useState } from 'react';
+import DatePicker from 'react-datepicker'; // assumes installed
+import 'react-datepicker/dist/react-datepicker.css';
+import style from '../../../app/Style';
+import ContributorSelector from './selectors/ContributorSelector';
+
+export default function ContentMeta({ meta = {}, onChange, mode = 'new', fields = {}, statusinput= [] }) {
+  const [isSlugEdited, setIsSlugEdited] = useState(false);
+
+  const handleChange = (field, value) => {
+    const updatedMeta = { ...meta, [field]: value };
+    if ((field === 'Title' || field === 'MachineName') && fields.slug && !isSlugEdited && mode === 'new') {
+      const slugSource = value.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '');
+      updatedMeta['Slug'] = slugSource;
+    }
+
+    if (field === 'Slug') {
+      setIsSlugEdited(true);
+    }
+
+    onChange(updatedMeta);
+  };
+
+  const handleContributorsChange = (contributors) => {
+    const ContributorIDs = contributors.map(c => c.id).join(',');
+    const Contributors = contributors.map(c => c.name).join(',');
+    onChange({ ...meta, ContributorIDs, Contributors });
+  };
+
+  const contributorsParsed = useMemo(() => {
+    const ids = (meta.ContributorIDs || '').split(',').map(id => parseInt(id)).filter(Boolean);
+    const names = (meta.Contributors || '').split(',');
+    return ids.map((id, i) => ({ id, name: names[i]?.trim() || `Contributor ${id}` }));
+  }, [meta.ContributorIDs, meta.Contributors]);
+
+  const s = style.blogMeta;
+
+  const renderInput = (label, field, placeholder = '', fullWidth = false) => (
+    <div className={fullWidth ? 'col-span-2' : 'col-span-1'}>
+      <label className={s.label}>{label}</label>
+      <input
+        className={s.input}
+        type="text"
+        value={meta[field] || ''}
+        onChange={(e) => handleChange(field, e.target.value)}
+        placeholder={placeholder}
+        readOnly={field === 'Slug' && !isSlugEdited}
+      />
+    </div>
+  );
+
+  const renderTextarea = (label, field, placeholder = '') => (
+    <div className="col-span-2">
+      <label className={s.label}>{label}</label>
+      <textarea
+        className={s.textarea}
+        value={meta[field] || ''}
+        onChange={(e) => handleChange(field, e.target.value)}
+        placeholder={placeholder}
+      />
+    </div>
+  );
+
+  const renderSelect = (label, field, options = []) => {
+  const defaultValue = options[0]?.value || '';
+
+    if (!meta[field] && defaultValue) {
+      handleChange(field, defaultValue);
+    }
+
+    return (
+      <div className="col-span-1">
+        <label className={s.label}>{label}</label>
+        <select
+          className={s.select}
+          value={meta[field] || defaultValue}
+          onChange={(e) => handleChange(field, e.target.value)}
+        >
+          {options.map(opt => (
+            <option key={opt.value} value={opt.value}>{opt.label}</option>
+          ))}
+        </select>
+      </div>
+    );
+  };
+
+  const renderDatePicker = (label, field) => (
+    <div className="col-span-1 flex flex-col">
+      <label className={s.label}>{label}</label>
+      <DatePicker
+        selected={meta[field] ? new Date(meta[field]) : null}
+        onChange={(date) => handleChange(field, date?.toISOString())}
+        className={s.input}
+        dateFormat="yyyy-MM-dd"
+        placeholderText="YYYY-MM-DD"
+      />
+    </div>
+  );
+
+  return (
+    <div className={`${s.wrapper} grid grid-cols-2 gap-4`}>
+      {meta.MachineName ? renderInput('Machine Name', 'MachineName', 'TryHackMe XYZ', true) : 
+      renderInput('Title', 'Title', 'Main title of the content', true) }
+
+      {fields.slug && renderInput(`Slug (ReadOnly)`, 'Slug', 'Title-based - AutoGen')}
+
+      {meta.Summary ? fields.summary && renderTextarea('Summary', 'Summary', 'Short summary or excerpt') :
+      renderTextarea('Description', 'Description', 'Short Description or excerpt') }
+
+      {fields.status && renderSelect('Status', 'Status', statusinput)}
+      {fields.ProgressStatus && renderSelect('Status', 'ProgressStatus', statusinput)}
+      {fields.image && renderInput('Cover Image URL', fields.image, 'https://domain.com/your-image.jpg')}
+      {fields.difficulty &&
+        renderSelect('Difficulty', 'Difficulty', [
+          { value: 'Easy', label: 'Easy' },
+          { value: 'Medium', label: 'Medium' },
+          { value: 'Hard', label: 'Hard' },
+          { value: 'Insane', label: 'Insane' },
+        ])}
+
+      {fields.osType && renderInput('OS Type', 'OsType', 'e.g. Linux')}
+      {fields.platform && renderInput('Platform', 'Platform', 'e.g. TryHackMe, HackTheBox')}
+      {fields.releaseDate && renderDatePicker('Release Date', 'ReleaseDate')}
+      {fields.toolsUsed && renderInput('Tools Used (Comma Separated)', 'ToolsUsed', 'e.g. Nmap, BurpSuite')}
+      {fields.BoxCreator && renderInput('Box Creator', 'BoxCreator', 'e.g. S0meBody3z0')}
+      {fields.ip && renderInput('IP Address', 'IPAddress', 'e.g. 192.168.1.100')}
+      {fields.reference && renderInput('Reference URL', 'Reference', 'https://reference.com')}
+      {fields.repo && renderInput('Repository URL', 'RepoURL', 'https://github.com/repo')}
+      {fields.demo && renderInput('Demo URL', 'DemoURL', 'https://demo.com')}
+      {fields.progress && renderSelect('Completion Level ( % )', 'ProgressPercentage', Array.from({ length: 21 }, (_, i) => { const value = i * 5; return { value: value.toString(), label: value.toString() };}) )}
+      {fields.StartDate && renderDatePicker('Project Start Date', 'StartDate')}
+      {fields.EndDate && renderDatePicker('Project End Date', 'EndDate')}
+      {fields.contributor && (
+        <ContributorSelector
+          selected={contributorsParsed}
+          onChange={handleContributorsChange}
+          allowAdd={true}
+          label={meta.MachineName ? 'WriteUp Author' : 'Contributor'}
+        />
+      )}
+    </div>
+  );
+}
