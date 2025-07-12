@@ -439,7 +439,7 @@ SELECT
     c.Name AS CategoryName,
 
     GROUP_CONCAT(DISTINCT con.ContributorID) AS ContributorIDs,
-    GROUP_CONCAT(DISTINCT con.Username) AS ContributorNames,
+    GROUP_CONCAT(DISTINCT con.Username) AS Contributors,
     GROUP_CONCAT(DISTINCT con.Bio) AS ContributorBios,
     GROUP_CONCAT(DISTINCT con.ProfilePicture) AS ContributorProfiles,
 
