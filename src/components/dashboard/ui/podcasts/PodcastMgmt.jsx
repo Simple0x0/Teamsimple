@@ -10,7 +10,7 @@ import ErrorHandle from '../../../public/ui/ErrorHandle';
 import { filterItems } from '../../../public/utils/searchFilter';
 import style from '../../../../app/Style';
 
-const PODCASTS_PER_PAGE = 10;
+const PODCASTS_PER_PAGE = 5;
 
 export default function PodcastMgmt() {
   const navigate = useNavigate();
@@ -54,7 +54,7 @@ export default function PodcastMgmt() {
     podcasts,
     searchTerm,
     [],
-    ['Title', 'Slug', 'Description', 'CategoryName', 'Status'],
+    ['Title', 'Slug', 'Description', 'CategoryName', 'Status', 'EpisodeNumber'],
     []
   );
 

@@ -21,8 +21,8 @@ class Achievements(SerializableResource):
             achievements = db.get_achievements(fingerprint)
             if not achievements:
                 return {"message": "Achievements are not yet Available"}, 404
-            sleep(SLEEP)
-            return {"Achievements": [self.serialize_row(w) for w in achievements]}, 200
+            published_achievements = [achievement for achievement in [self.serialize_row(p) for p in achievements] if achievement.get("Status") == "Published"]
+            return {"Achievements": published_achievements}, 200
         except Exception as e:
             print(f"Error in GET /api/projects: {e}")
             return {"message": "Internal server error"}, 500

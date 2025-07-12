@@ -201,12 +201,12 @@ class Database:
         return cls.execute(PODCAST_GET_SLUG_BY_ID_QUERY, params=(PodcastID,), fetchone=True)
 
     @classmethod
-    def insert_podcast(cls, Title, Slug, Description, Content, CoverImage, Duration, EpisodeNumber, AudioURL, DatePublished, CategoryID, Status, UploadKey):
-        return cls.execute(PODCAST_INSERT_QUERY, params=(Title, Slug, Description, Content, CoverImage, Duration, EpisodeNumber, AudioURL, DatePublished, CategoryID, Status, UploadKey), commit=True)
+    def insert_podcast(cls, Title, Slug, Description, Content, CoverImage, Duration, EpisodeNumber, AudioURL, CategoryID, Status, UploadKey):
+        return cls.execute(PODCAST_INSERT_QUERY, params=(Title, Slug, Description, Content, CoverImage, Duration, EpisodeNumber, AudioURL, CategoryID, Status, UploadKey), commit=True)
 
     @classmethod
-    def update_podcast(cls, PodcastID, Title, Description, Content, CoverImage, Duration, EpisodeNumber, AudioURL, DatePublished, CategoryID, Status):
-        return cls.execute(PODCAST_UPDATE_QUERY, params=(Title, Description, Content, CoverImage, Duration, EpisodeNumber, AudioURL, DatePublished, CategoryID, Status, PodcastID), commit=True)
+    def update_podcast(cls, PodcastID, Title, Description, Content, CoverImage, Duration, EpisodeNumber, AudioURL, CategoryID, Status):
+        return cls.execute(PODCAST_UPDATE_QUERY, params=(Title, Description, Content, CoverImage, Duration, EpisodeNumber, AudioURL, CategoryID, Status, PodcastID), commit=True)
 
     @classmethod
     def delete_podcast(cls, PodcastID, Slug, Username, reason):
@@ -223,13 +223,36 @@ class Database:
 
 
     # ============================================================================================
-    # =================================== ACHIEVEMENTS QUERIES ========================================
+    # =================================== ACHIEVEMENTS QUERIES ===================================
     # ============================================================================================
     @classmethod
     def get_achievements(cls, fingerprint):
         param = (fingerprint,) if fingerprint else ('__invalid__',)
         return cls.execute(ACHIEVEMENTS_QUERY, params=param, fetchall=True)
 
+    @classmethod
+    def get_achievements(cls, fingerprint):
+        param = (fingerprint,) if fingerprint else ('__invalid__',)
+        return cls.execute(ACHIEVEMENTS_QUERY, params=param, fetchall=True)
+
+    @classmethod
+    def insert_achievement(cls, Title, Description, DateAchieved, Image, UploadKey, ReferenceURL, Status):
+        return cls.execute( ACHIEVEMENT_INSERT_QUERY, params=(Title, Description, DateAchieved, Image, UploadKey, ReferenceURL, Status), commit=True )
+
+    @classmethod
+    def update_achievement(cls, AchievementID, Title, Description, DateAchieved, Image, ReferenceURL, Status):
+        return cls.execute( ACHIEVEMENT_UPDATE_QUERY, params=(Title, Description, DateAchieved, Image, ReferenceURL, Status, AchievementID), commit=True )
+
+    @classmethod
+    def delete_achievement(cls, AchievementID, Username, reason):
+        cls.execute( DELETEBIN_INSERT_QUERY, params=('Achievement', AchievementID, Username, reason), commit=True  )
+        cls.execute( ACHIEVEMENT_UPDATE_ON_DELETE_QUERY, params=('Deleted', AchievementID,), commit=True  )
+
+
+
+    # ============================================================================================
+    # =================================== ACHIEVEMENTS QUERIES ===================================
+    # ============================================================================================
     @classmethod
     def get_events(cls):
         return cls.execute(EVENTS_QUERY, fetchall=True)

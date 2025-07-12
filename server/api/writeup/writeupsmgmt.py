@@ -78,7 +78,6 @@ class WriteUpsMgmt(SerializableResource):
             Tags = s.sanitize_list(raw_writeup.get("Tags"))
             UploadKey = s.sanitize_upload_key(raw_writeup.get("UploadKey"))
             
-            pprint([MachineName, Difficulty, OsType, IPAddress, Reference, Platform, BoxCreator, ReleaseDate, Content, Summary, WriteUpImage, ToolsUsed, CategoryID, Contributors, UploadKey])
             # Required field check
             required = [
                 ("MachineName", MachineName),

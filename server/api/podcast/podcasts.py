@@ -20,8 +20,9 @@ class Podcasts(SerializableResource):
             podcasts = db.get_podcasts(fingerprint)
             if not podcasts:
                 return {"message": "Podcasts are not yet Available"}, 404
-            sleep(SLEEP)
-            return {"Podcasts": [self.serialize_row(w) for w in podcasts]}, 200
+                
+            published_podcasts = [podcast for podcast in [self.serialize_row(p) for p in podcasts] if podcast.get("Status") == "Published"]
+            return {"Podcasts": published_podcasts}, 200
         except Exception as e:
             print(f"Error in GET /api/projects: {e}")
             return {"message": "Internal server error"}, 500

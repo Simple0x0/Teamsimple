@@ -496,12 +496,11 @@ INSERT INTO Podcast (
     Duration,
     EpisodeNumber,
     AudioURL,
-    DatePublished,
     CategoryID,
     Status,
     UploadKey
 ) VALUES (
-    %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s
+    %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s
 );
 """
 
@@ -515,7 +514,6 @@ SET
     Duration = %s,
     EpisodeNumber = %s,
     AudioURL = %s,
-    DatePublished = %s,
     CategoryID = %s,
     Status = %s
 WHERE PodcastID = %s;
@@ -552,6 +550,7 @@ SELECT
     a.ReferenceURL,
     a.DateCreated,
     a.UploadKey,
+    a.Status,
     
     COALESCE(l.LikeCount, 0) AS TotalLikes,
 
@@ -580,6 +579,43 @@ LEFT JOIN (
 ORDER BY a.DateCreated DESC;
 -- LIMIT 50;
 """
+
+ACHIEVEMENT_INSERT_QUERY = """
+INSERT INTO Achievements (
+    Title,
+    Description,
+    DateAchieved,
+    Image,
+    UploadKey,
+    ReferenceURL,
+    Status
+) VALUES (
+    %s, %s, %s, %s, %s, %s, %s
+);
+"""
+
+ACHIEVEMENT_UPDATE_QUERY = """
+UPDATE Achievements
+SET
+    Title = %s,
+    Description = %s,
+    DateAchieved = %s,
+    Image = %s,
+    ReferenceURL = %s,
+    Status = %s
+WHERE AchievementID = %s;
+"""
+
+ACHIEVEMENT_UPDATE_ON_DELETE_QUERY = """
+UPDATE Achievements
+SET Status = %s
+WHERE AchievementID = %s;
+"""
+
+
+# ===============================================================================================================
+# ================================================== EVENTS QUEIRES =============================================
+# ===============================================================================================================
 
 
 EVENTS_QUERY = """

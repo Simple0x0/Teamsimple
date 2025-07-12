@@ -183,9 +183,9 @@ function PodcastPlayer({ podcast, currentAudioRef }) {
                 {/* Speaker Names as Modal Triggers */}
                 <div className={style.podcastmodule.speakersContainer}>
                     <strong className={style.podcastmodule.speakerLabel}>
-                        Speaker{podcast.Contributors.split(',').length > 1 ? 's' : ''}:
+                        Speaker{podcast.Contributors?.split(',').length > 1 ? 's' : ''}:
                     </strong>{' '}
-                    {podcast.Contributors.split(',').map((name, index) => {
+                    {podcast.Contributors?.split(',').map((name, index) => {
                         const username = podcast.Contributors?.split(',')[index]?.trim();
                         if (!username) return null;
                         return (
@@ -197,7 +197,7 @@ function PodcastPlayer({ podcast, currentAudioRef }) {
                                 >
                                     {name.trim()}
                                 </button>
-                                {index < podcast.Contributors.split(',').length - 1 ? ', ' : ''}
+                                {index < podcast.Contributors?.split(',').length - 1 ? ', ' : ''}
                             </span>
                         );
                     })}

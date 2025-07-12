@@ -18,7 +18,7 @@ from api.writeup.writeups import WriteUps
 from api.project.projects import Projects
 from api.podcast.podcasts import Podcasts
 from api.imagerender import ImageRenderer
-from api.achievements import Achievements
+from api.achievement.achievements import Achievements
 from api.events import Events
 from api.fingerprint import Fingerprint
 from api.likes import Like

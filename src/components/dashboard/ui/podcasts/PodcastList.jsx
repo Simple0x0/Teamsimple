@@ -118,11 +118,10 @@ export default function PodcastList({ podcasts = [], showActions = true, onDelet
             <div className={s.contentRow}>
               <img src={p.CoverImage} alt={p.Title} className={s.thumbnail} />
               <div className={s.info}>
-                <h3 className={s.title}>{p.Title}</h3>
+                <h3 className={s.title}>Episode {p.EpisodeNumber}: {p.Title}</h3>
                 <p className={s.meta}>
                   Category: <span className={s.metaValue}>{p.CategoryName}</span> | Duration:{' '}
-                  <span className={s.metaValue}>{p.Duration} min</span> | Episode:{' '}
-                  <span className={s.metaValue}>{p.EpisodeNumber}</span>
+                  <span className={s.metaValue}>{p.Duration} min</span> 
                 </p>
                 <p className={s.summary}>{p.Description}</p>
                 <p className={s.status}>
