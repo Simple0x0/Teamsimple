@@ -95,6 +95,7 @@ app.config['JWT_ACCESS_COOKIE_NAME'] = 'access_token'
 app.config["JWT_COOKIE_SAMESITE"] = "None"  # 'Lax' in Dev, 'None' with Ngrok Or 'Strict' in prod (if not !same-origin)
 #app.config["JWT_ACCESS_CSRF_HEADER_NAME"] = "X-CSRF-TOKEN"
 #limiter = Limiter(get_remote_address, app=app) #TO BE ACTIVATED WHEN READY FOR PRODUCTION
+app.config['MAX_CONTENT_LENGTH'] = 150 * 1024 * 1024 #150MB max
 
 # ======= Encryption & Token Initialization =========
 bcrypt.init_app(app)

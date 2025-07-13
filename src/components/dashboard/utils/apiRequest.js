@@ -286,7 +286,6 @@ export const uploadFile = async ({ file, type, contentType, uploadKey }) => {
     },
     withCredentials: true,
   });
-
   return res.data;
 };
 

@@ -2,8 +2,9 @@ import os
 import traceback
 import uuid
 from flask import jsonify, make_response, request
-from flask_jwt_extended import jwt_required, get_jwt_identity
+from flask_jwt_extended import jwt_required
 from core.extensions import UPLOAD_BASE
+from utils.uploads_validator import file_validate
 from werkzeug.utils import secure_filename
 from utils.utils import is_allowed_file
 from utils.serializable_resource import SerializableResource
@@ -61,7 +62,11 @@ class Uploads(SerializableResource):
 
             if not is_allowed_file(file.filename, file_type):
                 return make_response(jsonify({"error": "Invalid file extension"}), 400)
-
+            
+            valid, message = file_validate(file, file.filename, file_type)
+            if not valid:
+                return {"error": message}, 400
+            
             # If UploadKey is not provided or doesn't exist, generate a new one
             if UploadKey == 'new' or not UploadKey or not os.path.exists(os.path.join(UPLOAD_BASE, dir_name, UploadKey)):
                 for _ in range(10):

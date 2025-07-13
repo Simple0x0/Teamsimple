@@ -38,9 +38,11 @@ export default function Uploads({ type = 'image', New = false, contentType = '',
     try {
       const uploadKey = ImgUploadKey || 'new';
       const data = await uploadFile({ file, type, contentType, uploadKey });
+
       if (data.url) {
         setFileList(prev => [data.url, ...prev]);
         onSelect?.(data.url);
+
         if (!ImgUploadKey){
           const parts = data.url.split('/');
           if (parts.length >= 5) {
@@ -50,14 +52,26 @@ export default function Uploads({ type = 'image', New = false, contentType = '',
           }
         }
         inputRef.current.value = '';
+      } else if (data.error) {
+        // Handle error messages returned in response JSON
+        setError(data.error);
+      } else {
+        setError('Unknown upload error');
       }
     } catch (err) {
-      console.error('Upload failed:', err);
-      setError('Upload failed');
+      // Handle HTTP or network errors and extract message if available
+      if (err.response?.data?.error) {
+        setError(err.response.data.error);
+      } else if (err.message) {
+        setError(err.message);
+      } else {
+        setError('Upload failed');
+      }
     } finally {
       setLoading(false);
     }
   };
+
 
   const toDisplayUrl = (relativeUrl) => {
     const parts = relativeUrl.split('/');
