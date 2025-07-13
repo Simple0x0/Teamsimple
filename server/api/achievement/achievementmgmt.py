@@ -7,11 +7,8 @@ from datetime import datetime
 from core.extensions import db, s, UPLOAD_BASE
 from utils.utils import generate_slug, validate_fingerprint_value
 from utils.serializable_resource import SerializableResource
-from pprint import pprint
 
-# ===== PodcastMgmt API =====
-class PodcastMgmt(SerializableResource):
-    #@jwt_required()
+class AchievementMgmt(SerializableResource):
     def get(self):
         try:
             fingerprint = request.args.get('f')
@@ -20,15 +17,15 @@ class PodcastMgmt(SerializableResource):
                 if not valid:
                     return {"message": msg}, 404
 
-            podcasts = db.get_podcasts(fingerprint)
-            if not podcasts:
-                return {"message": "Podcasts are not yet Available"}, 404
+            achievements = db.get_achievements(fingerprint)
+            if not achievements:
+                return {"message": "Achievements are not yet available"}, 404
 
-            podcasts_list = [podcast for podcast in [self.serialize_row(p) for p in podcasts] if podcast.get("Status") != "Deleted"]
-            return {"Podcasts": podcasts_list}, 200
+            result = [a for a in [self.serialize_row(a) for a in achievements] if a.get("Status") != "Deleted"]
+            return {"Achievements": result}, 200
 
         except Exception:
-            app.logger.error(f"Error in GET /api/podcasts: {traceback.format_exc()}")
+            app.logger.error(f"Error in GET /api/achievements: {traceback.format_exc()}")
             return {"message": "Internal server error"}, 500
 
     @jwt_required()
@@ -36,131 +33,84 @@ class PodcastMgmt(SerializableResource):
         try:
             data = request.get_json(force=True)
             action = data.get("action", "new").lower()
-            del_podcast = data.get("podcast", {})
+            submission_type = data.get("submissionType", "draft").lower()
 
             if action == "delete":
-                PodcastID_raw = del_podcast.get("PodcastID")
-                Reason_raw = del_podcast.get("Reason", "")
-                if not PodcastID_raw:
-                    return {"error": "Please specify Podcast for deletion"}, 400
-
-                PodcastID = s.sanitize_id(PodcastID_raw)
-                reason = s.sanitize_alphanum(Reason_raw)
+                ach_data = data.get("achievement", {})
+                AchievementID = s.sanitize_id(ach_data.get("AchievementID"))
+                reason = s.sanitize_alphanum(ach_data.get("Reason", ""))
                 Username = get_jwt_identity()
 
+                if not AchievementID:
+                    return {"error": "Please specify achievement to delete"}, 400
                 if not reason:
                     return {"error": "Provide a reason for deletion"}, 400
 
-                podcast_info = db.get_podcast_slug(PodcastID)
-                if not podcast_info:
-                    return make_response(jsonify({"message": "Podcast not found or already deleted"}), 404)
+                db.delete_achievement(AchievementID, Username, reason)
+                return make_response(jsonify({"message": "Achievement successfully deleted"}), 201)
 
-                db.delete_podcast(PodcastID, podcast_info['Slug'], Username, reason)
-                return make_response(jsonify({"message": "Podcast successfully deleted"}), 201)
+            ach_data = data.get("achievement", {})
+            AchievementID = s.sanitize_id(ach_data.get("AchievementID"))
+            Title = s.sanitize_title(ach_data.get("Title"))
+            Description = s.sanitize_summary(ach_data.get("Description"))
+            DateAchieved = s.sanitize_date(ach_data.get("DateAchieved"))
+            Image = s.sanitize_image_path(ach_data.get("Image"))
+            UploadKey = s.sanitize_upload_key(ach_data.get("UploadKey"))
+            ReferenceURL = s.sanitize_url(ach_data.get("ReferenceURL"))
 
-            submission_type = data.get("submissionType", "draft").lower()
-            raw_podcast = data.get("podcast", {})
-
-            PodcastID = s.sanitize_id(raw_podcast.get("PodcastID"))
-            Title = s.sanitize_title(raw_podcast.get("Title"))
-            Slug = s.sanitize_slug(raw_podcast.get("Slug"))
-            Description = s.sanitize_summary(raw_podcast.get("Description"))
-            Content = s.sanitize_content(raw_podcast.get("Content"))
-            CoverImage = s.sanitize_image_path(raw_podcast.get("CoverImage"))
-            Duration = s.sanitize_id(raw_podcast.get("Duration"))
-            EpisodeNumber = s.sanitize_id(raw_podcast.get("EpisodeNumber"))
-            AudioURL = s.sanitize_url(raw_podcast.get("AudioURL"))
-            CategoryID = s.sanitize_id(raw_podcast.get("CategoryID"))
-            Contributors = s.sanitize_list(raw_podcast.get("Contributors"))
-            UploadKey = s.sanitize_upload_key(raw_podcast.get("UploadKey"))
-
-            # Required field check
-            required = [
+            required_fields = [
                 ("Title", Title),
                 ("Description", Description),
-                ("Content", Content),
-                ("CoverImage", CoverImage),
-                ("Duration", Duration),
-                ("EpisodeNumber", EpisodeNumber),
-                ("AudioURL", AudioURL),
-                ("CategoryID", CategoryID),
-                ("Contributors", Contributors),
-                ("UploadKey", UploadKey),
+                ("DateAchieved", DateAchieved),
+                ("Image", Image),
+                ("UploadKey", UploadKey)
             ]
 
-            missing_fields = [name for name, value in required if value in (None, '', 0)]
-
+            missing_fields = [field for field, value in required_fields if not value]
             if missing_fields:
-                return {"error": f"Missing or invalid podcast fields: {', '.join(missing_fields)}"}, 400
+                return {"error": f"Missing or invalid achievement fields: {', '.join(missing_fields)}"}, 400
 
-            # Status logic
-            if submission_type == "publish":
-                Status = "Published"
-            elif submission_type == "schedule":
-                Status = "Scheduled"
-            else:
-                Status = "Draft"
+            Status = "Published" if submission_type == "publish" else "Scheduled" if submission_type == "schedule" else "Draft"
 
-            if action == "edit" and PodcastID:
-                success = db.update_podcast(
-                    PodcastID=PodcastID,
+            if action == "edit" and AchievementID:
+                success = db.update_achievement(
+                    AchievementID=AchievementID,
                     Title=Title,
                     Description=Description,
-                    Content=Content,
-                    CoverImage=CoverImage,
-                    Duration=Duration,
-                    EpisodeNumber=EpisodeNumber,
-                    AudioURL=AudioURL,
-                    CategoryID=CategoryID,
+                    DateAchieved=DateAchieved,
+                    Image=Image,
+                    ReferenceURL=ReferenceURL,
                     Status=Status
                 )
                 if not success:
-                    return make_response(jsonify({"error": "Failed to update podcast"}), 500)
+                    return make_response(jsonify({"error": "Failed to update achievement"}), 500)
 
-                db.delete_podcast_speakers(CategoryID)
-                for speaker in Contributors:
-                    contributorID = db.get_contributor_id(speaker)
-                    if contributorID:
-                        db.insert_podcast_speaker(PodcastID, contributorID['ContributorID'])
-
-                return make_response(jsonify({"message": "Podcast successfully edited", "PodcastID": PodcastID}), 201)
+                return make_response(jsonify({"message": "Achievement successfully updated", "AchievementID": AchievementID}), 201)
 
             elif action == "new":
-                Slug = generate_slug(Title)
-                hashuploadKey = UploadKey + '-hashed'
-
-                PodcastID = db.insert_podcast(
+                hashed_upload_key = UploadKey + '-hashed'
+                AchievementID = db.insert_achievement(
                     Title=Title,
-                    Slug=Slug,
                     Description=Description,
-                    Content=Content,
-                    CoverImage=CoverImage,
-                    Duration=Duration,
-                    EpisodeNumber=EpisodeNumber,
-                    AudioURL=AudioURL,
-                    CategoryID=CategoryID,
-                    Status=Status,
-                    UploadKey=hashuploadKey,
+                    DateAchieved=DateAchieved,
+                    Image=Image,
+                    UploadKey=hashed_upload_key,
+                    ReferenceURL=ReferenceURL,
+                    Status=Status
                 )
 
-                if PodcastID:
-                    for speaker in Contributors:
-                        contributorID = db.get_contributor_id(speaker)
-                        if contributorID:
-                            db.insert_podcast_speaker(PodcastID, contributorID['ContributorID'])
+                source = os.path.join(UPLOAD_BASE, 'achievements', UploadKey)
+                target = os.path.join(UPLOAD_BASE, 'achievements', hashed_upload_key)
+                if os.path.exists(source):
+                    os.rename(source, target)
 
-                    source = os.path.join(UPLOAD_BASE, 'podcasts', UploadKey)
-                    target = os.path.join(UPLOAD_BASE, 'podcasts', hashuploadKey)
-                    if os.path.exists(source):
-                        os.rename(source, target)
+                return make_response(jsonify({"message": "Achievement successfully created", "AchievementID": AchievementID}), 201)
 
-                    return make_response(jsonify({"message": "Podcast successfully published", "PodcastID": PodcastID}), 201)
-
-            return make_response(jsonify({"error": "Unsupported podcast action"}), 400)
+            return make_response(jsonify({"error": "Unsupported achievement action"}), 400)
 
         except Exception:
-            app.logger.error(f"[Podcast:POST] Error: {traceback.format_exc()}")
+            app.logger.error(f"[Achievement:POST] Error: {traceback.format_exc()}")
             return make_response(jsonify({
-                "error": "Failed to process podcast",
+                "error": "Failed to process achievement",
                 "details": traceback.format_exc()
             }), 500)

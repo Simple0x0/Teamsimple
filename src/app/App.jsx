@@ -35,6 +35,9 @@ import ProjectAdd from '../components/dashboard/ui/projects/ProjectAdd';
 import PodcastMgmt from '../components/dashboard/ui/podcasts/PodcastMgmt';
 import PodcastEdit from '../components/dashboard/ui/podcasts/PodcastEdit';
 import PodcastAdd from '../components/dashboard/ui/podcasts/PodcastAdd';
+import AchievementMgmt from '../components/dashboard/ui/achievements/AchievementMgmt';
+import AchievementEdit from '../components/dashboard/ui/achievements/AchievementEdit';
+import AchievementAdd from '../components/dashboard/ui/achievements/AchievementAdd';
 
 
 
@@ -68,6 +71,9 @@ const router = createBrowserRouter(
         <Route path="/dashboard/podcasts" element={<PodcastMgmt />} /> 
         <Route path="/dashboard/podcasts/edit" element={<PodcastEdit />} /> 
         <Route path="/dashboard/podcasts/new" element={<PodcastAdd />} /> 
+        <Route path="/dashboard/achievements" element={<AchievementMgmt />} /> 
+        <Route path="/dashboard/achievements/edit" element={<AchievementEdit />} /> 
+        <Route path="/dashboard/achievements/new" element={<AchievementAdd />} /> 
 
         
         <Route path="/dashboard/contributors" element={<ContributorsMgmt />} /> 

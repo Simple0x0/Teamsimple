@@ -40,6 +40,7 @@ from api.blog.blogsmgmt import BlogsMgmt
 from api.writeup.writeupsmgmt import WriteUpsMgmt
 from api.project.projectsmgmt import ProjectsMgmt
 from api.podcast.podcastsmgmt import PodcastMgmt
+from api.achievement.achievementmgmt import AchievementMgmt
 
 # ======= Initialize app and extensions =========
 load_dotenv()
@@ -149,6 +150,7 @@ api.add_resource(BlogsMgmt, '/api/auth/blogsmgmt')
 api.add_resource(WriteUpsMgmt, '/api/auth/writeupsmgmt')
 api.add_resource(ProjectsMgmt, '/api/auth/projectsmgmt')
 api.add_resource(PodcastMgmt, '/api/auth/podcastmgmt')
+api.add_resource(AchievementMgmt, '/api/auth/achievementmgmt')
 
 
 # ===== Run App =====
