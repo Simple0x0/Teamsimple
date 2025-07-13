@@ -1,17 +1,14 @@
 import { useNavigate } from 'react-router-dom';
 import { useState } from 'react';
-import ContentMDEditor from '../ContentMDEditor';
 import ContentMeta from '../ContentMeta';
 import Uploads from '../Uploads';
-import { postWriteUp } from '../../utils/apiWriteUpRequests';
+import style from '../../../../app/Style';
+import { postAchievement } from '../../utils/apiAchievementRequests';
 import MessageToast from '../MessageToast';
 
 export default function AchievementAdd() {
   const navigate = useNavigate();
-  const [meta, setMeta] = useState({ ContentType: 'WriteUp' });
-  const [content, setContent] = useState('');
-  const [selectedTags, setSelectedTags] = useState([]);
-  const [selectedCategory, setselectedCategory] = useState(null);
+  const [meta, setMeta] = useState({ ContentType: 'Achievement' });
 
   const [toastConfig, setToastConfig] = useState({
     message: '',
@@ -23,117 +20,75 @@ export default function AchievementAdd() {
 
   const handleMetaChange = (updatedMeta) => {
     setMeta(updatedMeta);
-    console.log(meta)
   };
 
   const handleUploadKey = (key) => {
-    setMeta(prev => ({ ...prev, UploadKey: key }));
+    setMeta((prev) => ({ ...prev, UploadKey: key }));
   };
 
   const preparePayload = () => ({
     ...meta,
-    Content: content,
-    Tags: selectedTags.map(tag => tag.name || tag),
-    CategoryID: selectedCategory?.id,
-    CategoryName: selectedCategory?.name,
+    Content: meta.Content || '', // fallback if needed
   });
 
   const showToast = ({ message, duration = 6000, type = 'success', redirect = '' }) => {
     setToastConfig({ message, duration, type, redirect, visible: true });
     setTimeout(() => {
-      setToastConfig(prev => ({ ...prev, visible: false }));
+      setToastConfig((prev) => ({ ...prev, visible: false }));
       if (redirect) navigate(redirect);
     }, duration);
   };
 
   const handleSaveDraft = async () => {
-    const payload = preparePayload();
-    const result = await postWriteUp({
-      writeupData: payload,
+    const result = await postAchievement({
+      achievementData: preparePayload(),
       action: 'new',
       submissionType: 'draft',
     });
-    if (result.success) {
-      showToast({ message: 'Draft saved successfully', redirect: '/dashboard/writeups' });
-    } else {
-      showToast({ message: `Failed to save draft: ${result.error}`, type: 'failure' });
-    }
+
+    result.success
+      ? showToast({ message: 'Draft saved successfully', redirect: '/dashboard/achievements' })
+      : showToast({ message: `Failed to save draft: ${result.error}`, type: 'failure' });
   };
 
   const handlePublish = async () => {
-    const payload = preparePayload();
-    const result = await postWriteUp({
-      writeupData: payload,
+    const result = await postAchievement({
+      achievementData: preparePayload(),
       action: 'new',
       submissionType: 'publish',
     });
-    if (result.success) {
-      showToast({ message: 'WriteUp published successfully', redirect: '/dashboard/writeups' });
-    } else {
-      showToast({ message: `Failed to publish writeup: ${result.error}`, type: 'failure' });
-    }
+
+    result.success
+      ? showToast({ message: 'Achievement published successfully', redirect: '/dashboard/achievements' })
+      : showToast({ message: `Failed to publish achievement: ${result.error}`, type: 'failure' });
   };
 
-  const handleActive = async () => {
-    const payload = preparePayload();
-    const result = await postWriteUp({
-      writeupData: payload,
-      action: 'new',
-      submissionType: 'active',
-    });
-    if (result.success) {
-      showToast({ message: 'WriteUp published as Active Box', redirect: '/dashboard/writeups' });
-    } else {
-      showToast({ message: `Failed to publish writeup: ${result.error}`, type: 'failure' });
-    }
-  };
-
-  const handleSchedule = async () => {
-    const payload = preparePayload();
-    payload.PublishDate = meta.PublishDate || new Date().toISOString();
-    const result = await postWriteUp({
-      writeupData: payload,
-      action: 'new',
-      submissionType: 'schedule',
-    });
-    if (result.success) {
-      showToast({ message: 'WriteUp scheduled successfully', redirect: '/dashboard/writeups' });
-    } else {
-      showToast({ message: `Failed to schedule writeup: ${result.error}`, type: 'failure' });
-    }
-  };
-
+  const s = style.contentMDEditor;
   return (
     <>
+      <h2 className={s.title}> Edit Achievement </h2>
       {toastConfig.visible && (
         <MessageToast
           message={toastConfig.message}
           duration={toastConfig.duration}
           type={toastConfig.type}
           redirect={toastConfig.redirect}
-          onClose={() => setToastConfig(prev => ({ ...prev, visible: false }))}
+          onClose={() => setToastConfig((prev) => ({ ...prev, visible: false }))}
         />
       )}
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
         <ContentMeta
-          contentType='WriteUp'
+          contentType="Achievement"
           meta={meta}
           onChange={handleMetaChange}
           mode="new"
           fields={{
-            slug: true,
+            slug: false,
             summary: true,
-            status: true,
-            image: 'WriteUpImage',
-            contributor: true,
-            difficulty: true,
-            BoxCreator: true,
-            osType: true,
-            ip: true,
-            toolsUsed: true,
-            releaseDate: true,
-            platform: true,
+            image: 'Image',
+            description: true,
+            dateAchieved: true,
             reference: true,
           }}
         />
@@ -141,32 +96,27 @@ export default function AchievementAdd() {
         <Uploads
           type="image"
           New={true}
-          contentType="writeups"
+          contentType="achievements"
           UploadKey={meta.UploadKey}
           onUpload={handleUploadKey}
         />
       </div>
 
-      <ContentMDEditor
-        ContentType='WriteUp'
-        mode="new"
-        initialContent={meta.Content || ''}
-        initialTags={(meta.Tags || '')
-          .split(',')
-          .map(t => t.trim())
-          .filter(t => t.length > 0)
-          .map(name => ({ id: name, name }))}
-        initialCategory={{ id: meta.CategoryID, name: meta.CategoryName }}
-        actions={['draft', 'publish', 'schedule', 'active']}
-        showTechStacks={true}
-        onContentChange={setContent}
-        onTagsChange={setSelectedTags}
-        onCategoriesChange={setselectedCategory}
-        onSaveDraft={handleSaveDraft}
-        onPublish={handlePublish}
-        onSchedule={handleSchedule}
-        onActive={handleActive}
-      />
+      {/* Action Buttons */}
+      <div className="flex gap-4 justify-end mt-6">
+        <button
+          onClick={handleSaveDraft}
+          className="px-4 py-2 bg-yellow-500 text-white rounded hover:bg-yellow-600"
+        >
+          Draft
+        </button>
+        <button
+          onClick={handlePublish}
+          className="px-4 py-2 bg-green-600 text-white rounded hover:bg-green-700"
+        >
+          Publish
+        </button>
+      </div>
     </>
   );
 }

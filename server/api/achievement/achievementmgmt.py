@@ -9,6 +9,7 @@ from utils.utils import generate_slug, validate_fingerprint_value
 from utils.serializable_resource import SerializableResource
 
 class AchievementMgmt(SerializableResource):
+    @jwt_required()
     def get(self):
         try:
             fingerprint = request.args.get('f')

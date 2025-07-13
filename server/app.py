@@ -23,7 +23,7 @@ from api.events import Events
 from api.fingerprint import Fingerprint
 from api.likes import Like
 from api.latest import Latest
-from api.contributors import Contributor
+from api.contributor.contributors import Contributor
 from api.login import Login
 from api.logout import Logout
 from api.authverify import AuthVerify
@@ -35,7 +35,7 @@ from api.timelinestats import VisitorLikeTimeLineStats
 from api.tagcattech import TagCategoryTechStack
 from api.uploads import Uploads
 
-from api.contributorsmgmt import ContributorsMgmt
+from api.contributor.contributorsmgmt import ContributorsMgmt
 from api.blog.blogsmgmt import BlogsMgmt
 from api.writeup.writeupsmgmt import WriteUpsMgmt
 from api.project.projectsmgmt import ProjectsMgmt

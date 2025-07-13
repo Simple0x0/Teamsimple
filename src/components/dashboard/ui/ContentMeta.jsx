@@ -121,6 +121,7 @@ export default function ContentMeta({ contentType = '', meta = {}, onChange, mod
       {fields.osType && renderInput('OS Type', 'OsType', 'e.g. Linux')}
       {fields.platform && renderInput('Platform', 'Platform', 'e.g. TryHackMe, HackTheBox')}
       {fields.releaseDate && renderDatePicker('Release Date', 'ReleaseDate')}
+      {fields.dateAchieved && renderDatePicker('Achievement Data', 'DateAchieved')}
       {fields.toolsUsed && renderInput('Tools Used (Comma Separated)', 'ToolsUsed', 'e.g. Nmap, BurpSuite')}
       {fields.BoxCreator && renderInput('Box Creator', 'BoxCreator', 'e.g. S0meBody3z0')}
       {fields.ip && renderInput('IP Address', 'IPAddress', 'e.g. 192.168.1.100')}
