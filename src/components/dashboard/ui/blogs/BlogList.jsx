@@ -1,11 +1,10 @@
 import React, { useState, Fragment } from 'react';
 import { Dialog, Transition } from '@headlessui/react';
 import { Link } from 'react-router-dom';
-import { postBlog } from '../../utils/apiRequest';
+import { postBlog, BlogDelete } from '../../utils/apiBlogRequests';
 import MessageToast from '../MessageToast';
 import { FaEye, FaEdit, FaTrash, FaCloudUploadAlt, FaPenFancy } from 'react-icons/fa';
 import style from '../../../../app/Style';
-import { BlogDelete } from '../../utils/apiRequest';
 import ErrorHandle from '../../../public/ui/ErrorHandle';
 
 export default function BlogList({ blogs = [], showActions = true, onDelete = () => {} }) {

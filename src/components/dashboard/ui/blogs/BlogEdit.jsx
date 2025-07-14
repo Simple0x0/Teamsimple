@@ -4,7 +4,7 @@ import ContentMDEditor from '../ContentMDEditor';
 import ContentMeta from '../ContentMeta';
 import ErrorHandle from '../../../public/ui/ErrorHandle';
 import Uploads from '../Uploads';
-import { postBlog } from '../../utils/apiRequest';
+import { postBlog } from '../../utils/apiBlogRequests';
 import MessageToast from '../MessageToast';
 
 export default function BlogEdit() {
