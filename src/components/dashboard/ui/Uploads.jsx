@@ -2,7 +2,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import style from '../../../app/Style';
 import { fetchFilesUtil, uploadFile } from '../utils/apiRequest';
 
-export default function Uploads({ type = 'image', New = false, contentType = '', UploadKey = '', onSelect, onUpload = () => {} }) {
+export default function Uploads({ meta = {}, type = 'image', New = false, contentType = '', UploadKey = '', onSelect, onUpload = () => {} }) {
   const [fileList, setFileList] = useState([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
@@ -81,6 +81,7 @@ export default function Uploads({ type = 'image', New = false, contentType = '',
     const uKey = (parts[3]);
     const filePath = parts.slice(4).join('/');
     const finalKey = New ? `${uKey}-hashed` : uKey;
+    meta
     return `${BASE_API_URL}/api/files/${contentType}/${finalKey}/${filePath}`;
   };
 

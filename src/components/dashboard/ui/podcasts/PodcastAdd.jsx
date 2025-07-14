@@ -125,6 +125,7 @@ export default function PodcastAdd() {
 
         <div className='grid gap-3'>
           <Uploads
+            meta={meta}
             type="image"
             New={true}
             contentType="podcasts"
@@ -132,13 +133,16 @@ export default function PodcastAdd() {
             onUpload={handleUploadKey}
           />
 
-          <Uploads
+          {meta.UploadKey && (
+            <Uploads
+            meta={meta}
             type="audio"
             New={true}
             contentType="podcasts"
             UploadKey={meta.UploadKey}
             onUpload={handleUploadKey}
           />
+          )}
         </div>
       </div>
 
