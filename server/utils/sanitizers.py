@@ -37,10 +37,9 @@ class Sanitizer():
             return None
 
     def sanitize_image_path(self, path: str) -> str:
-        path = path.strip()
         
         if not path or not isinstance(path, str):
-            raise ValueError("Invalid path: must be a non-empty string")
+            return None
 
         path = path.strip()
         if '/api/files/' not in path:
@@ -87,20 +86,29 @@ class Sanitizer():
         return []
 
     def sanitize_alphanum(self, value: str) -> str:
-        return re.sub(r'[^a-zA-Z0-9]', '', value.strip())
+        return re.sub(r'[^a-zA-Z0-9]', '', value.strip()) if value else None
     
 
     def sanitize_upload_key(self, raw_key: str) -> str:
-        prefix, uuid_part = raw_key.strip().split('-', 1)
-        prefix = re.sub(r'[^a-zA-Z]', '', prefix)[:20].lower()
-        uuid_part = re.sub(r'[^a-fA-F0-9]', '', uuid_part)[:32].lower()
-        return f"{prefix}-{uuid_part}"
+        if raw_key:
+            prefix, uuid_part = raw_key.strip().split('-', 1)
+            prefix = re.sub(r'[^a-zA-Z]', '', prefix)[:20].lower()
+            uuid_part = re.sub(r'[^a-fA-F0-9]', '', uuid_part)[:32].lower()
+            return f"{prefix}-{uuid_part}"
 
-    def sanitize_alphanum(self, username):
-        if re.match("^[a-zA-Z0-9_]+$", username):
-            return username
-        else:
-            return None  
+    def sanitize_username(self, username):
+        if username:
+            if re.match("^[a-zA-Z0-9._-]+$", username):
+                return username
+            else:
+                return None  
+            
+    def sanitize_fullname(self, username):
+        if username:
+            if re.match("^[a-zA-Z ]+$", username):
+                return username
+            else:
+                return None  
         
     def sanitize_ostype(self, os_type):
         ostype_map = {
@@ -235,6 +243,19 @@ class Sanitizer():
         return ", ".join(sanitized)
 
 
+    def sanitize_enum(self, value: str, allowed_values: list) -> str:
+        """
+        Validate the input string against a list of allowed enum values.
+        Case-insensitive matching.
+        """
+        if not isinstance(value, str):
+            return None
+
+        value_clean = value.strip()
+        for allowed in allowed_values:
+            if value_clean.lower() == allowed.lower():
+                return allowed  # return the canonical casing from allowed list
+        return None
 
 
 

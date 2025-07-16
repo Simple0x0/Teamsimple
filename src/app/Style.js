@@ -496,53 +496,53 @@ const style = {
         errorNotice: "text-sm text-red-500",
     },
     contributorMgmt: {
-        wrapper: "w-full p-4 md:p-6 lg:p-8",
-        header: "flex justify-between items-center mb-6",
-        title: "text-xl md:text-2xl font-bold text-white",
+        wrapper: "w-full p-4 md:p-6 lg:p-8 bg-slate-900 rounded-lg shadow",
+        header: "flex flex-col sm:flex-row justify-between items-center mb-6",
+        title: "text-xl md:text-2xl font-bold text-white mb-2 sm:mb-0",
         controls: "flex gap-3",
         actionBtn:
             "px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 transition text-sm font-medium",
         searchBar: "mb-4",
         contentArea: "space-y-4",
-    },
+        },
+
     contributorList: {
         wrapper: "grid gap-4",
-        item:
-            "flex justify-between items-start p-4 bg-gray-800 border border-gray-700 rounded-lg hover:shadow-lg transition",
-        left: "flex gap-4 items-start",
-        thumbnail: "w-16 h-16 rounded-full object-cover border border-gray-600",
-        info: "flex flex-col",
-        title: "text-lg font-semibold text-white",
-        meta: "text-sm text-gray-400",
+        item: "bg-gray-800 border border-gray-700 rounded-lg p-4 flex flex-col items-center",
+        thumbnail: "w-20 h-20 rounded-full object-cover border border-gray-600 mb-3",
+        title: "text-white font-semibold text-lg text-center",
+        meta: "text-sm text-gray-400 text-center",
         metaValue: "text-white font-medium",
-        summary: "text-sm text-gray-300 mt-2 max-w-md overflow-hidden text-ellipsis whitespace-nowrap",
-        actions: "flex gap-2",
+        typeDropdown: "mt-2 bg-gray-700 text-white text-sm rounded px-2 py-1 focus:outline-none",
+        summary: "text-sm text-gray-300 mt-2 text-center overflow-hidden text-ellipsis whitespace-nowrap w-full",
+        actionsBar: "flex justify-between gap-3 mt-4 w-full",
         actionBtn: {
             edit: "text-blue-400 hover:text-blue-500 transition text-lg",
             delete: "text-red-400 hover:text-red-500 transition text-lg",
         },
         noData: "text-center text-sm text-gray-400 mt-6",
     },
+
     toast: {
-    success: {
-      wrapper: 'fixed top-5 right-5 z-50 bg-green-500/95 text-white px-6 py-4 rounded-xl shadow-lg w-[300px] overflow-hidden flex items-start gap-3 animate-slide-in',
-      icon: 'text-white text-lg mt-1',
-      message: 'text-sm font-medium flex-1',
-      progressBar: 'absolute bottom-0 left-0 h-1 bg-orange-400 animate-progress',
+        success: {
+        wrapper: 'fixed top-5 right-5 z-50 bg-green-500/95 text-white px-6 py-4 rounded-xl shadow-lg w-[300px] overflow-hidden flex items-start gap-3 animate-slide-in',
+        icon: 'text-white text-lg mt-1',
+        message: 'text-sm font-medium flex-1',
+        progressBar: 'absolute bottom-0 left-0 h-1 bg-orange-400 animate-progress',
+        },
+        warning: {
+        wrapper: 'fixed top-5 right-5 z-50 bg-yellow-500/95 text-white px-6 py-4 rounded-xl shadow-lg w-[300px] overflow-hidden flex items-start gap-3 animate-slide-in',
+        icon: 'text-white text-lg mt-1',
+        message: 'text-sm font-medium flex-1',
+        progressBar: 'absolute bottom-0 left-0 h-1 bg-yellow-300 animate-progress',
+        },
+        failure: {
+        wrapper: 'fixed top-5 right-5 z-50 bg-red-600/95 text-white px-6 py-4 rounded-xl shadow-lg w-[300px] overflow-hidden flex items-start gap-3 animate-slide-in',
+        icon: 'text-white text-lg mt-1',
+        message: 'text-sm font-medium flex-1',
+        progressBar: 'absolute bottom-0 left-0 h-1 bg-red-300 animate-progress',
+        },
     },
-    warning: {
-      wrapper: 'fixed top-5 right-5 z-50 bg-yellow-500/95 text-white px-6 py-4 rounded-xl shadow-lg w-[300px] overflow-hidden flex items-start gap-3 animate-slide-in',
-      icon: 'text-white text-lg mt-1',
-      message: 'text-sm font-medium flex-1',
-      progressBar: 'absolute bottom-0 left-0 h-1 bg-yellow-300 animate-progress',
-    },
-    failure: {
-      wrapper: 'fixed top-5 right-5 z-50 bg-red-600/95 text-white px-6 py-4 rounded-xl shadow-lg w-[300px] overflow-hidden flex items-start gap-3 animate-slide-in',
-      icon: 'text-white text-lg mt-1',
-      message: 'text-sm font-medium flex-1',
-      progressBar: 'absolute bottom-0 left-0 h-1 bg-red-300 animate-progress',
-    },
-  },
 
     writeupList: {
         wrapper: "grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4",
@@ -573,42 +573,53 @@ const style = {
     },
 
     projectList: {
-    wrapper: "grid grid-cols-1 sm:grid-cols-2 gap-6",
-    item: "flex flex-col bg-slate-950 p-4 rounded-xl shadow border border-slate-800",
-    
-    // IMAGE on top and larger
-    thumbnail: "w-full h-48 object-cover rounded-lg mb-4",
+        wrapper: "grid grid-cols-1 sm:grid-cols-2 gap-6",
+        item: "flex flex-col bg-slate-950 p-4 rounded-xl shadow border border-slate-800",
+        
+        // IMAGE on top and larger
+        thumbnail: "w-full h-48 object-cover rounded-lg mb-4",
 
-    info: "flex flex-col flex-1",
-    title: "text-xl font-semibold text-lime-400",
-    meta: "text-sm text-gray-400 mt-1",
-    metaValue: "text-gray-300 font-medium",
-    summary: "text-sm text-gray-400 mt-2 line-clamp-3",
-    status: "mt-2 text-sm text-gray-400",
+        info: "flex flex-col flex-1",
+        title: "text-xl font-semibold text-lime-400",
+        meta: "text-sm text-gray-400 mt-1",
+        metaValue: "text-gray-300 font-medium",
+        summary: "text-sm text-gray-400 mt-2 line-clamp-3",
+        status: "mt-2 text-sm text-gray-400",
 
-    statusBadge: {
-        Published: "text-lime-500 font-semibold",
-        Scheduled: "text-yellow-400 font-semibold",
-        Draft: "text-orange-400 font-semibold",
-        Active: "text-blue-400 font-semibold",
+        statusBadge: {
+            Published: "text-lime-500 font-semibold",
+            Scheduled: "text-yellow-400 font-semibold",
+            Draft: "text-orange-400 font-semibold",
+            Active: "text-blue-400 font-semibold",
+        },
+
+        ScheduledActionBtn: "mt-2 w-fit px-3 py-1 bg-yellow-600/20 text-yellow-400 text-xs font-semibold rounded-md hover:bg-yellow-600/30 transition flex items-center gap-2",
+        DraftScheduledActionBtn: "mt-2 w-fit px-3 py-1 bg-orange-600/20 text-orange-400 text-xs font-semibold rounded-md hover:bg-orange-600/30 transition flex items-center gap-2",
+
+        actions: "mt-4 flex gap-2 items-center justify-start",
+        actionBtn: {
+            preview: "p-2 bg-blue-700/10 text-blue-400 rounded hover:bg-blue-700/20 transition",
+            edit: "p-2 bg-yellow-700/10 text-yellow-400 rounded hover:bg-yellow-700/20 transition",
+            delete: "p-2 bg-red-700/10 text-red-400 rounded hover:bg-red-700/20 transition",
+        },
+
+        noData: "text-center text-gray-500 text-sm py-4",
     },
 
-    ScheduledActionBtn: "mt-2 w-fit px-3 py-1 bg-yellow-600/20 text-yellow-400 text-xs font-semibold rounded-md hover:bg-yellow-600/30 transition flex items-center gap-2",
-    DraftScheduledActionBtn: "mt-2 w-fit px-3 py-1 bg-orange-600/20 text-orange-400 text-xs font-semibold rounded-md hover:bg-orange-600/30 transition flex items-center gap-2",
-
-    actions: "mt-4 flex gap-2 items-center justify-start",
-    actionBtn: {
-        preview: "p-2 bg-blue-700/10 text-blue-400 rounded hover:bg-blue-700/20 transition",
-        edit: "p-2 bg-yellow-700/10 text-yellow-400 rounded hover:bg-yellow-700/20 transition",
-        delete: "p-2 bg-red-700/10 text-red-400 rounded hover:bg-red-700/20 transition",
+    contributorModal: {
+        Dialog: `relative z-50`,
+        BGDim: `fixed inset-0 bg-black/50 z-50 overflow-y-auto`,
+        panel: "w-full max-w-xl transform overflow-hidden rounded-2xl bg-gray-900 p-6 text-left align-middle shadow-xl transition-all border border-gray-700",
+        title: "text-xl font-bold text-white mb-4 text-center",
+        formGroup: "mb-4",
+        label: "block text-sm font-medium text-gray-300 mb-1",
+        input: "w-full px-3 py-2 rounded bg-gray-800 text-white border border-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500",
+        textarea: "w-full px-3 py-2 rounded bg-gray-800 text-white border border-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500 h-24",
+        select: "w-full px-3 py-2 rounded bg-gray-800 text-white border border-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500",
+        actions: "flex justify-end gap-4 mt-6",
+        cancelBtn: "px-4 py-2 text-sm font-medium text-gray-300 bg-gray-700 rounded hover:bg-gray-600 transition",
+        saveBtn: "px-4 py-2 text-sm font-medium text-white bg-blue-600 rounded hover:bg-blue-500 transition",
     },
-
-    noData: "text-center text-gray-500 text-sm py-4",
-    },
-
-
-
-
 
 
 

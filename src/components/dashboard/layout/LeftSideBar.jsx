@@ -16,7 +16,7 @@ export const navItems = [
   { path: "/dashboard/projects", icon: FaProjectDiagram, label: "Projects" },
   { path: "/dashboard/podcasts", icon: FaPodcast, label: "Podcasts" },
   { path: "/dashboard/achievements", icon: FaTrophy, label: "Achievements" },
-  { path: "/dashboard/who-we-are", icon: FaUsers, label: "Who We Are" },
+  { path: "/dashboard/who-we-are", icon: FaBullseye, label: "Who We Are" },
   { path: "/dashboard/vision-mission", icon: FaBullseye, label: "Vision & Mission" },
   { path: "/dashboard/team", icon: FaEye, label: "The Team" },
   { path: "/dashboard/values", icon: FaTrophy, label: "Our Values" },

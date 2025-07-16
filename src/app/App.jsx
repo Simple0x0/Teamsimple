@@ -22,7 +22,6 @@ import {AuthRoute} from '../components/dashboard/Auth/AuthPrivateRoute';
 
 // Dashboards
 import Dashboard from '../components/dashboard/ui/Dashboard';
-import ContributorsMgmt from '../components/dashboard/ui/contributors/ContributorsMgmt';
 import BlogsMgmt from '../components/dashboard/ui/blogs/BlogsMgmt';
 import BlogEdit from '../components/dashboard/ui/blogs/BlogEdit';
 import BlogAdd from '../components/dashboard/ui/blogs/BlogAdd';
@@ -38,6 +37,9 @@ import PodcastAdd from '../components/dashboard/ui/podcasts/PodcastAdd';
 import AchievementMgmt from '../components/dashboard/ui/achievements/AchievementMgmt';
 import AchievementEdit from '../components/dashboard/ui/achievements/AchievementEdit';
 import AchievementAdd from '../components/dashboard/ui/achievements/AchievementAdd';
+import ContributorsMgmt from '../components/dashboard/ui/contributors/ContributorsMgmt';
+import ContributorEdit from '../components/dashboard/ui/contributors/ContributorEdit';
+import ContributorAdd from '../components/dashboard/ui/contributors/ContributorAdd';
 
 
 
@@ -77,6 +79,8 @@ const router = createBrowserRouter(
 
         
         <Route path="/dashboard/contributors" element={<ContributorsMgmt />} /> 
+        <Route path="/dashboard/contributors/edit" element={<ContributorEdit />} /> 
+        <Route path="/dashboard/contributors/new" element={<ContributorAdd />} /> 
         {/*
         <Route path="/dashboard/blogs" element={<BlogMngt />} />
         <Route path="adduser" element={<AddUser />} />

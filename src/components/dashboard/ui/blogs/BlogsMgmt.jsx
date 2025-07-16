@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Pagination from '../../../public/ui/PaginationModule';
-import { fetchBlogs } from '../../utils/apiRequest';
+import { fetchBlogs } from '../../utils/apiBlogRequests';
 import BlogList from './BlogList';
 import Search from '../../../public/ui/Search';
 import Loading from '../../../public/ui/Loading';

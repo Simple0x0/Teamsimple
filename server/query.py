@@ -613,6 +613,80 @@ WHERE AchievementID = %s;
 """
 
 
+
+
+# ===============================================================================================================
+# ================================================== CONTRIBUTOR QUEIRES ========================================
+# ===============================================================================================================
+
+CONTRIBUTOR_QUERY = """
+SELECT 
+    c.ContributorID,
+    c.Username,
+    c.FullName,
+    c.Bio,
+    c.ProfilePicture,
+    c.Type,
+    c.UploadKey,
+    sl.Platform,
+    sl.URL
+FROM Contributor c
+LEFT JOIN SocialLink sl ON sl.OwnerType = 'Contributor' AND sl.OwnerID = c.ContributorID
+WHERE c.Username = %s;
+"""
+
+
+FETCH_ALL_CONTRIBUTOR_QUERY = """
+SELECT 
+    c.ContributorID,
+    c.Username,
+    c.FullName,
+    c.Bio,
+    c.ProfilePicture,
+    c.Type,
+    c.UploadKey,
+    sl.Platform,
+    sl.URL
+FROM Contributor c
+LEFT JOIN SocialLink sl ON sl.OwnerType = 'Contributor' AND sl.OwnerID = c.ContributorID
+"""
+
+CHECK_CONTRIBUTOR_TYPE_QUERY = """
+SELECT Type 
+FROM Contributor 
+WHERE Username = %s;
+"""
+
+CONTRIBUTOR_INSERT_QUERY = """
+INSERT INTO Contributor (
+    Username,
+    FullName,
+    Bio,
+    ProfilePicture,
+    Type,
+    UploadKey
+) VALUES (
+    %s, %s, %s, %s, %s, %s
+);
+"""
+
+CONTRIBUTOR_UPDATE_QUERY = """
+UPDATE Contributor
+SET
+    Username = %s,
+    FullName = %s,
+    Bio = %s,
+    ProfilePicture = %s,
+    Type = %s
+WHERE ContributorID = %s;
+"""
+
+
+CONTRIBUTOR_ID_QUERY = """
+SELECT ContributorID FROM Contributor WHERE Username = %s ;
+"""
+
+
 # ===============================================================================================================
 # ================================================== EVENTS QUEIRES =============================================
 # ===============================================================================================================
@@ -733,11 +807,6 @@ CREATE_USER_QUERY = """
     ON DUPLICATE KEY UPDATE username = username
 """
 
-CHECK_CONTRIBUTOR_TYPE_QUERY = """
-SELECT Type 
-FROM Contributor 
-WHERE Username = %s;
-"""
 
 TEAM_MEMBER_QUERY = """
 SELECT 
@@ -760,59 +829,9 @@ LEFT JOIN SocialLink sl ON sl.OwnerType = 'TeamMember' AND sl.OwnerID = tm.TeamM
 WHERE tm.Username = %s;
 """
 
-CONTRIBUTOR_INSERT_QUERY = """
-INSERT INTO Contributor (
-    Username,
-    FullName,
-    Bio,
-    ProfilePicture,
-    Type,
-    UploadKey
-) VALUES (
-    %s, %s, %s, %s, %s, %s
-);
-"""
 
-CONTRIBUTOR_UPDATE_QUERY = """
-UPDATE Contributor
-SET
-    Username = %s,
-    FullName = %s,
-    Bio = %s,
-    ProfilePicture = %s,
-    Type = %s
-WHERE ContributorID = %s;
-"""
-FETCH_ALL_CONTRIBUTOR_QUERY = """
-SELECT 
-    c.ContributorID,
-    c.Username,
-    c.FullName,
-    c.Bio,
-    c.ProfilePicture,
-    c.Type,
-    c.UploadKey,
-    sl.Platform,
-    sl.URL
-FROM Contributor c
-LEFT JOIN SocialLink sl ON sl.OwnerType = 'Contributor' AND sl.OwnerID = c.ContributorID
-"""
 
-CONTRIBUTOR_QUERY = """
-SELECT 
-    c.ContributorID,
-    c.Username,
-    c.FullName,
-    c.Bio,
-    c.ProfilePicture,
-    c.Type,
-    c.UploadKey,
-    sl.Platform,
-    sl.URL
-FROM Contributor c
-LEFT JOIN SocialLink sl ON sl.OwnerType = 'Contributor' AND sl.OwnerID = c.ContributorID
-WHERE c.Username = %s;
-"""
+
 
 SOCIALLINK_INSERT_QUERY = """
 INSERT INTO SocialLink (
@@ -1033,10 +1052,6 @@ INSERT INTO TechStack (Name, Description)
 VALUES (%s, %s);
 """
 
-CONTRIBUTOR_ID_QUERY = """
-SELECT ContributorID FROM Contributor WHERE Username = %s ;
-"""
-
 
 
 DELETEBIN_INSERT_QUERY = """
@@ -1050,3 +1065,19 @@ INSERT INTO DeletedBin (
     %s, %s, CURRENT_TIMESTAMP, %s, %s
 );
 """
+
+INSERT_SOCIAL_LINK_QUERY = """
+INSERT INTO SocialLink (
+    OwnerType,
+    OwnerID,
+    Platform,
+    URL
+) VALUES (
+    %s, %s, %s, %s
+);
+"""
+
+DELETE_CONTRIBUTOR_SOCIALS = " DELETE FROM SocialLink WHERE OwnerType = %s AND OwnerID = %s "
+
+
+

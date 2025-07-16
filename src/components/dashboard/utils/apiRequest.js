@@ -232,39 +232,6 @@ export const addTechStack = async ({ name, description }) => {
   }
 };
 
-// ========== CONTRIBUTORS ==========
-export const fetchContributors = async (content, slug) => {
-  try {
-    const res = await axios.get(`${BASE_URL}/api/auth/contributorsmgmt`, {
-      params: { 
-        content: content,
-        slug: slug
-      },
-      headers: HEADERS,
-      withCredentials: true,
-    });
-    return res.data;
-  } catch (err) {
-    handleError(err);
-  }
-};
-
-export const addContributors = async ({ content, slug, contributors }) => {
-  try {
-    const res = await axios.post(
-      `${BASE_URL}/api/auth/contributorsmgmt`,
-      { content, slug, contributors },
-      {
-        withCredentials: true,
-        headers: HEADERS,
-      }
-    );
-    return res.data;
-  } catch (err) {
-    handleError(err);
-  }
-};
-
 export const fetchFilesUtil = async ({type, contentType, uploadKey}) => {
     try {
       //console.log(uploadKey);

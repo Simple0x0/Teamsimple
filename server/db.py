@@ -237,11 +237,11 @@ class Database:
 
     @classmethod
     def insert_achievement(cls, Title, Description, DateAchieved, Image, UploadKey, ReferenceURL, Status):
-        return cls.execute( ACHIEVEMENT_INSERT_QUERY, params=(Title, Description, DateAchieved, Image, UploadKey, ReferenceURL, Status), commit=True )
+        return cls.execute( ACHIEVEMENT_INSERT_QUERY, params=(Title, Description, DateAchieved, Image, UploadKey, ReferenceURL, Status,), commit=True )
 
     @classmethod
     def update_achievement(cls, AchievementID, Title, Description, DateAchieved, Image, ReferenceURL, Status):
-        return cls.execute( ACHIEVEMENT_UPDATE_QUERY, params=(Title, Description, DateAchieved, Image, ReferenceURL, Status, AchievementID), commit=True )
+        return cls.execute( ACHIEVEMENT_UPDATE_QUERY, params=(Title, Description, DateAchieved, Image, ReferenceURL, Status, AchievementID,), commit=True )
 
     @classmethod
     def delete_achievement(cls, AchievementID, Username, reason):
@@ -251,8 +251,63 @@ class Database:
 
 
     # ============================================================================================
-    # =================================== ACHIEVEMENTS QUERIES ===================================
+    # =================================== CONTRIBUTORS QUERIES ===================================
     # ============================================================================================
+    
+    @classmethod
+    def insert_contributor(cls, Username, FullName, Bio, ProfilePicture, Type, UploadKey):
+        return cls.execute( CONTRIBUTOR_INSERT_QUERY, params=(Username, FullName, Bio, ProfilePicture, Type, UploadKey,), commit=True )
+    
+    @classmethod
+    def update_contributor(cls, ContributorID, Username, FullName, Bio, ProfilePicture, Type):
+        return cls.execute( CONTRIBUTOR_UPDATE_QUERY, params=(Username, FullName, Bio, ProfilePicture, Type, ContributorID,), commit=True )
+    
+    @classmethod
+    def get_contributor_details(cls, username):
+        return cls.execute(CONTRIBUTOR_QUERY, params=(username,), fetchall=True)
+
+    @classmethod
+    def get_contributor_id(cls, username):
+        return cls.execute(CONTRIBUTOR_ID_QUERY, params=(username,), fetchone=True)
+        
+    @classmethod
+    def get_contributor(cls, username):
+        ctype = cls.get_contributor_type(username)
+        if not ctype:
+            return None
+            
+        if ctype["Type"] == "Member":
+            return cls.get_member(username)
+        else:
+            return cls.get_contributor_details(username)
+    
+    @classmethod
+    def get_all_contributors(cls):
+        return cls.execute(FETCH_ALL_CONTRIBUTOR_QUERY, fetchall=True)
+        
+    @classmethod
+    def get_contributor_type(cls, username):
+        result = cls.execute(CHECK_CONTRIBUTOR_TYPE_QUERY, params=(username,), fetchall=True)
+        return result[0] if result else None
+
+
+    # ============================================================================================
+    # =================================== SOCIAL LINK QUERIES ===================================
+    # ============================================================================================        
+    @classmethod
+    def delete_social_links(cls, OwnerType, OwnerID):
+        cls.execute(DELETE_CONTRIBUTOR_SOCIALS, params=(OwnerType, OwnerID,), commit=True)
+        
+    @classmethod
+    def insert_social_link(cls, OwnerType, OwnerID, Platform, URL):
+        return cls.execute(INSERT_SOCIAL_LINK_QUERY, params=(OwnerType, OwnerID, Platform, URL,), commit=True)
+        
+        
+        
+        
+    # ============================================================================================
+    # =================================== ------ QUERIES ===================================
+    # ============================================================================================      
     @classmethod
     def get_events(cls):
         return cls.execute(EVENTS_QUERY, fetchall=True)
@@ -297,37 +352,10 @@ class Database:
             return False
 
     @classmethod
-    def get_contributor_type(cls, username):
-        result = cls.execute(CHECK_CONTRIBUTOR_TYPE_QUERY, params=(username,), fetchall=True)
-        return result[0] if result else None
-
-    @classmethod
     def get_member(cls, username):
         return cls.execute(TEAM_MEMBER_QUERY, params=(username,), fetchall=True)
 
-    @classmethod
-    def get_contributor_details(cls, username):
-        return cls.execute(CONTRIBUTOR_QUERY, params=(username,), fetchall=True)
 
-    @classmethod
-    def get_contributor_id(cls, username):
-        return cls.execute(CONTRIBUTOR_ID_QUERY, params=(username,), fetchone=True)
-        
-    @classmethod
-    def get_contributor(cls, username):
-        ctype = cls.get_contributor_type(username)
-        if not ctype:
-            return None
-            
-        if ctype["Type"] == "Member":
-            return cls.get_member(username)
-        else:
-            return cls.get_contributor_details(username)
-    
-    @classmethod
-    def get_all_contributors(cls):
-        return cls.execute(FETCH_ALL_CONTRIBUTOR_QUERY, fetchall=True)
-        
     @classmethod
     def get_user_login(cls, username):
         return cls.execute(USER_LOGIN_QUERY, params=(username,), fetchone=True)
@@ -336,6 +364,10 @@ class Database:
     def update_last_login(cls, memberID, timestamp):
         cls.execute(LAST_LOGIN_UPDATE, params=(timestamp, memberID), commit=True)
 
+
+    # ============================================================================================
+    # =================================== ANALYTICS QUERIES ======================================
+    # ============================================================================================   
     @classmethod
     def get_quickanalytics(cls):
         return cls.execute(ANALYTICS_QUERY, fetchall=True)
@@ -372,6 +404,10 @@ class Database:
     def get_visitors_1_week(cls):
         return cls.execute(VISITORS_BY_1_WEEK, fetchall=True)
 
+
+    # ============================================================================================
+    # =================================== CAT, TAG, TECH QUERIES =================================
+    # ============================================================================================   
     @classmethod
     def get_all_categories(cls):
         return cls.execute(CATEGORY_FETCH_ALL_QUERY, fetchall=True)

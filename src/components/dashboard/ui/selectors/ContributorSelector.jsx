@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import style from '../../../../app/Style';
-import { fetchContributors } from '../../utils/apiRequest';
+import { fetchContributors } from '../../utils/apiContributorRequests';
 import { filterByName } from '../../utils/filter';
 
 export default function ContributorSelector({
