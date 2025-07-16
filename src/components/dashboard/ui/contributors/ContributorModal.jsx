@@ -47,6 +47,7 @@ export default function ContributorModal({ isOpen, onClose, initialContributor =
     setSocialLinks(prev => prev.filter((_, i) => i !== index));
   };
 
+  
   const handleSubmit = async () => {
     const contributorData = {
       ...meta,
