@@ -19,6 +19,13 @@ export default function ContributorList({ contributors = [], showActions = true 
     });
 
     if (result.success) {
+      setContributorList((prevList) =>
+        prevList.map((c) =>
+          c.ContributorID === contributor.ContributorID
+            ? { ...c, Type: newType }
+            : c
+        )
+      );
       setToast({ visible: true, message: 'Contributor type updated.', type: 'success', duration: 3000 });
     } else {
       setToast({ visible: true, message: `Update failed: ${result.error}`, type: 'failure', duration: 5000 });
