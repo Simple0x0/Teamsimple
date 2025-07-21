@@ -729,6 +729,11 @@ ORDER BY e.DateCreated DESC
 -- LIMIT 10;
 """
 
+
+# ===============================================================================================================
+# ================================================== DASHBOARD QUEIRES ==========================================
+# ===============================================================================================================
+
 LATEST_CONTENT_QUERY = """
 SELECT 
     lc.LatestContentID,
@@ -770,90 +775,6 @@ ORDER BY DateCreated DESC
 LIMIT 6;
 
 """
-
-VISITOR_FINGERPRINT_QUERY = """
-    SELECT * FROM Visitor WHERE FingerprintValue = %s
-"""
-
-UPDATE_VISITOR_QUERY = """
-    UPDATE Visitor
-    SET LastVisit = %s,
-        VisitCount = %s,
-        IsActive = %s
-    WHERE FingerprintValue = %s
-"""
-
-INSERT_VISITOR_QUERY = """
-    INSERT INTO Visitor (
-        FingerprintValue, IPAddress, Location, Browser, OS, DeviceType,
-        FirstVisit, LastVisit, VisitCount, IsActive
-    ) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
-"""
-
-CHECK_LIKELOG_QUERY = """
-    SELECT 1 FROM LikeLogs
-    WHERE ContentType = %s AND ContentID = %s AND FingerprintValue = %s
-    LIMIT 1;
-"""
-
-INSERT_LIKELOG_QUERY = """
-    INSERT INTO LikeLogs (ContentType, ContentID, FingerprintValue, DateCreated)
-    VALUES (%s, %s, %s, NOW());
-"""
-
-CREATE_USER_QUERY = """
-    INSERT INTO users (username, password, tokens)
-    VALUES (%s, %s, 0)
-    ON DUPLICATE KEY UPDATE username = username
-"""
-
-
-TEAM_MEMBER_QUERY = """
-SELECT 
-    tm.TeamMemberID,
-    tm.Username,
-    tm.FullName,
-    tm.Bio,
-    tm.ProfilePicture,
-    tm.Email,
-    tm.DateAdded,
-    tm.AddedBy,
-    tm.Status,
-    tm.LastUpdated,
-    tm.Role,
-    tm.UploadKey,
-    sl.Platform,
-    sl.URL
-FROM TeamMember tm
-LEFT JOIN SocialLink sl ON sl.OwnerType = 'TeamMember' AND sl.OwnerID = tm.TeamMemberID
-WHERE tm.Username = %s;
-"""
-
-
-
-
-
-SOCIALLINK_INSERT_QUERY = """
-INSERT INTO SocialLink (
-    OwnerType,
-    OwnerID,
-    Platform,
-    URL
-) VALUES (
-    %s, %s, %s, %s
-);
-"""
-
-SOCIALLINK_UPDATE_QUERY = """
-UPDATE SocialLink
-SET Platform = %s,
-    URL = %s
-WHERE SocialLinkID = %s AND OwnerType = %s;
-"""
-
-USER_LOGIN_QUERY = "SELECT * FROM Login WHERE Username = %s ;"
-LAST_LOGIN_UPDATE = "UPDATE Login SET LastLogin = %s WHERE LoginID = %s"
-
 
 ANALYTICS_QUERY = """
     SELECT 
@@ -1053,6 +974,108 @@ VALUES (%s, %s);
 """
 
 
+# ===============================================================================================================
+# ================================================== VISITORS QUEIRES ===========================================
+# ===============================================================================================================
+
+VISITOR_FINGERPRINT_QUERY = """
+    SELECT * FROM Visitor WHERE FingerprintValue = %s
+"""
+
+UPDATE_VISITOR_QUERY = """
+    UPDATE Visitor
+    SET LastVisit = %s,
+        VisitCount = %s,
+        IsActive = %s
+    WHERE FingerprintValue = %s
+"""
+
+INSERT_VISITOR_QUERY = """
+    INSERT INTO Visitor (
+        FingerprintValue, IPAddress, Location, Browser, OS, DeviceType,
+        FirstVisit, LastVisit, VisitCount, IsActive
+    ) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
+"""
+
+# ===============================================================================================================
+# ================================================== LIKES QUEIRES ==============================================
+# ===============================================================================================================
+
+
+CHECK_LIKELOG_QUERY = """
+    SELECT 1 FROM LikeLogs
+    WHERE ContentType = %s AND ContentID = %s AND FingerprintValue = %s
+    LIMIT 1;
+"""
+
+INSERT_LIKELOG_QUERY = """
+    INSERT INTO LikeLogs (ContentType, ContentID, FingerprintValue, DateCreated)
+    VALUES (%s, %s, %s, NOW());
+"""
+
+
+# ===============================================================================================================
+# ================================================== TEAM QUEIRES ===============================================
+# ===============================================================================================================
+
+
+CREATE_USER_QUERY = """
+    INSERT INTO users (username, password, tokens)
+    VALUES (%s, %s, 0)
+    ON DUPLICATE KEY UPDATE username = username
+"""
+
+
+TEAM_MEMBER_QUERY = """
+SELECT 
+    tm.TeamMemberID,
+    tm.Username,
+    tm.FullName,
+    tm.Bio,
+    tm.ProfilePicture,
+    tm.Email,
+    tm.DateAdded,
+    tm.AddedBy,
+    tm.Status,
+    tm.LastUpdated,
+    tm.Role,
+    tm.UploadKey,
+    sl.Platform,
+    sl.URL
+FROM TeamMember tm
+LEFT JOIN SocialLink sl ON sl.OwnerType = 'TeamMember' AND sl.OwnerID = tm.TeamMemberID
+WHERE tm.Username = %s;
+"""
+
+USER_LOGIN_QUERY = "SELECT * FROM Login WHERE Username = %s ;"
+LAST_LOGIN_UPDATE = "UPDATE Login SET LastLogin = %s WHERE LoginID = %s"
+
+
+# ===============================================================================================================
+# ================================================== OTHER GENERAL QUEIRES ======================================
+# ===============================================================================================================
+
+INSERT_SOCIAL_LINK_QUERY = """
+INSERT INTO SocialLink (
+    OwnerType,
+    OwnerID,
+    Platform,
+    URL
+) VALUES (
+    %s, %s, %s, %s
+);
+"""
+
+
+SOCIALLINK_UPDATE_QUERY = """
+UPDATE SocialLink
+SET Platform = %s,
+    URL = %s
+WHERE SocialLinkID = %s AND OwnerType = %s;
+"""
+
+
+
 
 DELETEBIN_INSERT_QUERY = """
 INSERT INTO DeletedBin (
@@ -1066,16 +1089,6 @@ INSERT INTO DeletedBin (
 );
 """
 
-INSERT_SOCIAL_LINK_QUERY = """
-INSERT INTO SocialLink (
-    OwnerType,
-    OwnerID,
-    Platform,
-    URL
-) VALUES (
-    %s, %s, %s, %s
-);
-"""
 
 DELETE_CONTRIBUTOR_SOCIALS = " DELETE FROM SocialLink WHERE OwnerType = %s AND OwnerID = %s "
 
