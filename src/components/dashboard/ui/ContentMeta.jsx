@@ -104,7 +104,7 @@ export default function ContentMeta({ contentType = '', meta = {}, onChange, mod
 
       {fields.slug && renderInput(`Slug (ReadOnly)`, 'Slug', 'Title-based - AutoGen')}
 
-      {meta.Summary ? fields.summary && renderTextarea('Summary', 'Summary', 'Short summary or excerpt') :
+      {meta.Summary ? fields.summary && renderTextarea('Summary', 'Summary', 'Short summary or excerpt') : fields.aboutus ? <> </> :
       renderTextarea('Description', 'Description', 'Short Description or excerpt') }
 
       {fields.status && renderSelect('Status', 'Status', statusinput)}

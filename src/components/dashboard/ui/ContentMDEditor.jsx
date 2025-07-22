@@ -22,6 +22,8 @@ export default function ContentMDEditor({
   onTagsChange,
   onCategoriesChange,
   onActive,
+  showTechStacks=true,
+  showCategories=false,
 
 }) {
   const [value, setValue] = useState(initialContent);
@@ -31,6 +33,11 @@ export default function ContentMDEditor({
   const [showScheduleModal, setShowScheduleModal] = useState(false);
   const [scheduleDate, setScheduleDate] = useState(null); // Use Date object
   const s = style.contentMDEditor;
+  
+  useEffect(() => {
+    setValue(initialContent);
+  }, [initialContent]);
+
 
   useEffect(() => {
     onContentChange?.(value);
@@ -54,7 +61,7 @@ export default function ContentMDEditor({
     setShowScheduleModal(false);
     setScheduleDate(null);
   };
-
+  
   return (
     <div className={s.wrapper}>
       <div className={s.header}>
@@ -73,25 +80,25 @@ export default function ContentMDEditor({
           ))}
         </div>
       </div>
-
       <div data-color-mode="dark">
         <MDEditor value={value} onChange={setValue} height={500} preview={viewMode} />
       </div>
 
       <div className={s.controls}>
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 mb-6">
-          {contentType !== 'Podcast' && (
+          {contentType !== 'Podcast' && showTechStacks && (
             <TagSelector
               selected={selectedTags}
               onChange={setSelectedTags}
               allowAdd={true}
             />
           )}
+          {showCategories && 
           <CategorySelector
             selected={selectedCategory}
             onChange={setSelectedCategory}
             allowAdd={true}
-          />
+          />}
         </div>
 
         <div className={s.buttons}>

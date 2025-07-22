@@ -177,6 +177,7 @@ export default function PodcastEdit() {
           .map((name) => ({ id: name, name }))}
         initialCategory={{ id: meta.CategoryID, name: meta.CategoryName }}
         actions={['publish']}
+        showCategories={true}
         onContentChange={setContent}
         onTagsChange={setSelectedTags}
         onCategoriesChange={setSelectedCategory}

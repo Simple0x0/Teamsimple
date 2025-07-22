@@ -195,6 +195,7 @@ export default function BlogEdit() {
         initialCategory={{ id: meta.CategoryID, name: meta.CategoryName }}
         actions={['publish']}
         showTechStacks={true}
+        showCategories={true}
         onContentChange={setContent}
         onTagsChange={setSelectedTags}
         onCategoriesChange={setselectedCategory}

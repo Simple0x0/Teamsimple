@@ -158,6 +158,7 @@ export default function PodcastAdd() {
         initialCategory={{ id: meta.CategoryID, name: meta.CategoryName }}
         actions={['draft', 'publish', 'schedule']}
         showTechStacks={false}
+        showCategories={true}
         onContentChange={setContent}
         onTagsChange={setSelectedTags}
         onCategoriesChange={setSelectedCategory}

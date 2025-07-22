@@ -166,6 +166,7 @@ export default function ProjectEdit() {
         initialCategory={{ id: meta.CategoryID, name: meta.CategoryName }}
         actions={['publish']}
         showTechStacks={true}
+        showCategories={true}
         onContentChange={setContent}
         onTagsChange={setSelectedTags}
         onCategoriesChange={setselectedCategory}

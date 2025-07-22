@@ -159,6 +159,7 @@ export default function WritupAdd() {
         initialCategory={{ id: meta.CategoryID, name: meta.CategoryName }}
         actions={['draft', 'publish', 'schedule', 'active']}
         showTechStacks={true}
+        showCategories={true}
         onContentChange={setContent}
         onTagsChange={setSelectedTags}
         onCategoriesChange={setselectedCategory}

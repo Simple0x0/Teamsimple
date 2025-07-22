@@ -1,0 +1,60 @@
+// utils/apiAboutTeamRequests.js
+
+import axios from 'axios';
+
+const BASE_URL = import.meta.env.VITE_API_URL;
+const HEADERS = {
+  'ngrok-skip-browser-warning': '69420',
+  'Content-Type': 'application/json',
+};
+
+const formatError = (err, defaultMsg = 'Unknown error occurred') => ({
+  success: false,
+  error: err?.response?.data?.message || err?.response?.data?.error || defaultMsg,
+  status: err?.response?.status || 500,
+});
+
+// ===============================
+// ===== WHO WE ARE API =========
+// ===============================
+
+export const fetchAboutTeamContent = async (section) => {
+  try {
+    const response = await axios.get(`${BASE_URL}/api/dashboard/aboutteam?section=${section}`, {
+      withCredentials: true,
+      headers: HEADERS,
+    });
+
+    return { success: true, data: response.data};
+  } catch (err) {
+    return formatError(err);
+  }
+};
+
+export const updateAboutTeamContent = async ({
+  section,
+  markdownContent,
+  submissionType = 'draft',
+}) => {
+  try {
+    const res = await axios.post(
+      `${BASE_URL}/api/dashboard/aboutteam`,
+      {
+        action: 'modify',
+        submissionType,
+        aboutTeamContent: {
+          section,
+          markdownContent,
+        },
+      },
+      {
+        withCredentials: true,
+        headers: HEADERS,
+      }
+    );
+
+    return { success: true, data: res.data, status: res.status };
+  } catch (err) {
+    return formatError(err);
+  }
+};

@@ -146,6 +146,7 @@ export default function ProjectAdd() {
         initialCategory={{ id: meta.CategoryID, name: meta.CategoryName }}
         actions={['draft', 'publish', 'schedule']}
         showTechStacks={true}
+        showCategories={true}
         onContentChange={setContent}
         onTagsChange={setSelectedTags}
         onCategoriesChange={setselectedCategory}
