@@ -32,20 +32,17 @@ export const fetchAboutTeamContent = async (section) => {
 };
 
 export const updateAboutTeamContent = async ({
-  section,
-  markdownContent,
-  submissionType = 'draft',
+      title,
+      description,
+      section,
 }) => {
   try {
     const res = await axios.post(
       `${BASE_URL}/api/dashboard/aboutteam`,
       {
-        action: 'modify',
-        submissionType,
-        aboutTeamContent: {
-          section,
-          markdownContent,
-        },
+        title,
+        description,
+        section
       },
       {
         withCredentials: true,

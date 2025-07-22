@@ -35,13 +35,12 @@ export default function AboutTeam() {
   }, []);
 
   const handleSave = async () => {
-    const payload = {
-      Title: title,
-      Description: description,
-      SectionName: 'AboutUs',
-    };
-    const res = await updateAboutTeamContent(payload);
-    if (res?.status === 'success') {
+    const res = await updateAboutTeamContent({
+      title: title,
+      description: description,
+      section: 'AboutUs',
+    });
+    if (res?.success) {
       showMessageToast({
         message: 'About Team content saved successfully.',
         duration: 4000,
@@ -54,7 +53,7 @@ export default function AboutTeam() {
       });
     }
   };
-  
+
   return (
     <>
       {toastConfig.visible && (

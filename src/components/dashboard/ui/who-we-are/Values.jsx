@@ -1,4 +1,3 @@
-
 import { useEffect, useState } from 'react';
 import ContentMDEditor from '../ContentMDEditor';
 import ContentMeta from '../ContentMeta';
@@ -6,8 +5,8 @@ import MessageToast from '../MessageToast';
 import { fetchAboutTeamContent, updateAboutTeamContent } from '../../utils/apiAboutTeam';
 
 export default function Values() {
-  const [meta, setMeta] = useState(null);
-  const [content, setContent] = useState('');
+  const [title, setTitle] = useState('');
+  const [description, setDescription] = useState('');
   const [toastConfig, setToastConfig] = useState({
     message: '',
     duration: 4000,
@@ -20,18 +19,14 @@ export default function Values() {
     setToastConfig({ message, duration, redirect, type, visible: true });
   };
 
-  const handleMetaChange = (updatedMeta) => {
-    setMeta(updatedMeta);
-  };
-
   const fetchInitialData = async () => {
     const resp = await fetchAboutTeamContent('Values');
     const res = resp.data;
     if (res?.AboutTeam) {
-      setMeta(res.AboutTeam);
-      setContent(res.AboutTeam.Description);
+      setTitle(res.AboutTeam.Title || '');
+      setDescription(res.AboutTeam.Description || '');
     } else {
-      showMessageToast({ message: 'Failed to load Values content', type: 'failure' });
+      showMessageToast({ message: 'Failed to load Values', type: 'failure' });
     }
   };
 
@@ -40,14 +35,13 @@ export default function Values() {
   }, []);
 
   const handleSave = async () => {
-    const payload = {
-      ...meta,
-      Description: content,
-      SectionName: 'Values',
-    };
-
-    const res = await updateAboutTeamContent(payload);
-    if (res?.status === 'success') {
+    const res = await updateAboutTeamContent({
+      title: title,
+      description: description,
+      section: 'Values',
+    });
+    console.log(res);
+    if (res?.success) {
       showMessageToast({
         message: 'Values content saved successfully.',
         duration: 4000,
@@ -74,27 +68,26 @@ export default function Values() {
       )}
 
       <div className="grid grid-cols-1 md:grid-cols-1 gap-4 mb-4">
-        {meta && (
-          <ContentMeta
-            meta={meta}
-            onChange={handleMetaChange}
-            mode="edit"
-            fields={{
-              title: true,
-              description: false,
-              section: true,
-            }}
-          />
-        )}
+        <ContentMeta
+          meta={{ Title: title }}
+          onChange={({ Title }) => setTitle(Title)}
+          mode="edit"
+          fields={{ 
+            title: true,
+            aboutus: true
+          }}
+        />
       </div>
 
       <ContentMDEditor
-        contentType="About Team"
+        contentType="Values"
         mode="edit"
-        initialContent={content}
-        onContentChange={setContent}
+        initialContent={description}
+        onContentChange={setDescription}
         onPublish={handleSave}
         actions={['publish']}
+        showTechStacks={false}
+        showCategories={false}
       />
     </>
   );

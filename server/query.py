@@ -1068,7 +1068,7 @@ ABOUT_TEAM_INSERT_QUERY = """
 INSERT INTO AboutTeamContent (
     Title,
     Description,
-    SectionName,
+    SectionName
 ) VALUES (
     %s, %s, %s
 );
@@ -1078,7 +1078,7 @@ INSERT INTO AboutTeamContent (
 ABOUT_TEAM_UPDATE_QUERY = """
 UPDATE AboutTeamContent
 SET Title = %s,
-    Description = %s,
+    Description = %s
 WHERE SectionName = %s;
 """
 

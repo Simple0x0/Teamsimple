@@ -7,6 +7,7 @@ from datetime import datetime
 from core.extensions import db, s, SECTION_MAP, ADMINS
 from utils.utils import generate_slug, validate_fingerprint_value
 from utils.serializable_resource import SerializableResource
+from pprint import pprint
 
 class AboutTeamMgmt(SerializableResource):
     #@jwt_required()
@@ -48,6 +49,9 @@ class AboutTeamMgmt(SerializableResource):
 
             if not role_data or role_data.get("Role") not in ADMINS:
                 return {"error": "Action not permitted"}, 403
+
+            if not all([title, description, section_normalized]):
+               return {"error": "Invalid or incomplete Fields"}, 403
 
             if db.about_team_section(section=section_normalized):
                 db.about_team_update(title=title, description=description, section=section_normalized)

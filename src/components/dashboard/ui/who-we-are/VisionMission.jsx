@@ -5,8 +5,8 @@ import MessageToast from '../MessageToast';
 import { fetchAboutTeamContent, updateAboutTeamContent } from '../../utils/apiAboutTeam';
 
 export default function VisionMission() {
-  const [meta, setMeta] = useState(null);
-  const [content, setContent] = useState('');
+  const [title, setTitle] = useState('');
+  const [description, setDescription] = useState('');
   const [toastConfig, setToastConfig] = useState({
     message: '',
     duration: 4000,
@@ -19,16 +19,12 @@ export default function VisionMission() {
     setToastConfig({ message, duration, redirect, type, visible: true });
   };
 
-  const handleMetaChange = (updatedMeta) => {
-    setMeta(updatedMeta);
-  };
-
   const fetchInitialData = async () => {
     const resp = await fetchAboutTeamContent('VisionMission');
-    const res = resp.data
+    const res = resp.data;
     if (res?.AboutTeam) {
-      setMeta(res.AboutTeam);
-      setContent(res.AboutTeam.Description);
+      setTitle(res.AboutTeam.Title || '');
+      setDescription(res.AboutTeam.Description || '');
     } else {
       showMessageToast({ message: 'Failed to load Vision & Mission', type: 'failure' });
     }
@@ -39,14 +35,12 @@ export default function VisionMission() {
   }, []);
 
   const handleSave = async () => {
-    const payload = {
-      ...meta,
-      Description: content,
-      SectionName: 'VisionMission',
-    };
-
-    const res = await updateAboutTeamContent(payload);
-    if (res?.status === 'success') {
+    const res = await updateAboutTeamContent({
+      title: title,
+      description: description,
+      section: 'VisionMission',
+    });
+    if (res?.success) {
       showMessageToast({
         message: 'Vision & Mission content saved successfully.',
         duration: 4000,
@@ -73,27 +67,26 @@ export default function VisionMission() {
       )}
 
       <div className="grid grid-cols-1 md:grid-cols-1 gap-4 mb-4">
-        {meta && (
-          <ContentMeta
-            meta={meta}
-            onChange={handleMetaChange}
-            mode="edit"
-            fields={{
-              title: true,
-              description: false,
-              section: true,
-            }}
-          />
-        )}
+        <ContentMeta
+          meta={{ Title: title }}
+          onChange={({ Title }) => setTitle(Title)}
+          mode="edit"
+          fields={{ 
+            title: true,
+            aboutus: true
+          }}
+        />
       </div>
 
       <ContentMDEditor
         contentType="Vision & Mission"
         mode="edit"
-        initialContent={content}
-        onContentChange={setContent}
+        initialContent={description}
+        onContentChange={setDescription}
         onPublish={handleSave}
         actions={['publish']}
+        showTechStacks={false}
+        showCategories={false}
       />
     </>
   );
