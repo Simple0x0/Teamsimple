@@ -301,12 +301,53 @@ class Database:
     @classmethod
     def insert_social_link(cls, OwnerType, OwnerID, Platform, URL):
         return cls.execute(INSERT_SOCIAL_LINK_QUERY, params=(OwnerType, OwnerID, Platform, URL,), commit=True)
-        
-        
-        
+
+     
+    # ============================================================================================
+    # =================================== TEAM QUERIES ===========================================
+    # ============================================================================================  
+    
+    @classmethod
+    def get_member(cls, username):
+        return cls.execute(TEAM_MEMBER_QUERY, params=(username,), fetchall=True)
+
+
+    @classmethod
+    def get_user_login(cls, username):
+        return cls.execute(USER_LOGIN_QUERY, params=(username,), fetchone=True)
+    
+    @classmethod
+    def update_last_login(cls, memberID, timestamp):
+        cls.execute(LAST_LOGIN_UPDATE, params=(timestamp, memberID), commit=True)
+
+
+    @classmethod
+    def create_user(cls, username, password):
+        return cls.execute(CREATE_USER_QUERY, params=(username, password), commit=True )
+       
+    @classmethod
+    def get_member_role(cls, username):
+        return cls.execute(MEMBER_ROLE_QUERY, params=(username), fetchone=True)
         
     # ============================================================================================
-    # =================================== ------ QUERIES ===================================
+    # =================================== ABOUT-TEAM QUERIES =====================================
+    # ============================================================================================  
+    @classmethod
+    def about_team_section(cls, section):
+        return cls.execute(ABOUT_TEAM_FETCH_SECTION_QUERY, params=(section), fetchone=True)
+        
+    @classmethod
+    def about_team_insert(cls, title, desscription, section):
+        return cls.execute(ABOUT_TEAM_INSERT_QUERY, params=(title, desscription, section), commit=True)
+        
+    @classmethod
+    def about_team_update(cls, title, description, section):
+        return cls.execute(ABOUT_TEAM_UPDATE_QUERY, params=(title, description, section), commit=True)
+    
+    
+        
+    # ============================================================================================
+    # =================================== EVENT, LATEST QUERIES ==================================
     # ============================================================================================      
     @classmethod
     def get_events(cls):
@@ -316,10 +357,11 @@ class Database:
     def get_latest(cls):
         return cls.execute(LATEST_CONTENT_QUERY, fetchall=True)
 
-    @classmethod
-    def create_user(cls, username, password):
-        return cls.execute(CREATE_USER_QUERY, params=(username, password), commit=True )
 
+    # ============================================================================================
+    # =================================== VISITOR QUERIES ======================================
+    # ============================================================================================   
+    
     @classmethod
     def get_visitor_by_fingerprint(cls, fingerprint_value):
         return cls.execute(VISITOR_FINGERPRINT_QUERY, params=(fingerprint_value,), fetchone=True )
@@ -335,6 +377,10 @@ class Database:
                 fingerprint_value, ip_address, location, browser, os, device_type,
                 first_visit, last_visit, visit_count, is_active), commit=True )
 
+
+    # ============================================================================================
+    # =================================== LIKES QUERIES ==========================================
+    # ============================================================================================   
     @classmethod
     def check_liked(cls, content_type, content_id, fingerprint):
         result = cls.execute(CHECK_LIKELOG_QUERY, params=(content_type, content_id, fingerprint), fetchone=True)
@@ -350,19 +396,6 @@ class Database:
         except Exception as e:
             print(f"[-] Error inserting like: {e}")
             return False
-
-    @classmethod
-    def get_member(cls, username):
-        return cls.execute(TEAM_MEMBER_QUERY, params=(username,), fetchall=True)
-
-
-    @classmethod
-    def get_user_login(cls, username):
-        return cls.execute(USER_LOGIN_QUERY, params=(username,), fetchone=True)
-    
-    @classmethod
-    def update_last_login(cls, memberID, timestamp):
-        cls.execute(LAST_LOGIN_UPDATE, params=(timestamp, memberID), commit=True)
 
 
     # ============================================================================================

@@ -1050,6 +1050,44 @@ WHERE tm.Username = %s;
 USER_LOGIN_QUERY = "SELECT * FROM Login WHERE Username = %s ;"
 LAST_LOGIN_UPDATE = "UPDATE Login SET LastLogin = %s WHERE LoginID = %s"
 
+MEMBER_ROLE_QUERY = "SELECT Role FROM TeamMember WHERE Username = %s"
+
+
+# ===============================================================================================================
+# ================================================== ABOUT-TEAM QUEIRES =========================================
+# ===============================================================================================================
+
+ABOUT_TEAM_FETCH_SECTION_QUERY = """
+SELECT ContentID, Title, Description, SectionName FROM AboutTeamContent
+WHERE SectionName = %s
+LIMIT 1;
+"""
+
+
+ABOUT_TEAM_INSERT_QUERY = """
+INSERT INTO AboutTeamContent (
+    Title,
+    Description,
+    SectionName,
+) VALUES (
+    %s, %s, %s
+);
+"""
+
+
+ABOUT_TEAM_UPDATE_QUERY = """
+UPDATE AboutTeamContent
+SET Title = %s,
+    Description = %s,
+WHERE SectionName = %s;
+"""
+
+
+
+
+
+
+
 
 # ===============================================================================================================
 # ================================================== OTHER GENERAL QUEIRES ======================================

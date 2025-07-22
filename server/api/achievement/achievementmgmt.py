@@ -113,5 +113,4 @@ class AchievementMgmt(SerializableResource):
             app.logger.error(f"[Achievement:POST] Error: {traceback.format_exc()}")
             return make_response(jsonify({
                 "error": "Failed to process achievement",
-                "details": traceback.format_exc()
             }), 500)

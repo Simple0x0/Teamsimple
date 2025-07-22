@@ -23,4 +23,9 @@ VALID_MIME_TYPES = {
 MAX_IMAGE_SIZE = 10 * 1024 * 1024 # 10 MB
 MAX_AUDIO_SIZE = 150 * 1024 * 1024 #150MB
 CONTRIBUTOR_TYPES = ["Guest", "Author", "Editor", "Speaker", "Member", "Contributor"]
-
+SECTION_MAP = {
+    "AboutUs": "About Us",
+    "VisionMission": "Vision & Mission",
+    "Values": "Values"
+}
+ADMINS = ['Superadmin', 'Admin']
