@@ -2,7 +2,6 @@ import traceback
 from flask import request, jsonify, make_response
 from flask_jwt_extended import jwt_required, get_jwt_identity
 from datetime import datetime
-from time import sleep
 from core.extensions import db, s, UPLOAD_BASE, SLEEP
 from utils.utils import flatten_contributor
 from utils.serializable_resource import SerializableResource

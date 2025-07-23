@@ -27,7 +27,7 @@ from api.contributor.contributors import Contributor
 from api.login import Login
 from api.logout import Logout
 from api.authverify import AuthVerify
-from api.getmemberinfo import GetMemberInfo
+from api.team.getmemberinfo import GetMemberInfo
 from api.quickanalytics import QuickAnalytics
 from api.totalvisitors import TotalVisitors
 from api.toplikes import TopLikes
