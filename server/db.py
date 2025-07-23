@@ -296,7 +296,7 @@ class Database:
     # ============================================================================================        
     @classmethod
     def delete_social_links(cls, OwnerType, OwnerID):
-        cls.execute(DELETE_CONTRIBUTOR_SOCIALS, params=(OwnerType, OwnerID,), commit=True)
+        return cls.execute(DELETE_CONTRIBUTOR_SOCIALS, params=(OwnerType, OwnerID,), commit=True)
         
     @classmethod
     def insert_social_link(cls, OwnerType, OwnerID, Platform, URL):

@@ -38,8 +38,8 @@ import AchievementMgmt from '../components/dashboard/ui/achievements/Achievement
 import AchievementEdit from '../components/dashboard/ui/achievements/AchievementEdit';
 import AchievementAdd from '../components/dashboard/ui/achievements/AchievementAdd';
 import ContributorsMgmt from '../components/dashboard/ui/contributors/ContributorsMgmt';
-import ContributorEdit from '../components/dashboard/ui/contributors/ContributorEdit';
-import ContributorAdd from '../components/dashboard/ui/contributors/ContributorAdd';
+//import ContributorEdit from '../components/dashboard/ui/contributors/del_ContributorEdit';
+//import ContributorAdd from '../components/dashboard/ui/contributors/del_ContributorAdd';
 import WhoWeAre from '../components/dashboard/ui/who-we-are/WhoWeAre'
 
 
@@ -80,10 +80,10 @@ const router = createBrowserRouter(
 
         
         <Route path="/dashboard/contributors" element={<ContributorsMgmt />} /> 
-        <Route path="/dashboard/contributors/edit" element={<ContributorEdit />} /> 
-        <Route path="/dashboard/contributors/new" element={<ContributorAdd />} /> 
         <Route path='/dashboard/who-we-are' element={<WhoWeAre />} />
         {/*
+        <Route path="/dashboard/contributors/edit" element={<ContributorEdit />} /> 
+        <Route path="/dashboard/contributors/new" element={<ContributorAdd />} /> 
         <Route path="/dashboard/blogs" element={<BlogMngt />} />
         <Route path="adduser" element={<AddUser />} />
         <Route path="modifyuser" element={<ModifyUser />} />

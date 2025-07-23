@@ -1128,7 +1128,7 @@ INSERT INTO DeletedBin (
 """
 
 
-DELETE_CONTRIBUTOR_SOCIALS = " DELETE FROM SocialLink WHERE OwnerType = %s AND OwnerID = %s "
+DELETE_CONTRIBUTOR_SOCIALS = "DELETE FROM SocialLink WHERE OwnerType = %s AND OwnerID = %s"
 
 
 

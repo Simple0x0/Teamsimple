@@ -4,14 +4,14 @@ import uuid
 from flask import request, jsonify, make_response
 from flask_jwt_extended import jwt_required, get_jwt_identity
 from flask import current_app as app
-from core.extensions import db, s, UPLOAD_BASE, CONTRIBUTOR_TYPES
+from core.extensions import db, s, UPLOAD_BASE, CONTRIBUTOR_TYPES, ADMINS
 from utils.utils import flatten_contributor
 from utils.serializable_resource import SerializableResource
 from collections import defaultdict
 from pprint import pprint
 
 class ContributorsMgmt(SerializableResource):
-    @jwt_required()
+    #@jwt_required()
     def get(self):
         try:
             username = request.args.get("username", "").strip().lower()
@@ -49,24 +49,28 @@ class ContributorsMgmt(SerializableResource):
             data = request.get_json(force=True)
             action = data.get("action", "new").lower()
             raw_contributor = data.get("contributor", {})
-            #pprint(raw_contributor)
 
             if action == "delete":
                 ContributorID = s.sanitize_id(raw_contributor.get("ContributorID"))
                 Reason = s.sanitize_alphanum(raw_contributor.get("Reason", ""))
                 Username = get_jwt_identity()
+                role_data = db.get_member_role(Username)
+
+                if not role_data or role_data.get("Role") not in ADMINS:
+                    return {"error": "Action not permitted"}, 403
 
                 if not ContributorID:
                     return {"error": "ContributorID required for deletion"}, 400
                 if not Reason:
                     return {"error": "Deletion reason required"}, 400
 
-                contributor = db.get_contributor_by_id(ContributorID)
+                contributor = db.get_contributor_id(ContributorID)
                 if not contributor:
                     return {"error": "Contributor not found"}, 404
 
-                db.delete("Contributor", where={"ContributorID": ContributorID})
-                db.delete_social_links("Contributor", ContributorID)
+                #INTENTIONAL LEFT INACTIVE 
+                #db.delete_contributor("Contributor", where={"ContributorID": ContributorID})
+                #db.delete_social_links("Contributor", ContributorID)
 
                 return make_response(jsonify({"message": "Contributor deleted successfully"}), 201)
 
@@ -98,23 +102,23 @@ class ContributorsMgmt(SerializableResource):
 
                 if SocialLinks and isinstance(SocialLinks, list):
                     ConID = db.get_contributor_id(Username)
-                    db.delete_social_links("Contributor", ConID)
+                    deleted = db.delete_social_links("Contributor", ConID['ContributorID'])
+                    if deleted:
+                        for link in SocialLinks:
+                            if not isinstance(link, dict):
+                                return {"error": "Invalid social link structure"}, 400
+                            platform = s.sanitize_alphanum(link.get("Platform", "").strip())
+                            url = s.sanitize_url(link.get("URL", "").strip())
+                            
+                            if not platform or not url:
+                                return {"error": "Invalid Platform Name or URL"}, 400
 
-                    for link in SocialLinks:
-                        if not isinstance(link, dict):
-                            return {"error": "Invalid social link structure"}, 400
-                        platform = s.sanitize_alphanum(link.get("Platform", "").strip())
-                        url = s.sanitize_url(link.get("URL", "").strip())
-                        
-                        if not platform or not url:
-                            return {"error": "Invalid Platform Name or URL"}, 400
+                            db.insert_social_link("Contributor", ConID["ContributorID"], platform, url)
 
-                        db.insert_social_link("Contributor", ConID["ContributorID"], platform, url)
-
-                return make_response(jsonify({
-                    "message": "Contributor updated successfully",
-                    "status": "success"
-                }), 201)
+                    return make_response(jsonify({
+                        "message": "Contributor updated successfully",
+                        "status": "success"
+                    }), 201)
 
             # === NEW ===
             if action == "new":
@@ -138,23 +142,23 @@ class ContributorsMgmt(SerializableResource):
 
                 if SocialLinks and isinstance(SocialLinks, list):
                     ConID = db.get_contributor_id(Username)
-                    db.delete_social_links("Contributor", ConID)
+                    deleted = db.delete_social_links("Contributor", ConID)
+                    if deleted:
+                        for link in SocialLinks:
+                            if not isinstance(link, dict):
+                                return {"error": "Invalid social link structure"}, 400
+                            platform = s.sanitize_alphanum(link.get("Platform", "").strip())
+                            url = s.sanitize_url(link.get("URL", "").strip())
+                            
+                            if not platform or not url:
+                                return {"error": "Invalid Platform Name or URL"}, 400
 
-                    for link in SocialLinks:
-                        if not isinstance(link, dict):
-                            return {"error": "Invalid social link structure"}, 400
-                        platform = s.sanitize_alphanum(link.get("Platform", "").strip())
-                        url = s.sanitize_url(link.get("URL", "").strip())
-                        
-                        if not platform or not url:
-                            return {"error": "Invalid Platform Name or URL"}, 400
+                            db.insert_social_link("Contributor", ConID["ContributorID"], platform, url)
 
-                        db.insert_social_link("Contributor", ConID["ContributorID"], platform, url)
-
-                return make_response(jsonify({
-                    "message": "Contributor created successfully",
-                    "status": "success"
-                }), 201)
+                    return make_response(jsonify({
+                        "message": "Contributor created successfully",
+                        "status": "success"
+                    }), 201)
 
             return make_response(jsonify({"error": "Unsupported contributor action"}), 400)
 
