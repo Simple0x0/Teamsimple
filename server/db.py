@@ -311,7 +311,35 @@ class Database:
     def get_member(cls, username):
         return cls.execute(TEAM_MEMBER_QUERY, params=(username,), fetchall=True)
 
+    @classmethod
+    def get_member_role(cls, username):
+        return cls.execute(MEMBER_ROLE_QUERY, params=(username), fetchone=True)
+        
+    @classmethod
+    def get_all_team_members(cls):
+        return cls.execute(FETCH_ALL_TEAM_MEMBERS_QUERY, fetchall=True)
 
+    @classmethod
+    def get_member_id(cls, username):
+        return cls.execute(TEAM_MEMBER_ID_QUERY, params=(username,), fetchone=True)
+
+    @classmethod
+    def insert_team_member(cls, Username, FullName, Bio, ProfilePicture, Email, AddedBy, Status, Role, UploadKey):
+        return cls.execute(TEAM_MEMBER_INSERT_QUERY, params=(Username, FullName, Bio, ProfilePicture, Email, AddedBy, Status, Role, UploadKey), commit=True )
+
+    @classmethod
+    def update_team_member(cls, Username, FullName, Bio, ProfilePicture, Email, Role, TeamMemberID):
+        return cls.execute( TEAM_MEMBER_UPDATE_QUERY, params=(Username, FullName, Bio, ProfilePicture, Email, Role, TeamMemberID),  commit=True )
+
+    @classmethod
+    def update_team_member_status(cls, TeamMemberID, Status):
+        return cls.execute(TEAM_MEMBER_STATUS_UPDATE_QUERY, params=(Status, TeamMemberID,), commit=True )
+    
+    
+    # ============================================================================================
+    # =================================== LOGIN QUERIES ==========================================
+    # ============================================================================================  
+    
     @classmethod
     def get_user_login(cls, username):
         return cls.execute(USER_LOGIN_QUERY, params=(username,), fetchone=True)
@@ -320,15 +348,6 @@ class Database:
     def update_last_login(cls, memberID, timestamp):
         cls.execute(LAST_LOGIN_UPDATE, params=(timestamp, memberID), commit=True)
 
-
-    @classmethod
-    def create_user(cls, username, password):
-        return cls.execute(CREATE_USER_QUERY, params=(username, password), commit=True )
-       
-    @classmethod
-    def get_member_role(cls, username):
-        return cls.execute(MEMBER_ROLE_QUERY, params=(username), fetchone=True)
-        
     # ============================================================================================
     # =================================== ABOUT-TEAM QUERIES =====================================
     # ============================================================================================  

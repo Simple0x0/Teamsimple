@@ -81,7 +81,7 @@ export default function Uploads({ meta = {}, type = 'image', New = false, conten
     const uKey = (parts[3]);
     const filePath = parts.slice(4).join('/');
     const finalKey = New ? `${uKey}-hashed` : uKey;
-    meta
+    //meta
     return `${BASE_API_URL}/api/files/${contentType}/${finalKey}/${filePath}`;
   };
 

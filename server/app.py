@@ -27,7 +27,6 @@ from api.contributor.contributors import Contributor
 from api.login import Login
 from api.logout import Logout
 from api.authverify import AuthVerify
-from api.team.getmemberinfo import GetMemberInfo
 from api.quickanalytics import QuickAnalytics
 from api.totalvisitors import TotalVisitors
 from api.toplikes import TopLikes
@@ -41,6 +40,8 @@ from api.writeup.writeupsmgmt import WriteUpsMgmt
 from api.project.projectsmgmt import ProjectsMgmt
 from api.podcast.podcastsmgmt import PodcastMgmt
 from api.achievement.achievementmgmt import AchievementMgmt
+from api.team.member import MemberInfo
+from api.team.teammgmt import TeamMgmt
 from api.aboutteam.aboutteammgmt import AboutTeamMgmt
 
 # ======= Initialize app and extensions =========
@@ -140,7 +141,6 @@ api.add_resource(ImageRenderer, '/api/files/<string:dir_name>/<string:slug>/<str
 api.add_resource(Login, '/api/auth/login')
 api.add_resource(Logout, '/api/auth/logout')
 api.add_resource(AuthVerify, '/api/auth/verify')
-api.add_resource(GetMemberInfo, '/api/auth/memberinfo')
 api.add_resource(QuickAnalytics, '/api/auth/quickanalytics')
 api.add_resource(TotalVisitors, '/api/auth/tvisitors')
 api.add_resource(TopLikes, '/api/auth/toplikes')
@@ -153,7 +153,9 @@ api.add_resource(WriteUpsMgmt, '/api/auth/writeupsmgmt')
 api.add_resource(ProjectsMgmt, '/api/auth/projectsmgmt')
 api.add_resource(PodcastMgmt, '/api/auth/podcastmgmt')
 api.add_resource(AchievementMgmt, '/api/auth/achievementmgmt')
-api.add_resource(AboutTeamMgmt, '/api/dashboard/aboutteam')
+api.add_resource(MemberInfo, '/api/auth/memberinfo')
+api.add_resource(TeamMgmt, '/api/auth/teammgmt')
+api.add_resource(AboutTeamMgmt, '/api/auth/aboutteam')
 
 
 # ===== Run App =====

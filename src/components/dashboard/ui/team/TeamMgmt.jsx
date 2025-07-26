@@ -5,16 +5,16 @@ import Search from '../../../public/ui/Search';
 import Loading from '../../../public/ui/Loading';
 import ErrorHandle from '../../../public/ui/ErrorHandle';
 import { filterItems } from '../../../public/utils/searchFilter';
-import ContributorList from './ContributorList';
-import { fetchContributors } from '../../utils/apiContributorRequests';
-import ContributorModal from './ContributorModal';
+import TeamList from './TeamList';
+import { fetchTeamMembers } from '../../utils/apiTeamRequest';
+import TeamModal from './TeamModal';
 import MessageToast from '../MessageToast';
 import style from '../../../../app/Style';
 
-const CONTRIBUTORS_PER_PAGE = 10;
+const MEMBERS_PER_PAGE = 10;
 
-export default function ContributorsMgmt() {
-  const [contributors, setContributors] = useState([]);
+export default function TeamMgmt() {
+  const [members, setMembers] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [currentPage, setCurrentPage] = useState(1);
@@ -24,17 +24,17 @@ export default function ContributorsMgmt() {
   const navigate = useNavigate();
 
   useEffect(() => {
-    const loadContributors = async () => {
+    const loadMembers = async () => {
       try {
-        const res = await fetchContributors();
-        setContributors(res.Contributors || []);
+        const res = await fetchTeamMembers();
+        setMembers(res.members || []);
       } catch (err) {
         setError(err);
       } finally {
         setLoading(false);
       }
     };
-    loadContributors();
+    loadMembers();
   }, []);
 
   const handleSearchChange = (term) => {
@@ -45,10 +45,10 @@ export default function ContributorsMgmt() {
   const handleModalSuccess = (result) => {
     const { status, data } = result;
     if (status === 'success') {
-      setContributors(prev => {
-        const exists = prev.find(c => c.ContributorID === data.ContributorID);
+      setMembers(prev => {
+        const exists = prev.find(m => m.TeamID === data.TeamID);
         if (exists) {
-          return prev.map(c => c.ContributorID === data.ContributorID ? data : c);
+          return prev.map(m => m.TeamID === data.TeamID ? data : m);
         }
         return [data, ...prev];
       });
@@ -57,27 +57,28 @@ export default function ContributorsMgmt() {
     setShowModal(false);
   };
 
-  const filteredContributors = filterItems(
-    contributors,
+  const filteredMembers = filterItems(
+    members,
     searchTerm,
     [],
-    ['Username', 'FullName', 'Bio', 'Type'],
+    ['Username', 'FullName', 'Status', 'Role'],
     []
   );
 
-  const totalPages = Math.ceil(filteredContributors.length / CONTRIBUTORS_PER_PAGE);
-  const startIndex = (currentPage - 1) * CONTRIBUTORS_PER_PAGE;
-  const contributorsToDisplay = filteredContributors.slice(startIndex, startIndex + CONTRIBUTORS_PER_PAGE);
+  const totalPages = Math.ceil(filteredMembers.length / MEMBERS_PER_PAGE);
+  const startIndex = (currentPage - 1) * MEMBERS_PER_PAGE;
+  const endIndex = startIndex + MEMBERS_PER_PAGE;
+  const membersToDisplay = filteredMembers.slice(startIndex, endIndex);
 
   const s = style.contributorMgmt;
 
   if (loading) return <Loading />;
-  if (error) return <ErrorHandle type="Contributors" errorType="server" />;
+  if (error) return <ErrorHandle type="Team Members" errorType="server" />;
 
   return (
     <div className={s.wrapper}>
       <div className={s.header}>
-        <h2 className={s.title}>Manage Contributors</h2>
+        <h2 className={s.title}>Team Management</h2>
         <div className={s.controls}>
           <button
             type="button"
@@ -91,8 +92,8 @@ export default function ContributorsMgmt() {
 
       <div className={s.searchBar}>
         <Search
-          title="Contributors"
-          placeholder="Search contributors..."
+          title="Team Members"
+          placeholder="Search team members..."
           onSearchChange={handleSearchChange}
           filterOptions={[]}
           showFilter={false}
@@ -100,8 +101,8 @@ export default function ContributorsMgmt() {
       </div>
 
       <div className={s.contentArea}>
-        <ContributorList 
-          contributors={contributorsToDisplay} 
+        <TeamList 
+          team={membersToDisplay} 
           showActions={true} 
         />
         <Pagination
@@ -111,10 +112,11 @@ export default function ContributorsMgmt() {
         />
       </div>
 
-      <ContributorModal
+      <TeamModal
         isOpen={showModal}
         onClose={() => setShowModal(false)}
         onSuccess={handleModalSuccess}
+        New={true}
       />
 
       {toast.visible && (

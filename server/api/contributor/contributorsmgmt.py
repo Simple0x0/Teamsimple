@@ -11,7 +11,7 @@ from collections import defaultdict
 from pprint import pprint
 
 class ContributorsMgmt(SerializableResource):
-    #@jwt_required()
+    @jwt_required()
     def get(self):
         try:
             username = request.args.get("username", "").strip().lower()
@@ -40,7 +40,8 @@ class ContributorsMgmt(SerializableResource):
             return {"Contributors": result}, 200
 
         except Exception as e:
-            print(f"Error in GET /api/auth/contributormgmt: {traceback.format_exc()}")
+            traceback_str = traceback.format_exc()
+            app.logger.error(f"[ContributorMgmt:POST] Error: {traceback_str}")
             return {"message": "Internal server error"}, 500
 
     @jwt_required()
@@ -68,8 +69,8 @@ class ContributorsMgmt(SerializableResource):
                 if not contributor:
                     return {"error": "Contributor not found"}, 404
 
-                #INTENTIONAL LEFT INACTIVE 
-                #db.delete_contributor("Contributor", where={"ContributorID": ContributorID})
+                #INTENTIONALLY LEFT INACTIVE 
+                #db.delete_contributor("Contributor", ContributorID['ContributorID'])
                 #db.delete_social_links("Contributor", ContributorID)
 
                 return make_response(jsonify({"message": "Contributor deleted successfully"}), 201)
@@ -131,7 +132,7 @@ class ContributorsMgmt(SerializableResource):
                     FullName=FullName,
                     Bio=Bio,
                     ProfilePicture=ProfilePicture if ProfilePicture else '#',
-                    UploadKey=UploadKey if UploadKey else '',
+                    UploadKey=hashuploadKey if UploadKey else '',
                     Type=Type
                 )
 

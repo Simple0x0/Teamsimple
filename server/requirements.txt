@@ -1,0 +1,11 @@
+mutagen
+python-magic
+Pillow
+Flask
+Flask-RESTful
+Flask-Bcrypt
+flask-cors
+python-dotenv 
+Flask-JWT-Extended
+Flask-Limiter
+pymysql

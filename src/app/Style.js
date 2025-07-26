@@ -620,6 +620,34 @@ const style = {
         cancelBtn: "px-4 py-2 text-sm font-medium text-gray-300 bg-gray-700 rounded hover:bg-gray-600 transition",
         saveBtn: "px-4 py-2 text-sm font-medium text-white bg-blue-600 rounded hover:bg-blue-500 transition",
     },
+    
+    teamList: {
+        wrapper: "grid grid-cols-1 lg:grid-cols-3 gap-4",
+        item: "bg-gray-800 border border-gray-700 rounded-lg p-4 flex flex-col items-center relative",
+        statusDot: "absolute top-2 right-2 w-3 h-3 rounded-full animate-pulse",
+        status: {
+            active: "bg-green-500",
+            suspended: "bg-yellow-500",
+            banned: "bg-red-500",
+        },
+        thumbnail: "w-20 h-20 rounded-full object-cover border border-gray-600 mb-3",
+        title: "text-white font-semibold text-lg text-center",
+        meta: "text-sm text-gray-400 text-center",
+        metaValue: "text-white font-medium",
+        typeDropdown: "mt-2 bg-gray-700 text-white text-sm rounded px-2 py-1 focus:outline-none",
+        summary: "text-sm text-gray-300 mt-2 text-center overflow-hidden text-ellipsis whitespace-nowrap w-full",
+        actionsBar: "flex flex-wrap justify-center items-center gap-2 mt-4 w-full", // Horizontal wrap instead of vertical stack on mobile
+        actionBtn: {
+            edit: "text-blue-400 hover:text-blue-500 transition text-xl",
+            delete: "text-red-400 hover:text-red-500 transition text-xl",
+            ban: "bg-red-400/30 text-white text-sm font-medium rounded px-3 py-1 hover:bg-red-700 transition",
+            suspend: "bg-yellow-400/30 text-white text-sm font-medium rounded px-3 py-1 hover:bg-yellow-500 hover:text-black transition",
+            activate: "bg-green-500/60 text-white text-sm font-medium rounded px-3 py-1 hover:bg-green-600 transition",
+        },
+        noData: "text-center text-sm text-gray-400 mt-6",
+    },
+
+
 
 
 

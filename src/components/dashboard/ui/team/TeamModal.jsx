@@ -1,12 +1,12 @@
 import React, { useState, useEffect, Fragment } from 'react';
 import { Dialog, Transition } from '@headlessui/react';
-import { postContributor } from '../../utils/apiContributorRequests';
+import { postTeamMember } from '../../utils/apiTeamRequest';
 import Uploads from '../Uploads';
 import MessageToast from '../MessageToast';
 import style from '../../../../app/Style';
 
-export default function ContributorModal({ isOpen, onClose, initialContributor = null, onUpdate, onSuccess }) {
-  const isEdit = !!initialContributor;
+export default function TeamModal({New = false, isOpen, onClose, initialMember = null, onUpdate, onSuccess }) {
+  const isEdit = !!initialMember;
   const s = style.contributorModal;
 
   const [meta, setMeta] = useState({});
@@ -16,16 +16,16 @@ export default function ContributorModal({ isOpen, onClose, initialContributor =
   const [toast, setToast] = useState({ visible: false, message: '', type: 'success', duration: 3000 });
 
   useEffect(() => {
-    if (isEdit && initialContributor) {
-      setMeta(initialContributor);
-      if (Array.isArray(initialContributor.SocialLinks)) {
-        setSocialLinks(initialContributor.SocialLinks);
+    if (isEdit && initialMember) {
+      setMeta(initialMember);
+      if (Array.isArray(initialMember.SocialLinks)) {
+        setSocialLinks(initialMember.SocialLinks);
       }
     } else {
-      setMeta({ Type: 'Guest' });
+      setMeta({ Role: 'Member' });
       setSocialLinks([]);
     }
-  }, [isOpen, initialContributor]);
+  }, [isOpen, initialMember]);
 
   const handleChange = (field, value) => {
     setMeta(prev => ({ ...prev, [field]: value }));
@@ -48,27 +48,24 @@ export default function ContributorModal({ isOpen, onClose, initialContributor =
   };
 
   const handleSubmit = async () => {
-    const contributorData = {
+    const memberData = {
       ...meta,
       SocialLinks: socialLinks,
     };
 
-    const result = await postContributor({
+    const result = await postTeamMember({
       action: isEdit ? 'edit' : 'new',
-      contributorData,
+      memberData,
     });
 
     if (result.success) {
-      // If the backend doesn't return the contributor, fallback to the local copy
-      console.log(result);
-      if (onSuccess) onSuccess(result.data.message, contributorData);
+      if (onSuccess) onSuccess(result.data.message, memberData);
       setToast({ visible: true, message: result.data.message, type: 'success', duration: 3000 });
       onClose();
     } else {
       setToast({ visible: true, message: result.error, type: 'failure', duration: 5000 });
     }
   };
-
 
   return (
     <Transition.Root show={isOpen} as={Fragment}>
@@ -82,13 +79,18 @@ export default function ContributorModal({ isOpen, onClose, initialContributor =
           leaveFrom="opacity-100"
           leaveTo="opacity-0"
         >
-          <div className={s.BGDim}/>
+          <div className={s.BGDim} />
         </Transition.Child>
 
         <div className="fixed inset-0 z-50 overflow-y-auto">
           <div className="flex min-h-full items-center justify-center p-4">
             <Dialog.Panel className={s.panel}>
-              <Dialog.Title className={s.title}>{isEdit ? 'Edit Contributor' : 'Add New Contributor'}</Dialog.Title>
+              <Dialog.Title className={s.title}>{isEdit ? 'Edit Team Member' : 'Add Team Member'}</Dialog.Title>
+
+              <div className={s.formGroup}>
+                <label className={s.label}>Full Name</label>
+                <input type="text" className={s.input} value={meta.FullName || ''} onChange={e => handleChange('FullName', e.target.value)} />
+              </div>
 
               <div className={s.formGroup}>
                 <label className={s.label}>Username</label>
@@ -96,8 +98,8 @@ export default function ContributorModal({ isOpen, onClose, initialContributor =
               </div>
 
               <div className={s.formGroup}>
-                <label className={s.label}>Full Name</label>
-                <input type="text" className={s.input} value={meta.FullName || ''} onChange={e => handleChange('FullName', e.target.value)} />
+                <label className={s.label}>Email</label>
+                <input type="email" className={s.input} value={meta.Email || ''} onChange={e => handleChange('Email', e.target.value)} />
               </div>
 
               <div className={s.formGroup}>
@@ -106,17 +108,17 @@ export default function ContributorModal({ isOpen, onClose, initialContributor =
               </div>
 
               <div className={s.formGroup}>
-                <label className={s.label}>Type</label>
-                <select className={s.select} value={meta.Type || 'Guest'} onChange={e => handleChange('Type', e.target.value)}>
-                  {['Guest', 'Author', 'Editor', 'Speaker', 'Member', 'Contributor'].map(type => (
-                    <option key={type} value={type}>{type}</option>
+                <label className={s.label}>Role</label>
+                <select className={s.select} value={meta.Role || 'Member'} onChange={e => handleChange('Role', e.target.value)}>
+                  {['Member', 'Admin', 'Superadmin'].map(role => (
+                    <option key={role} value={role}>{role}</option>
                   ))}
                 </select>
               </div>
 
               <div className={s.formGroup}>
                 <label className={s.label}>Upload Profile Picture</label>
-                <Uploads type="image" contentType="contributors" UploadKey={meta.UploadKey} onUpload={handleUploadKey} />
+                <Uploads type="image" contentType="team" New={New} UploadKey={meta.UploadKey} onUpload={handleUploadKey} />
               </div>
 
               <div className={s.formGroup}>

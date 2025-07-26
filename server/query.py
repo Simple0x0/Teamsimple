@@ -1018,14 +1018,6 @@ INSERT_LIKELOG_QUERY = """
 # ================================================== TEAM QUEIRES ===============================================
 # ===============================================================================================================
 
-
-CREATE_USER_QUERY = """
-    INSERT INTO users (username, password, tokens)
-    VALUES (%s, %s, 0)
-    ON DUPLICATE KEY UPDATE username = username
-"""
-
-
 TEAM_MEMBER_QUERY = """
 SELECT 
     tm.TeamMemberID,
@@ -1051,6 +1043,62 @@ USER_LOGIN_QUERY = "SELECT * FROM Login WHERE Username = %s ;"
 LAST_LOGIN_UPDATE = "UPDATE Login SET LastLogin = %s WHERE LoginID = %s"
 
 MEMBER_ROLE_QUERY = "SELECT Role FROM TeamMember WHERE Username = %s"
+
+FETCH_ALL_TEAM_MEMBERS_QUERY = """
+SELECT 
+    tm.TeamMemberID,
+    tm.Username,
+    tm.FullName,
+    tm.Bio,
+    tm.ProfilePicture,
+    tm.Email,
+    tm.DateAdded,
+    tm.AddedBy,
+    tm.Status,
+    tm.LastUpdated,
+    tm.Role,
+    tm.UploadKey,
+    sl.Platform,
+    sl.URL
+FROM TeamMember tm
+LEFT JOIN SocialLink sl ON sl.OwnerType = 'TeamMember' AND sl.OwnerID = tm.TeamMemberID;
+"""
+
+TEAM_MEMBER_ID_QUERY = "SELECT TeamMemberID FROM TeamMember WHERE Username = %s;"
+
+TEAM_MEMBER_INSERT_QUERY = """
+INSERT INTO TeamMember (
+    Username,
+    FullName,
+    Bio,
+    ProfilePicture,
+    Email,
+    AddedBy,
+    Status,
+    Role,
+    UploadKey
+) VALUES (
+    %s, %s, %s, %s, %s, %s, %s, %s, %s
+);
+"""
+
+TEAM_MEMBER_UPDATE_QUERY = """
+UPDATE TeamMember
+SET
+    Username = %s,
+    FullName = %s,
+    Bio = %s,
+    ProfilePicture = %s,
+    Email = %s,
+    Role = %s
+WHERE TeamMemberID = %s;
+"""
+
+TEAM_MEMBER_STATUS_UPDATE_QUERY = """
+UPDATE TeamMember
+SET Status = %s
+WHERE TeamMemberID = %s;
+"""
 
 
 # ===============================================================================================================

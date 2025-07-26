@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { FaEdit, FaTrash } from 'react-icons/fa';
 import { postContributor } from '../../utils/apiContributorRequests';
 import MessageToast from '../MessageToast';
@@ -31,6 +31,10 @@ export default function ContributorList({ contributors = [], showActions = true 
       setToast({ visible: true, message: `Update failed: ${result.error}`, type: 'failure', duration: 5000 });
     }
   };
+
+  useEffect(() => {
+    setContributorList([...contributors]);
+  }, [contributors]);
 
  const handleModalSuccess = (message, contributor) => {
     setContributorList((prevList) => {

@@ -20,7 +20,7 @@ const formatError = (err, defaultMsg = 'Unknown error occurred') => ({
 
 export const fetchAboutTeamContent = async (section) => {
   try {
-    const response = await axios.get(`${BASE_URL}/api/dashboard/aboutteam?section=${section}`, {
+    const response = await axios.get(`${BASE_URL}/api/auth/aboutteam?section=${section}`, {
       withCredentials: true,
       headers: HEADERS,
     });
@@ -38,7 +38,7 @@ export const updateAboutTeamContent = async ({
 }) => {
   try {
     const res = await axios.post(
-      `${BASE_URL}/api/dashboard/aboutteam`,
+      `${BASE_URL}/api/auth/aboutteam`,
       {
         title,
         description,

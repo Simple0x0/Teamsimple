@@ -52,7 +52,7 @@ export default function LeftSideBar() {
         ))}
 
         {/* Only visible to admins */}
-        {member?.Role === 'Admin' && (
+        {(member?.Role === 'Superadmin' || member?.Role === 'Admin') && (
           <NavLink
             to="/dashboard/team-management"
             className={({ isActive }) =>

@@ -38,6 +38,7 @@ import AchievementMgmt from '../components/dashboard/ui/achievements/Achievement
 import AchievementEdit from '../components/dashboard/ui/achievements/AchievementEdit';
 import AchievementAdd from '../components/dashboard/ui/achievements/AchievementAdd';
 import ContributorsMgmt from '../components/dashboard/ui/contributors/ContributorsMgmt';
+import TeamMgmt from '../components/dashboard/ui/team/TeamMgmt';
 //import ContributorEdit from '../components/dashboard/ui/contributors/del_ContributorEdit';
 //import ContributorAdd from '../components/dashboard/ui/contributors/del_ContributorAdd';
 import WhoWeAre from '../components/dashboard/ui/who-we-are/WhoWeAre'
@@ -81,6 +82,7 @@ const router = createBrowserRouter(
         
         <Route path="/dashboard/contributors" element={<ContributorsMgmt />} /> 
         <Route path='/dashboard/who-we-are' element={<WhoWeAre />} />
+        <Route path='team-management' element={<TeamMgmt />} />
         {/*
         <Route path="/dashboard/contributors/edit" element={<ContributorEdit />} /> 
         <Route path="/dashboard/contributors/new" element={<ContributorAdd />} /> 
