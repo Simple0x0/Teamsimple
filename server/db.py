@@ -346,7 +346,20 @@ class Database:
     
     @classmethod
     def update_last_login(cls, memberID, timestamp):
-        cls.execute(LAST_LOGIN_UPDATE, params=(timestamp, memberID), commit=True)
+        return cls.execute(LAST_LOGIN_UPDATE, params=(timestamp, memberID), commit=True)
+        
+    @classmethod
+    def create_new_login(cls, username, password_hash, team_member_id):
+        return cls.execute(CREATE_NEW_LOGIN_QUERY, params=(username, password_hash, team_member_id), commit=True)
+
+    @classmethod
+    def update_password_by_id(cls, login_id, password_hash, is_first_login=False):
+        return cls.execute(UPDATE_PASSWORD_QUERY, params=(password_hash, is_first_login, login_id), commit=True)
+
+    @classmethod
+    def update_password_by_username(cls, username, password_hash, is_first_login=False):
+        return cls.execute(UPDATE_BY_USERNAME_QUERY, params=(password_hash, is_first_login, username), commit=True)
+
 
     # ============================================================================================
     # =================================== ABOUT-TEAM QUERIES =====================================

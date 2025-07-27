@@ -1014,6 +1014,38 @@ INSERT_LIKELOG_QUERY = """
 """
 
 
+
+# ===============================================================================================================
+# ================================================== LOGIN QUEIRES ===============================================
+# ===============================================================================================================
+
+USER_LOGIN_QUERY = "SELECT * FROM Login WHERE Username = %s ;"
+LAST_LOGIN_UPDATE = "UPDATE Login SET LastLogin = %s WHERE LoginID = %s"
+
+CREATE_NEW_LOGIN_QUERY = """
+INSERT INTO Login(
+    Username,
+    PasswordHash,
+    TeamMemberID
+) VALUES (%s, %s, %s);
+"""
+
+UPDATE_PASSWORD_QUERY = """
+UPDATE Login
+SET 
+    PasswordHash = %s,
+    Isfirstlogin = %s
+WHERE LoginID = %s;
+"""
+
+UPDATE_BY_USERNAME_QUERY = """
+UPDATE Login
+SET 
+    PasswordHash = %s,
+    Isfirstlogin = %s
+WHERE Username = %s;
+"""
+
 # ===============================================================================================================
 # ================================================== TEAM QUEIRES ===============================================
 # ===============================================================================================================
@@ -1038,9 +1070,6 @@ FROM TeamMember tm
 LEFT JOIN SocialLink sl ON sl.OwnerType = 'TeamMember' AND sl.OwnerID = tm.TeamMemberID
 WHERE tm.Username = %s;
 """
-
-USER_LOGIN_QUERY = "SELECT * FROM Login WHERE Username = %s ;"
-LAST_LOGIN_UPDATE = "UPDATE Login SET LastLogin = %s WHERE LoginID = %s"
 
 MEMBER_ROLE_QUERY = "SELECT Role FROM TeamMember WHERE Username = %s"
 

@@ -7,6 +7,8 @@ from core.extensions import db, s, UPLOAD_BASE
 from utils.utils import flatten_contributor
 from collections import defaultdict
 from utils.serializable_resource import SerializableResource
+from api.team.loginmgmt import credential_mgmt
+#from dotenv import load_dotenv
 from pprint import pprint
 
 # ===== Team Management API =====
@@ -70,7 +72,6 @@ class TeamMgmt(SerializableResource):
 
             if not Username:
                 return {"message": "Username required"}, 400
-
             
             if action in ["banned", "suspend", "active"]:
                 if not is_superadmin:
@@ -104,6 +105,7 @@ class TeamMgmt(SerializableResource):
             Email = s.sanitize_email(raw_member.get("Email", ""))
             Role = s.sanitize_enum(raw_member.get("Role", "Member"), ["Superadmin", "Admin", "Member"])
             SocialLinks = raw_member.get("SocialLinks", [])
+            Password = s.sanitize_password(raw_member.get('password')) if raw_member.get('password') else os.getenv('MEMBER_DEFAULT_PASSWORD')
             
             if action == "edit" and TeamMemberID:
                 if TeamMemberID == current_member_id:
@@ -174,9 +176,9 @@ class TeamMgmt(SerializableResource):
                 target = os.path.join(UPLOAD_BASE, 'team', hashuploadKey)
                 if os.path.exists(source):
                     os.rename(source, target)
-                
+                    
+                TeamMemberID = db.get_member_id(Username)
                 if SocialLinks and isinstance(SocialLinks, list):
-                    TeamMemberID = db.get_member_id(Username)
                     deleted = db.delete_social_links("TeamMember", TeamMemberID['TeamMemberID'])
                     if deleted:
                         for link in SocialLinks:
@@ -190,7 +192,17 @@ class TeamMgmt(SerializableResource):
                                 return {"message": "Invalid Platform Name or URL"}, 400
 
                             db.insert_social_link("TeamMember", TeamMemberID['TeamMemberID'], platform, url)
-
+                
+                account = credential_mgmt(
+                    username=Username,
+                    password=Password,
+                    action='create',
+                    memberid=TeamMemberID['TeamMemberID']
+                )
+                
+                if not account:
+                    return {"message": "Unable to register user credentials"}, 400
+                
                 return make_response(jsonify({"message": "Member added successfully"}), 201)
 
             return {"message": "Unsupported action"}, 400
@@ -202,3 +214,7 @@ class TeamMgmt(SerializableResource):
                 "message": "Failed to process team member",
                 "details": traceback_str
             }), 500)
+
+
+
+
