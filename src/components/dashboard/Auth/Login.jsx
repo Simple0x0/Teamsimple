@@ -20,7 +20,7 @@ export default function Login() {
       const logged = await userLogin(formData);
       if (logged) {
         navigate('/dashboard');
-      }
+      }  
     } catch (error) {
       const message = error?.message || 'Login failed. Please check your credentials.';
       setLoginError(message);

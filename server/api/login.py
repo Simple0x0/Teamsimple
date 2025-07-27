@@ -1,11 +1,10 @@
 import traceback
-from flask import request, jsonify, make_response
+from flask import request, make_response, current_app as app
 from flask_jwt_extended import create_access_token, set_access_cookies
 from datetime import datetime
-from core.extensions import db, s, UPLOAD_BASE, SLEEP
+from core.extensions import db, s
 from utils.auth import passwordcheck
 from utils.serializable_resource import SerializableResource
-
 
 
 # ===== Login API =====
@@ -18,22 +17,31 @@ class Login(SerializableResource):
             password = s.sanitize_password(data.get('password'))
 
             if not username or not password:
+                app.logger.warning(f"[Login] Missing username or password from input: {data}")
                 return {"message": "Invalid username or password"}, 400
 
             user = db.get_user_login(username)
             if not (user and passwordcheck(password, user["PasswordHash"])):
+                app.logger.warning(f"[Login] Failed login attempt for username: {username}")
                 return {"message": "Invalid username or password"}, 401
 
+            # Successful login
             db.update_last_login(user['LoginID'], datetime.utcnow())
             access_token = create_access_token(identity=str(user['Username']))
-            response = make_response({
-                "message": "Login successful",
-                #"csrf_token": get_csrf_token(access_token)
-            })
+            is_first_login = user.get('Isfirstlogin', False) #COME BACK HERE TO CONFIRM THIS bool OR string
+
+            if is_first_login:
+                message = f"Welcome to the team {user['Username']}! Please change your password"
+            else:
+                message = "Login successful"
+
+            app.logger.info(f"[Login] Successful login for username: {username}")
+
+            response = make_response({"message": message})
             set_access_cookies(response, access_token)
-            
+
             return response
 
-        except Exception as e:
-            print(f"[Login API] Error: {traceback.format_exc()}")
+        except Exception:
+            app.logger.error("[Login] Exception:\n%s", traceback.format_exc())
             return {"message": "Internal server error"}, 500
