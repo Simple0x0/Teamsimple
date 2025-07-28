@@ -62,7 +62,7 @@ class PasswordMgmt(SerializableResource):
 
                 if not (user and passwordcheck(old_pass, user["PasswordHash"])):
                     app.logger.warning(f"[PasswordMgmt] Invalid current password for user: {current_username}")
-                    return {"message": "Invalid password"}, 401
+                    return {"message": "Invalid current password"}, 401
 
                 reset = credential_mgmt(
                     username=current_username,
