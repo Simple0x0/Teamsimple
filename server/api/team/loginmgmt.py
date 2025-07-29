@@ -64,7 +64,8 @@ class PasswordMgmt(SerializableResource):
                     app.logger.warning(f"[PasswordMgmt] Invalid current password for user: {current_username}")
                     return {"message": "Invalid current password"}, 401
                 
-                if (passwordcheck(new_pass, user["PasswordHash"]) or (new_pass == os.getenv('MEMBER_DEFAULT_PASSWORD'))):
+                default_password = os.getenv('MEMBER_DEFAULT_PASSWORD')
+                if passwordcheck(new_pass, user["PasswordHash"]) or (default_password and new_pass == default_password):
                     return {"message": "Password must not be reused"}, 400
 
 
