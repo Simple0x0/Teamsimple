@@ -6,8 +6,13 @@ const HEADERS = {
   'Content-Type': 'application/json',
 };
 const handleError = (err) => {
-  throw err.response?.data || { message: err.message };
+  throw err.response?.data || { message: err.message } || 'An unknown error occurred';
 };
+
+/* ====================================================
+========================= LOGIN ======================
+====================================================
+*/
 
 export async function userLogin(data) {
   try {
@@ -15,26 +20,70 @@ export async function userLogin(data) {
       `${import.meta.env.VITE_API_URL}/api/auth/login`,
       data,
       {
-        headers: { 'Content-Type': 'application/json',
+        headers: {
+          'Content-Type': 'application/json',
           'ngrok-skip-browser-warning': '69420',
-         },
+        },
         withCredentials: true,
       }
     );
 
-    if (res.status === 200 && res.data?.message === 'Login successful') {
-      if (res.data.csrf_token) {
-        sessionStorage.setItem('csrf_token', res.data.csrf_token);
-      }
-      return true;
+    const msg = res.data?.message;
+    const isFirstLogin = res.data?.isFirstLogin;
+
+    if (res.status === 200 && msg) {
+      return { success: true, message: msg, isFirstLogin };
     } else {
-      throw new Error('Login failed');
+      throw { message: msg || 'Login failed' };
     }
+
   } catch (err) {
-    throw err.response?.data || { message: err.message };
+    handleError(err);
   }
 }
 
+/* ====================================================
+========================= PASSWORD RESET ==================
+====================================================
+*/
+
+export async function resetUserPassword(action, formData) {
+  try {
+    const res = await axios.post(
+      `${import.meta.env.VITE_API_URL}/api/auth/passwordmgmt`,
+      {
+        action: action,
+        passwords: {
+          old: formData.oldPassword,
+          new: formData.newPassword,
+        },
+      },
+      {
+        headers: {
+          'Content-Type': 'application/json',
+          'ngrok-skip-browser-warning': '69420',
+        },
+        withCredentials: true,
+      }
+    );
+
+    if (res.status === 200 && res.data.message) {
+      return { success: true, message: res.data.message };
+    } else {
+      return { success: false, message: res.data?.message || 'Password reset failed.' };
+    }
+
+  } catch (err) {
+    const message = err.response?.data?.message || err.message || 'Unexpected error';
+    return { success: false, message };
+  }
+}
+
+
+/* ====================================================
+========================= LOGOUT ==================
+====================================================
+*/
 export async function logout() {
   try {
     await axios.post(

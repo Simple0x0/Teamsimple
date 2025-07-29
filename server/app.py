@@ -42,7 +42,9 @@ from api.podcast.podcastsmgmt import PodcastMgmt
 from api.achievement.achievementmgmt import AchievementMgmt
 from api.team.member import MemberInfo
 from api.team.teammgmt import TeamMgmt
+from api.team.loginmgmt import PasswordMgmt
 from api.aboutteam.aboutteammgmt import AboutTeamMgmt
+
 
 # ======= Initialize app and extensions =========
 load_dotenv()
@@ -156,6 +158,8 @@ api.add_resource(AchievementMgmt, '/api/auth/achievementmgmt')
 api.add_resource(MemberInfo, '/api/auth/memberinfo')
 api.add_resource(TeamMgmt, '/api/auth/teammgmt')
 api.add_resource(AboutTeamMgmt, '/api/auth/aboutteam')
+api.add_resource(PasswordMgmt, '/api/auth/passwordmgmt')
+
 
 
 # ===== Run App =====

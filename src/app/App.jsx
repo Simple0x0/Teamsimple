@@ -17,8 +17,9 @@ import WriteUpRender from '../components/public/contents/WriteUpRender/WriteUpRe
 import ProjectRender from '../components/public/contents/ProjectRender/ProjectRender'
 
 // Auth
-import Login from '../components/dashboard/Auth/Login';
 import {AuthRoute} from '../components/dashboard/Auth/AuthPrivateRoute';
+import Login from '../components/dashboard/Auth/Login';
+import ResetPassword from '../components/dashboard/Auth/ResetPassword';
 
 // Dashboards
 import Dashboard from '../components/dashboard/ui/Dashboard';
@@ -61,6 +62,7 @@ const router = createBrowserRouter(
       </Route>
 
       <Route path="/login" element={<AuthRoute > <Login /> </ AuthRoute >} />
+      <Route path="/reset-password" element={<AuthRoute > <ResetPassword /> </ AuthRoute >} />
       <Route path="/dashboard" element={<DashBoardLayout /> } >
         <Route index element={<Dashboard />} /> 
         <Route path="/dashboard/blogs" element={<BlogsMgmt />} /> 

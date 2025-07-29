@@ -5,7 +5,7 @@ from flask_jwt_extended import jwt_required, get_jwt_identity
 from core.extensions import db, s
 from utils.auth import passwordhash, passwordcheck
 from utils.serializable_resource import SerializableResource
-
+from pprint import pprint
 
 def credential_mgmt(username: str, password: str, action: str = 'reset', memberid: int = None, first_login: bool = False):
     try:
@@ -46,11 +46,11 @@ class PasswordMgmt(SerializableResource):
         try:
             data = request.get_json(force=True)
             action = data.get("action", "reset").lower()  # 'reset' or 'recover'
-
+            pprint(data)
             current_username = get_jwt_identity()
             user = db.get_user_login(current_username)
             current_role = db.get_member_role(current_username)
-
+            
             # ==== RESET own password ====
             if action == 'reset':
                 password = data.get("passwords", {})
@@ -63,6 +63,10 @@ class PasswordMgmt(SerializableResource):
                 if not (user and passwordcheck(old_pass, user["PasswordHash"])):
                     app.logger.warning(f"[PasswordMgmt] Invalid current password for user: {current_username}")
                     return {"message": "Invalid current password"}, 401
+                
+                if (passwordcheck(new_pass, user["PasswordHash"]) or (new_pass == os.getenv('MEMBER_DEFAULT_PASSWORD'))):
+                    return {"message": "Password must not be reused"}, 400
+
 
                 reset = credential_mgmt(
                     username=current_username,
@@ -73,7 +77,7 @@ class PasswordMgmt(SerializableResource):
 
                 if reset:
                     app.logger.info(f"[PasswordMgmt] Password reset for user: {current_username}")
-                    return {'message': 'Password successfully reset'}
+                    return {'message': 'Password reset successfully'}
                 else:
                     return {'message': 'Password reset failed'}, 500
 

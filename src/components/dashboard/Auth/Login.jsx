@@ -14,18 +14,28 @@ export default function Login() {
     register,
     formState: { errors, isSubmitting },
   } = useForm();
+
   const onSubmit = async (formData) => {
     setLoginError(null);
     try {
-      const logged = await userLogin(formData);
-      if (logged) {
-        navigate('/dashboard');
-      }  
+      const result = await userLogin(formData);
+
+      if (result?.success) {
+        if (result.isFirstLogin) {
+          navigate('/reset-password', {
+            state: { message: result.message }
+          });
+        } else {
+          navigate('/dashboard');
+        }
+      }
+
     } catch (error) {
       const message = error?.message || 'Login failed. Please check your credentials.';
       setLoginError(message);
     }
   };
+
 
   return (
     <div className={style.Login.container}>

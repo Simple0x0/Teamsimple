@@ -27,6 +27,7 @@ const DashBoardLayout = () => {
 
 export default DashBoardLayout;
 
+
 //ADDING LOADING - TO ENABLE AUTHENTICATION CHECK BEFORE FULL RENDERING
 
 /*
