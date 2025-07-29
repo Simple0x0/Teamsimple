@@ -4,7 +4,7 @@ from flask_jwt_extended import JWTManager
 from db import Database
 from utils.sanitizers import Sanitizer
 
-# ======= GLOBAL SHARED EXTENSIONS ==============
+# ======= GLOBAL SHARED CLASS EXTENSIONS INSTANCES ==============
 bcrypt = Bcrypt()
 jwt = JWTManager()
 db = Database()

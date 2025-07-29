@@ -13,7 +13,7 @@ from pprint import pprint
 
 # ===== Team Management API =====
 class TeamMgmt(SerializableResource):
-    #@jwt_required()
+    @jwt_required()
     def get(self):
         try:
             username = request.args.get("username", "").strip().lower()

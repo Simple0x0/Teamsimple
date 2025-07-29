@@ -699,34 +699,98 @@ SELECT
     e.Description,
     e.StartDate,
     e.EndDate,
+    e.Mode,
     e.Location,
     e.EventType,
     e.Status,
     e.EventImage,
     e.DateCreated,
     e.UploadKey,
-
-    -- Organizer Info
     eo.OrganizerID,
     eo.Name AS OrganizerName,
     eo.Email AS OrganizerEmail,
     eo.ContactNumber AS OrganizerContact,
     eo.Organization AS OrganizerOrganization,
     eo.ProfilePicture AS OrganizerProfilePicture,
-
-    -- Tags
     GROUP_CONCAT(DISTINCT t.TagID) AS TagIDs,
     GROUP_CONCAT(DISTINCT t.Name) AS TagNames
-
 FROM `Event` e
-
 JOIN EventOrganizer eo ON eo.OrganizerID = e.OrganizerID
 LEFT JOIN EventTag et ON e.EventID = et.EventID
 LEFT JOIN Tag t ON et.TagID = t.TagID
-
+WHERE e.Status != 'Deleted'
 GROUP BY e.EventID
 ORDER BY e.DateCreated DESC
--- LIMIT 10;
+"""
+
+CREATE_EVENT_QUERY = """
+INSERT INTO `Event` (
+    Title, Description, StartDate, EndDate, Mode, Location, EventType,
+    Status, OrganizerID, EventImage, UploadKey
+) VALUES (
+    %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s
+)
+"""
+
+UPDATE_EVENT_QUERY = """
+UPDATE `Event`
+SET Title = %s,
+    Description = %s,
+    StartDate = %s,
+    EndDate = %s,
+    Mode = %s,
+    Location = %s,
+    EventType = %s,
+    Status = %s,
+    OrganizerID = %s,
+    EventImage = %s,
+    UploadKey = %s
+WHERE EventID = %s
+"""
+
+DELETE_EVENT_QUERY = """
+UPDATE `Event`
+SET Status = 'Deleted'
+WHERE EventID = %s
+"""
+
+CREATE_EVENT_TAG_QUERY = """
+INSERT INTO EventTag (EventID, TagID, DateCreated)
+VALUES (%s, %s, CURRENT_TIMESTAMP)
+"""
+
+CREATE_EVENT_TAG_QUERY = """
+INSERT INTO EventTag (EventID, TagID, DateCreated)
+VALUES (%s, %s, CURRENT_TIMESTAMP)
+"""
+
+DELETE_EVENT_TAGS_QUERY = """
+DELETE FROM EventTag
+WHERE EventID = %s
+"""
+
+REGISTER_EVENT_PARTICIPANT_QUERY = """
+INSERT INTO EventParticipant (Name, Email, ContactNumber, RegistrationDate, EventID)
+VALUES (%s, %s, %s, CURRENT_TIMESTAMP, %s)
+"""
+
+GET_EVENT_PARTICIPANTS_QUERY = """
+SELECT 
+    ParticipantID,
+    Name,
+    Email,
+    ContactNumber,
+    RegistrationDate,
+    EventID,
+    DateCreated
+FROM EventParticipant
+WHERE EventID = %s
+ORDER BY RegistrationDate DESC
+"""
+
+DELETE_EVENT_PARTICIPANT_QUERY = """
+DELETE FROM EventParticipant
+WHERE ParticipantID = %s
 """
 
 

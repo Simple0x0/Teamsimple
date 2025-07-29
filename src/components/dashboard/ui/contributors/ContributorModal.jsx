@@ -108,7 +108,7 @@ export default function ContributorModal({ isOpen, onClose, initialContributor =
               <div className={s.formGroup}>
                 <label className={s.label}>Type</label>
                 <select className={s.select} value={meta.Type || 'Guest'} onChange={e => handleChange('Type', e.target.value)}>
-                  {['Guest', 'Author', 'Editor', 'Speaker', 'Member', 'Contributor'].map(type => (
+                  {['Guest', 'Author', 'Editor', 'Speaker', 'Member', 'Contributor', 'Organiser'].map(type => (
                     <option key={type} value={type}>{type}</option>
                   ))}
                 </select>
