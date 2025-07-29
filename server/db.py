@@ -377,18 +377,45 @@ class Database:
         return cls.execute(ABOUT_TEAM_UPDATE_QUERY, params=(title, description, section), commit=True)
     
     
-        
     # ============================================================================================
-    # =================================== EVENT, LATEST QUERIES ==================================
-    # ============================================================================================      
+    # =================================== EVENT QUERIES ==========================================
+    # ============================================================================================
+
     @classmethod
     def get_events(cls):
         return cls.execute(EVENTS_QUERY, fetchall=True)
 
     @classmethod
-    def get_latest(cls):
-        return cls.execute(LATEST_CONTENT_QUERY, fetchall=True)
+    def create_event(cls, title, description, start, end, mode, location, type_, status, organizer_id, image, upload_key, payment_type, registration_type):
+        return cls.execute(CREATE_EVENT_QUERY, params=(title, description, start, end, mode, location, type_, status, organizer_id, image, upload_key, payment_type, registration_type), commit=True)
 
+    @classmethod
+    def update_event(cls, event_id, title, description, start, end, mode, location, type_, status, organizer_id, image, upload_key, payment_type, registration_type):
+        return cls.execute(UPDATE_EVENT_QUERY, params=(title, description, start, end, mode, location, type_, status, organizer_id, image, upload_key, payment_type, registration_type, event_id), commit=True)
+
+    @classmethod
+    def delete_event(cls, event_id):
+        return cls.execute(DELETE_EVENT_QUERY, params=(event_id,), commit=True)
+
+    @classmethod
+    def add_event_tag(cls, event_id, tag_id):
+        return cls.execute(CREATE_EVENT_TAG_QUERY, params=(event_id, tag_id), commit=True)
+
+    @classmethod
+    def delete_event_tags(cls, event_id):
+        return cls.execute(DELETE_EVENT_TAGS_QUERY, params=(event_id,), commit=True)
+
+    @classmethod
+    def register_participant(cls, name, email, contact, event_id):
+        return cls.execute(REGISTER_EVENT_PARTICIPANT_QUERY, params=(name, email, contact, event_id), commit=True)
+
+    @classmethod
+    def get_event_participants(cls, event_id):
+        return cls.execute(GET_EVENT_PARTICIPANTS_QUERY, params=(event_id,), fetchall=True)
+
+    @classmethod
+    def delete_event_participant(cls, participant_id):
+        return cls.execute(DELETE_EVENT_PARTICIPANT_QUERY, params=(participant_id,), commit=True)
 
     # ============================================================================================
     # =================================== VISITOR QUERIES ======================================
@@ -508,3 +535,13 @@ class Database:
     @classmethod
     def add_techstack(cls, name, description):
         return cls.execute(TECHSTACK_INSERT_QUERY, params=(name, description,), commit=True)
+
+
+
+    # ============================================================================================
+    # =================================== LATEST QUERIES =================================
+    # ============================================================================================   
+
+    @classmethod
+    def get_latest(cls):
+        return cls.execute(LATEST_CONTENT_QUERY, fetchall=True)

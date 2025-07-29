@@ -703,6 +703,8 @@ SELECT
     e.Location,
     e.EventType,
     e.Status,
+    e.PaymentType,
+    e.RegistrationType,
     e.EventImage,
     e.DateCreated,
     e.UploadKey,
@@ -726,9 +728,9 @@ ORDER BY e.DateCreated DESC
 CREATE_EVENT_QUERY = """
 INSERT INTO `Event` (
     Title, Description, StartDate, EndDate, Mode, Location, EventType,
-    Status, OrganizerID, EventImage, UploadKey
+    Status, OrganizerID, EventImage, UploadKey, PaymentType, RegistrationType
 ) VALUES (
-    %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s
+    %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s
 )
 """
 
@@ -744,7 +746,9 @@ SET Title = %s,
     Status = %s,
     OrganizerID = %s,
     EventImage = %s,
-    UploadKey = %s
+    UploadKey = %s,
+    PaymentType = %s,
+    RegistrationType = %s
 WHERE EventID = %s
 """
 
@@ -755,13 +759,8 @@ WHERE EventID = %s
 """
 
 CREATE_EVENT_TAG_QUERY = """
-INSERT INTO EventTag (EventID, TagID, DateCreated)
-VALUES (%s, %s, CURRENT_TIMESTAMP)
-"""
-
-CREATE_EVENT_TAG_QUERY = """
-INSERT INTO EventTag (EventID, TagID, DateCreated)
-VALUES (%s, %s, CURRENT_TIMESTAMP)
+INSERT INTO EventTag (EventID, TagID)
+VALUES (%s, %s)
 """
 
 DELETE_EVENT_TAGS_QUERY = """
@@ -770,8 +769,8 @@ WHERE EventID = %s
 """
 
 REGISTER_EVENT_PARTICIPANT_QUERY = """
-INSERT INTO EventParticipant (Name, Email, ContactNumber, RegistrationDate, EventID)
-VALUES (%s, %s, %s, CURRENT_TIMESTAMP, %s)
+INSERT INTO EventParticipant (Name, Email, ContactNumber, EventID)
+VALUES (%s, %s, %s, %s)
 """
 
 GET_EVENT_PARTICIPANTS_QUERY = """
