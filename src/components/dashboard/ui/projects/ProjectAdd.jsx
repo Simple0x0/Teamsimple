@@ -114,8 +114,8 @@ export default function ProjectAdd() {
             description: true,
             repo: true,
             demo: true,
-            StartDate: true,
-            EndDate: true,
+            start: true,
+            end: true,
             progress: true,
           }}
           statusinput={[

@@ -4,7 +4,7 @@ import 'react-datepicker/dist/react-datepicker.css';
 import style from '../../../app/Style';
 import ContributorSelector from './selectors/ContributorSelector';
 
-export default function ContentMeta({ contentType = '', meta = {}, onChange, mode = 'new', fields = {}, statusinput= [] }) {
+export default function ContentMeta({ contentType = '', meta = {}, onChange, mode = 'new', fields = {}, statusinput= [], modeinput, eventTypeinput, registrationTypeinput, paymentTypeinput }) {
   const [isSlugEdited, setIsSlugEdited] = useState(false);
 
   const handleChange = (field, value) => {
@@ -97,6 +97,23 @@ export default function ContentMeta({ contentType = '', meta = {}, onChange, mod
     </div>
   );
 
+  // Standardized date+time picker for StartDate/EndDate (used in both Event and Project)
+  const renderDateTimePicker = (label, field) => (
+    <div className="col-span-1 flex flex-col">
+      <label className={s.label}>{label}</label>
+      <DatePicker
+        selected={meta[field] ? new Date(meta[field]) : null}
+        onChange={(date) => handleChange(field, date?.toISOString())}
+        className={s.input}
+        dateFormat="yyyy-MM-dd h:mm aa"
+        showTimeSelect
+        timeFormat="HH:mm"
+        timeIntervals={15}
+        placeholderText="YYYY-MM-DD HH:MM"
+      />
+    </div>
+  );
+
   return (
     <div className={`${s.wrapper} grid grid-cols-2 gap-4`}>
       {meta.MachineName ? renderInput('Machine Name', 'MachineName', 'TryHackMe XYZ', true) : 
@@ -107,9 +124,35 @@ export default function ContentMeta({ contentType = '', meta = {}, onChange, mod
       {meta.Summary ? fields.summary && renderTextarea('Summary', 'Summary', 'Short summary or excerpt') : fields.aboutus ? <> </> :
       renderTextarea('Description', 'Description', 'Short Description or excerpt') }
 
-      {fields.status && renderSelect('Status', 'Status', statusinput)}
+      {/* Only show status select if statusinput is provided and not for Event (handled by action buttons) */}
+      {fields.status && statusinput && statusinput.length > 0 && renderSelect('Status', 'Status', statusinput)}
       {fields.ProgressStatus && renderSelect('Status', 'ProgressStatus', statusinput)}
       {fields.image && renderInput('Cover Image URL', fields.image, 'https://domain.com/your-image.jpg')}
+      {fields.mode && renderSelect('Mode', 'Mode', modeinput || [
+        { value: 'Online', label: 'Online' },
+        { value: 'In-person', label: 'In-person' },
+        { value: 'Hybrid', label: 'Hybrid' },
+      ])}
+      {fields.eventType && renderSelect('Event Type', 'EventType', eventTypeinput || [
+        { value: 'Conference', label: 'Conference' },
+        { value: 'Meetup', label: 'Meetup' },
+        { value: 'Webinar', label: 'Webinar' },
+        { value: 'Workshop', label: 'Workshop' },
+        { value: 'Seminar', label: 'Seminar' },
+        { value: 'Lecture', label: 'Lecture' },
+        { value: 'Panel Discussion', label: 'Panel Discussion' },
+        { value: 'Networking Event', label: 'Networking Event' },
+        { value: 'Product Launch', label: 'Product Launch' },
+        { value: 'Hackathon', label: 'Hackathon' },
+      ])}
+      {fields.registrationType && renderSelect('Registration Type', 'RegistrationType', registrationTypeinput || [
+        { value: 'Open', label: 'Open' },
+        { value: 'Closed', label: 'Closed' },
+      ])}
+      {fields.paymentType && renderSelect('Payment Type', 'PaymentType', paymentTypeinput || [
+        { value: 'Free', label: 'Free' },
+        { value: 'Paid', label: 'Paid' },
+      ])}
       {fields.difficulty &&
         renderSelect('Difficulty', 'Difficulty', [
           { value: 'Easy', label: 'Easy' },
@@ -117,7 +160,6 @@ export default function ContentMeta({ contentType = '', meta = {}, onChange, mod
           { value: 'Hard', label: 'Hard' },
           { value: 'Insane', label: 'Insane' },
         ])}
-
       {fields.osType && renderInput('OS Type', 'OsType', 'e.g. Linux')}
       {fields.platform && renderInput('Platform', 'Platform', 'e.g. TryHackMe, HackTheBox')}
       {fields.releaseDate && renderDatePicker('Release Date', 'ReleaseDate')}
@@ -132,18 +174,25 @@ export default function ContentMeta({ contentType = '', meta = {}, onChange, mod
       {fields.progress && renderSelect('Completion Level ( % )', 'ProgressPercentage', Array.from({ length: 21 }, (_, i) => { const value = i * 5; return { value: value.toString(), label: value.toString() };}) )}
       {fields.EpisodeNumber && renderInput('Episode Number', 'EpisodeNumber', '0 - *')}
       {fields.Duration && renderInput('Duration ( minutes )', 'Duration', '*')}
-      {fields.StartDate && renderDatePicker('Project Start Date', 'StartDate')}
-      {fields.EndDate && renderDatePicker('Project End Date', 'EndDate')}
-      {fields.contributor && (
+      {/* Standardized for both Event and Project */}
+      {fields.start && renderDateTimePicker(contentType === 'Event' ? 'Event Start' : 'Project Start', 'StartDate')}
+      {fields.end && renderDateTimePicker(contentType === 'Event' ? 'Event End' : 'Project End', 'EndDate')}
+      {fields.location && renderInput('Location', 'Location', 'Event location or link')}
+      {/* Organizer field uses ContributorSelector, but label is Organizer(s) for Event */}
+      {fields.organizer && (
         <ContributorSelector
           selected={contributorsParsed}
           onChange={handleContributorsChange}
           allowAdd={true}
-          label = {
-                meta.MachineName ? 'WriteUp Author' :
-                contentType == "Podcast" ? 'Speakers' :
-                'Contributor'
-              }
+          label={contentType === 'Event' ? 'Organizer(s)' : 'Contributor'}
+        />
+      )}
+      {fields.contributor && !fields.organizer && (
+        <ContributorSelector
+          selected={contributorsParsed}
+          onChange={handleContributorsChange}
+          allowAdd={true}
+          label={meta.MachineName ? 'WriteUp Author' : contentType === 'Podcast' ? 'Speakers' : 'Contributor'}
         />
       )}
     </div>

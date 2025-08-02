@@ -2,6 +2,7 @@ import { useNavigate } from 'react-router-dom';
 import { useState } from 'react';
 import ContentMeta from '../ContentMeta';
 import Uploads from '../Uploads';
+import ContentMDEditor from '../ContentMDEditor';
 import { postEvent } from '../../utils/apiEventRequest';
 import MessageToast from '../MessageToast';
 import style from '../../../../app/Style';
@@ -9,7 +10,9 @@ import style from '../../../../app/Style';
 export default function EventAdd() {
   const navigate = useNavigate();
   const [meta, setMeta] = useState({});
+  const [content, setContent] = useState('');
   const [selectedTags, setSelectedTags] = useState([]);
+  const [selectedCategory, setSelectedCategory] = useState(null); // For future extensibility
   const [toastConfig, setToastConfig] = useState({
     message: '',
     duration: 3000,
@@ -17,6 +20,42 @@ export default function EventAdd() {
     type: 'success',
     redirect: '',
   });
+
+  // ENUM/select options from DB schema
+  const modeOptions = [
+    { value: 'Online', label: 'Online' },
+    { value: 'In-person', label: 'In-person' },
+    { value: 'Hybrid', label: 'Hybrid' },
+  ];
+  const eventTypeOptions = [
+    { value: 'Conference', label: 'Conference' },
+    { value: 'Meetup', label: 'Meetup' },
+    { value: 'Webinar', label: 'Webinar' },
+    { value: 'Workshop', label: 'Workshop' },
+    { value: 'Seminar', label: 'Seminar' },
+    { value: 'Lecture', label: 'Lecture' },
+    { value: 'Panel Discussion', label: 'Panel Discussion' },
+    { value: 'Networking Event', label: 'Networking Event' },
+    { value: 'Product Launch', label: 'Product Launch' },
+    { value: 'Hackathon', label: 'Hackathon' },
+  ];
+  const statusOptions = [
+    { value: 'Draft', label: 'Draft' },
+    { value: 'Scheduled', label: 'Scheduled' },
+    { value: 'Live', label: 'Live' },
+    { value: 'Completed', label: 'Completed' },
+    { value: 'Paused', label: 'Paused' },
+    { value: 'Cancelled', label: 'Cancelled' },
+    { value: 'Deleted', label: 'Deleted' },
+  ];
+  const registrationTypeOptions = [
+    { value: 'Open', label: 'Open' },
+    { value: 'Closed', label: 'Closed' },
+  ];
+  const paymentTypeOptions = [
+    { value: 'Free', label: 'Free' },
+    { value: 'Paid', label: 'Paid' },
+  ];
 
   const handleMetaChange = (updatedMeta) => {
     setMeta(updatedMeta);
@@ -28,7 +67,10 @@ export default function EventAdd() {
 
   const preparePayload = () => ({
     ...meta,
+    Description: content,
     Tags: selectedTags.map((tag) => tag.name || tag),
+    CategoryID: selectedCategory?.id,
+    CategoryName: selectedCategory?.name,
   });
 
   const showToast = ({ message, duration = 6000, type = 'success', redirect = '' }) => {
@@ -96,34 +138,27 @@ export default function EventAdd() {
       )}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
         <ContentMeta
+          contentType="Event"
           meta={meta}
           onChange={handleMetaChange}
+          mode="new"
           fields={{
             title: true,
             slug: true,
-            summary: true,
-            status: true,
             image: 'EventImage',
-            description: true,
             start: true,
             end: true,
             mode: true,
             location: true,
             eventType: true,
-            paymentType: true,
             registrationType: true,
+            paymentType: true,
             organizer: true,
-            contributor: false,
-            repo: false,
-            reference: false,
-            audio: false,
-            episode: false,
-            ip: false,
-            toolsUsed: false,
-            osType: false,
-            difficulty: false,
-            progress: false,
           }}
+          modeinput={modeOptions}
+          eventTypeinput={eventTypeOptions}
+          registrationTypeinput={registrationTypeOptions}
+          paymentTypeinput={paymentTypeOptions}
         />
         <Uploads
           type="image"
@@ -133,12 +168,20 @@ export default function EventAdd() {
           onUpload={handleUploadKey}
         />
       </div>
-      {/* You can add a tag selector here if needed */}
-      <div className="flex gap-4 mt-4">
-        <button className="bg-lime-500 text-white px-4 py-2 rounded" onClick={handleSaveDraft}>Save as Draft</button>
-        <button className="bg-blue-500 text-white px-4 py-2 rounded" onClick={handlePublish}>Publish</button>
-        <button className="bg-yellow-500 text-white px-4 py-2 rounded" onClick={handleSchedule}>Schedule</button>
-      </div>
+      <ContentMDEditor
+        contentType="Event"
+        mode="new"
+        initialContent={content}
+        initialTags={selectedTags}
+        onContentChange={setContent}
+        onTagsChange={setSelectedTags}
+        actions={['draft', 'publish', 'schedule']}
+        onSaveDraft={handleSaveDraft}
+        onPublish={handlePublish}
+        onSchedule={handleSchedule}
+        showTechStacks={true}
+        showCategories={false}
+      />
     </>
   );
 }

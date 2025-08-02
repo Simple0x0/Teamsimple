@@ -386,12 +386,17 @@ class Database:
         return cls.execute(EVENTS_QUERY, fetchall=True)
 
     @classmethod
-    def create_event(cls, title, description, start, end, mode, location, type_, status, organizer_id, image, upload_key, payment_type, registration_type):
-        return cls.execute(CREATE_EVENT_QUERY, params=(title, description, start, end, mode, location, type_, status, organizer_id, image, upload_key, payment_type, registration_type), commit=True)
+    def create_event(cls, title, summary, description, start, end, mode, location, type_, progress_status, slug, status, organizer_id, image, upload_key, payment_type, registration_type):
+        return cls.execute(CREATE_EVENT_QUERY, params=(title, summary, description, start, end, mode, location, type_, progress_status, slug, status, organizer_id, image, upload_key, payment_type, registration_type), commit=True)
 
     @classmethod
-    def update_event(cls, event_id, title, description, start, end, mode, location, type_, status, organizer_id, image, upload_key, payment_type, registration_type):
-        return cls.execute(UPDATE_EVENT_QUERY, params=(title, description, start, end, mode, location, type_, status, organizer_id, image, upload_key, payment_type, registration_type, event_id), commit=True)
+    def update_event(cls, event_id, title, summary, description, start, end, mode, location, type_, progress_status, slug, status, organizer_id, image, upload_key, payment_type, registration_type):
+        return cls.execute(UPDATE_EVENT_QUERY, params=(title, summary, description, start, end, mode, location, type_, progress_status, slug, status, organizer_id, image, upload_key, payment_type, registration_type, event_id), commit=True)
+
+    @classmethod
+    def get_event_id_by_slug(cls, slug):
+        result = cls.execute(EVENT_ID_QUERY, params=(slug,), fetchone=True)
+        return result[0]['EventID'] if result else None
 
     @classmethod
     def delete_event(cls, event_id):

@@ -696,12 +696,15 @@ EVENTS_QUERY = """
 SELECT 
     e.EventID,
     e.Title,
+    e.Summary,
     e.Description,
     e.StartDate,
     e.EndDate,
     e.Mode,
     e.Location,
     e.EventType,
+    e.ProgressStatus,
+    e.Slug,
     e.Status,
     e.PaymentType,
     e.RegistrationType,
@@ -725,24 +728,32 @@ GROUP BY e.EventID
 ORDER BY e.DateCreated DESC
 """
 
+EVENT_ID_QUERY = """   
+SELECT EventID FROM Event WHERE Slug = %s;
+"""
+
 CREATE_EVENT_QUERY = """
 INSERT INTO `Event` (
-    Title, Description, StartDate, EndDate, Mode, Location, EventType,
-    Status, OrganizerID, EventImage, UploadKey, PaymentType, RegistrationType
+    Title, Summary, Description, StartDate, EndDate, Mode, Location,
+    EventType, ProgressStatus, Slug, Status, OrganizerID, EventImage,
+    UploadKey, PaymentType, RegistrationType
 ) VALUES (
-    %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s
+    %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s
 )
 """
 
 UPDATE_EVENT_QUERY = """
 UPDATE `Event`
 SET Title = %s,
+    Summary = %s,
     Description = %s,
     StartDate = %s,
     EndDate = %s,
     Mode = %s,
     Location = %s,
     EventType = %s,
+    ProgressStatus = %s,
+    Slug = %s,
     Status = %s,
     OrganizerID = %s,
     EventImage = %s,
