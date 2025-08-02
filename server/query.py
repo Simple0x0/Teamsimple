@@ -728,6 +728,43 @@ GROUP BY e.EventID
 ORDER BY e.DateCreated DESC
 """
 
+GET_EVENT_BY_ID_QUERY = """
+SELECT 
+    e.EventID,
+    e.Title,
+    e.Summary,
+    e.Description,
+    e.StartDate,
+    e.EndDate,
+    e.Mode,
+    e.Location,
+    e.EventType,
+    e.ProgressStatus,
+    e.Slug,
+    e.Status,
+    e.PaymentType,
+    e.RegistrationType,
+    e.EventImage,
+    e.DateCreated,
+    e.UploadKey,
+    eo.OrganizerID,
+    eo.Name AS OrganizerName,
+    eo.Email AS OrganizerEmail,
+    eo.ContactNumber AS OrganizerContact,
+    eo.Organization AS OrganizerOrganization,
+    eo.ProfilePicture AS OrganizerProfilePicture,
+    GROUP_CONCAT(DISTINCT t.TagID) AS TagIDs,
+    GROUP_CONCAT(DISTINCT t.Name) AS Tags
+FROM `Event` e
+JOIN EventOrganizer eo ON eo.OrganizerID = e.OrganizerID
+LEFT JOIN EventTag et ON e.EventID = et.EventID
+LEFT JOIN Tag t ON et.TagID = t.TagID
+WHERE e.EventID = %s AND e.Status != 'Deleted'
+GROUP BY e.EventID
+LIMIT 1
+"""
+
+
 EVENT_ID_QUERY = """   
 SELECT EventID FROM Event WHERE Slug = %s;
 """

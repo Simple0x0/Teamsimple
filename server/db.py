@@ -386,6 +386,11 @@ class Database:
         return cls.execute(EVENTS_QUERY, fetchall=True)
 
     @classmethod
+    def get_event_by_id(cls, event_id):
+        result = cls.execute(GET_EVENT_BY_ID_QUERY, params=(event_id,))
+        return result[0] if result else None
+
+    @classmethod
     def create_event(cls, title, summary, description, start, end, mode, location, type_, progress_status, slug, status, organizer_id, image, upload_key, payment_type, registration_type):
         return cls.execute(CREATE_EVENT_QUERY, params=(title, summary, description, start, end, mode, location, type_, progress_status, slug, status, organizer_id, image, upload_key, payment_type, registration_type), commit=True)
 

@@ -11,6 +11,7 @@ export default defineConfig({
   server: {
     allowedHosts: [
       `f242-2001-4278-11-44cd-1d90-1ad1-c7ee-ffca.ngrok-free.app`,
+      'simple.local',
     ]
   },
    build: {

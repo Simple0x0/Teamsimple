@@ -28,6 +28,15 @@ class Events(SerializableResource):
     def post(self):
         try:
             data = request.get_json()
+            EventID = s.sanitize_id(data.get('EventID', ''))
+
+            # Check if event exists and registration is open
+            event = db.get_event_by_id(EventID)
+            if not event:
+                return {"message": "Event not found."}, 404
+            if event.get("RegistrationType") == "Closed":
+                return {"message": "Registration for this event is closed."}, 403
+            
             FirstName = s.sanitize_fullname(data.get('FirstName', ''))
             LastName = s.sanitize_fullname(data.get('LastName', ''))
             Nickname = s.sanitize_username(data.get('Nickname', 'Anonymous'))
@@ -39,8 +48,7 @@ class Events(SerializableResource):
             Country = s.sanitize_fullname(data.get('Country', ''))
             RegistrationType = data.get('RegistrationType')
             ParticipantInput = s.sanitize_summary(data.get('ParticipantInput', ''))
-            EventID = s.sanitize_id(data.get('EventID', ''))
-
+            
             if RegistrationType not in ['Attendee', 'Student', 'VIP']:
                 return {'message': 'Incorrect Registration Type'}
             

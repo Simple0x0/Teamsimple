@@ -55,7 +55,7 @@ api = Api(app)
 app.app_context()
 #CORS(app)
 #CORS(app, supports_credentials=True, resources={r"/api/*": {"origins": "*"}})
-CORS(app, supports_credentials=True, resources={r"/api/*": {"origins": ["http://localhost:5173", "http://127.0.0.1:5173", "http://192.168.1.31:5173", "https://f242-2001-4278-11-44cd-1d90-1ad1-c7ee-ffca.ngrok-free.app", os.getenv('CLIENT_URL')]}})
+CORS(app, supports_credentials=True, resources={r"/api/*": {"origins": ["http://localhost:5173", "http://127.0.0.1:5173", "http://192.168.1.31:5173", "https://f242-2001-4278-11-44cd-1d90-1ad1-c7ee-ffca.ngrok-free.app", "http://simple.local:5173", os.getenv('CLIENT_URL')]}})
 
 # ======= Logging Configuration ============
 LOG_LEVEL = logging.DEBUG if app.debug else logging.INFO

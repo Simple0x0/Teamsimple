@@ -17,12 +17,12 @@ class EventParticipants(SerializableResource):
         except Exception:
             app.logger.error(f"Error fetching participants for event {event_id}: {traceback.format_exc()}")
             return {"error": "Failed to fetch participants.", "details": traceback.format_exc()}, 500
-
+"""
     @jwt_required()
     def post(self, event_id):
         try:
             id = s.sanitize_id(event_id)
-            event = db.get_event(id)
+            event = db.get_event_by_id(id)
             if not event:
                 return {"error": "Event not found."}, 404
             if event.get("RegistrationType") == "Closed":
@@ -47,8 +47,21 @@ class EventParticipants(SerializableResource):
             missing = [f for f in required if not participant[f]]
             if missing:
                 return {"error": f"Missing required fields: {', '.join(missing)}"}, 400
-            # Register participant
-            result = db.add_event_participant(participant)
+            # Register participant using correct db method
+            result = db.register_participant(
+                participant["FirstName"],
+                participant["LastName"],
+                participant["Nickname"],
+                participant["Email"],
+                participant["ContactNumber"],
+                participant["Organization"],
+                participant["Position"],
+                participant["City"],
+                participant["Country"],
+                participant["RegistrationType"],
+                participant["ParticipantInput"],
+                participant["EventID"]
+            )
             if result:
                 return {"message": "Registration successful."}, 201
             else:
@@ -56,3 +69,5 @@ class EventParticipants(SerializableResource):
         except Exception:
             app.logger.error(f"Error registering participant for event {event_id}: {traceback.format_exc()}")
             return {"error": "Failed to register participant.", "details": traceback.format_exc()}, 500
+
+"""
