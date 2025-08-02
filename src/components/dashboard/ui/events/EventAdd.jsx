@@ -64,12 +64,16 @@ export default function EventAdd() {
   };
 
   const preparePayload = () => {
-    // Ensure all required fields are present and mapped from meta
+    // Ensure all required fields are present and mapped from meta, with safe defaults
     const {
-      ProgressStatus,
-      Summary,
-      Slug,
-      Status,
+      ProgressStatus = progressStatusOptions[0].value,
+      Summary = '',
+      Slug = '',
+      Status = 'Draft',
+      Mode = modeOptions[0].value,
+      EventType = eventTypeOptions[0].value,
+      RegistrationType = registrationTypeOptions[0].value,
+      PaymentType = paymentTypeOptions[0].value,
       ...restMeta
     } = meta;
     return {
@@ -82,6 +86,10 @@ export default function EventAdd() {
       Summary,
       Slug,
       Status,
+      Mode,
+      EventType,
+      RegistrationType,
+      PaymentType,
     };
   };
 

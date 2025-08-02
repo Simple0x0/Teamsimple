@@ -130,39 +130,12 @@ export default function ContentMeta({ contentType = '', meta = {}, onChange, mod
 
       {/* Only show status select if statusinput is provided and not for Event (handled by action buttons) */}
       {fields.status && statusinput && statusinput.length > 0 && renderSelect('Status', 'Status', statusinput)}
-      
-      {fields.ProgressStatus && renderSelect('Progress Status', 'ProgressStatus', progressStatusinput || [
-        { value: 'Upcoming', label: 'Upcoming' },
-        { value: 'Ongoing', label: 'Ongoing' },
-        { value: 'Completed', label: 'Completed' },
-        { value: 'Cancelled', label: 'Cancelled' },
-      ])}
+      {fields.ProgressStatus && renderSelect('Progress Status', 'ProgressStatus', progressStatusinput )}
       {fields.image && renderInput('Cover Image URL', fields.image, 'https://domain.com/your-image.jpg')}
-      {fields.mode && renderSelect('Mode', 'Mode', modeinput || [
-        { value: 'Online', label: 'Online' },
-        { value: 'In-person', label: 'In-person' },
-        { value: 'Hybrid', label: 'Hybrid' },
-      ])}
-      {fields.eventType && renderSelect('Event Type', 'EventType', eventTypeinput || [
-        { value: 'Conference', label: 'Conference' },
-        { value: 'Meetup', label: 'Meetup' },
-        { value: 'Webinar', label: 'Webinar' },
-        { value: 'Workshop', label: 'Workshop' },
-        { value: 'Seminar', label: 'Seminar' },
-        { value: 'Lecture', label: 'Lecture' },
-        { value: 'Panel Discussion', label: 'Panel Discussion' },
-        { value: 'Networking Event', label: 'Networking Event' },
-        { value: 'Product Launch', label: 'Product Launch' },
-        { value: 'Hackathon', label: 'Hackathon' },
-      ])}
-      {fields.registrationType && renderSelect('Registration Type', 'RegistrationType', registrationTypeinput || [
-        { value: 'Open', label: 'Open' },
-        { value: 'Closed', label: 'Closed' },
-      ])}
-      {fields.paymentType && renderSelect('Payment Type', 'PaymentType', paymentTypeinput || [
-        { value: 'Free', label: 'Free' },
-        { value: 'Paid', label: 'Paid' },
-      ])}
+      {fields.mode && renderSelect('Mode', 'Mode', modeinput )}
+      {fields.eventType && renderSelect('Event Type', 'EventType', eventTypeinput)}
+      {fields.registrationType && renderSelect('Registration Type', 'RegistrationType', registrationTypeinput )}
+      {fields.paymentType && renderSelect('Payment Type', 'PaymentType', paymentTypeinput )}
       {fields.difficulty &&
         renderSelect('Difficulty', 'Difficulty', [
           { value: 'Easy', label: 'Easy' },
