@@ -57,6 +57,9 @@ class EventsMgmt(SerializableResource):
             upload_key = s.sanitize_upload_key(raw.get("UploadKey"))
             payment_type = s.sanitize_alphanum(raw.get("PaymentType"))
             registration_type = s.sanitize_alphanum(raw.get("RegistrationType"))
+            summary = s.sanitize_summary(raw.get("Summary"))
+            progress_status = s.sanitize_alphanum(raw.get("ProgressStatus"))
+            slug = s.sanitize_alphanum(raw.get("Slug"))
 
             required_fields = [
                 ("Title", title),
@@ -67,6 +70,7 @@ class EventsMgmt(SerializableResource):
                 ("UploadKey", upload_key),
                 ("PaymentType", payment_type),
                 ("RegistrationType", registration_type),
+                ("Slug", slug),
             ]
 
             missing_fields = [name for name, val in required_fields if val in (None, '')]
@@ -87,12 +91,15 @@ class EventsMgmt(SerializableResource):
                 success = db.update_event(
                     event_id=event_id,
                     title=title,
+                    summary=summary,
                     description=description,
                     start=start,
                     end=end,
                     mode=mode,
                     location=location,
                     type_=type_,
+                    progress_status=progress_status,
+                    slug=slug,
                     status=status,
                     organizer_id=organizer_id,
                     image=image,
@@ -112,17 +119,19 @@ class EventsMgmt(SerializableResource):
                 return {"message": "Event successfully updated.", "EventID": event_id}, 201
 
             elif action == "new":
-                slug = generate_slug(title)
+                slug = slug or generate_slug(title)
                 hashed_upload_key = upload_key + '-hashed'
-
                 new_event_id = db.create_event(
                     title=title,
+                    summary=summary,
                     description=description,
                     start=start,
                     end=end,
                     mode=mode,
                     location=location,
                     type_=type_,
+                    progress_status=progress_status,
+                    slug=slug,
                     status=status,
                     organizer_id=organizer_id,
                     image=image,
