@@ -45,7 +45,7 @@ import TeamMgmt from '../components/dashboard/ui/team/TeamMgmt';
 import WhoWeAre from '../components/dashboard/ui/who-we-are/WhoWeAre';
 import EventMgmt from '../components/dashboard/ui/events/EventMgmt';
 import EventAdd from '../components/dashboard/ui/events/EventAdd';
-
+import EventEdit from '../components/dashboard/ui/events/EventEdit';
 
 
 const router = createBrowserRouter(
@@ -84,6 +84,7 @@ const router = createBrowserRouter(
         <Route path="/dashboard/achievements/new" element={<AchievementAdd />} /> 
         <Route path="/dashboard/events" element={<EventMgmt />} /> 
         <Route path="/dashboard/events/new" element={<EventAdd />} />
+        <Route path="/dashboard/events/edit" element={<EventEdit />} />
 
         
         <Route path="/dashboard/contributors" element={<ContributorsMgmt />} /> 

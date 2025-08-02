@@ -56,6 +56,12 @@ export default function EventAdd() {
     { value: 'Free', label: 'Free' },
     { value: 'Paid', label: 'Paid' },
   ];
+  const progressStatusOptions = [
+    { value: 'Upcoming', label: 'Upcoming' },
+    { value: 'Ongoing', label: 'Ongoing' },
+    { value: 'Completed', label: 'Completed' },
+    { value: 'Cancelled', label: 'Cancelled' },
+  ];
 
   const handleMetaChange = (updatedMeta) => {
     setMeta(updatedMeta);
@@ -71,6 +77,10 @@ export default function EventAdd() {
     Tags: selectedTags.map((tag) => tag.name || tag),
     CategoryID: selectedCategory?.id,
     CategoryName: selectedCategory?.name,
+    ProgressStatus: meta.ProgressStatus,
+    Summary: meta.Summary,
+    Slug: meta.Slug,
+    Status: meta.Status, // <-- include status in payload
   });
 
   const showToast = ({ message, duration = 6000, type = 'success', redirect = '' }) => {
@@ -89,9 +99,9 @@ export default function EventAdd() {
       submissionType: 'draft',
     });
     if (result.success) {
-      showToast({ message: 'Draft saved successfully', type: 'success', redirect: '/dashboard/events' });
+      showToast({ message: result?.data?.message || 'Draft saved successfully', type: 'success', redirect: '/dashboard/events' });
     } else {
-      showToast({ message: `Failed to save draft: ${result.error}`, type: 'failure' });
+      showToast({ message: result?.error || 'Failed to save draft', type: 'failure' });
     }
   };
 
@@ -103,9 +113,9 @@ export default function EventAdd() {
       submissionType: 'publish',
     });
     if (result.success) {
-      showToast({ message: 'Event published successfully', type: 'success', redirect: '/dashboard/events' });
+      showToast({ message: result?.data?.message || 'Event published successfully', type: 'success', redirect: '/dashboard/events' });
     } else {
-      showToast({ message: `Failed to publish event: ${result.error}`, type: 'failure' });
+      showToast({ message: result?.error || 'Failed to publish event', type: 'failure' });
     }
   };
 
@@ -119,9 +129,9 @@ export default function EventAdd() {
       submissionType: 'schedule',
     });
     if (result.success) {
-      showToast({ message: 'Event scheduled successfully', type: 'success', redirect: '/dashboard/events' });
+      showToast({ message: result?.data?.message || 'Event scheduled successfully', type: 'success', redirect: '/dashboard/events' });
     } else {
-      showToast({ message: `Failed to schedule event: ${result.error}`, type: 'failure' });
+      showToast({ message: result?.error || 'Failed to schedule event', type: 'failure' });
     }
   };
 
@@ -145,6 +155,9 @@ export default function EventAdd() {
           fields={{
             title: true,
             slug: true,
+            summary: true,
+            ProgressStatus: true,
+            status: true, // <-- add status field
             image: 'EventImage',
             start: true,
             end: true,
@@ -159,6 +172,8 @@ export default function EventAdd() {
           eventTypeinput={eventTypeOptions}
           registrationTypeinput={registrationTypeOptions}
           paymentTypeinput={paymentTypeOptions}
+          progressStatusinput={progressStatusOptions}
+          statusinput={statusOptions} // <-- pass status options
         />
         <Uploads
           type="image"

@@ -40,6 +40,20 @@ class EventsMgmt(SerializableResource):
 
                 if db.delete_event(event_id):
                     return {"message": "Event successfully deleted."}, 201
+                else:
+                    return {"error": "Failed to delete event."}, 500
+
+            if action in ["open_registration", "close_registration"]:
+                raw = data.get("event", {})
+                event_id = s.sanitize_id(raw.get("EventID"))
+                if not event_id:
+                    return {"error": "Missing EventID for registration action."}, 400
+                reg_status = "Open" if action == "open_registration" else "Closed"
+                success = db.set_event_registration_status(event_id, reg_status)
+                if success:
+                    return {"message": f"Registration {reg_status.lower()}ed successfully."}, 200
+                else:
+                    return {"error": f"Failed to {reg_status.lower()} registration."}, 500
 
             submission_type = data.get("submissionType", "draft").lower()
             raw = data.get("event", {})
@@ -78,7 +92,7 @@ class EventsMgmt(SerializableResource):
                 return {"error": f"Missing or invalid event fields: {', '.join(missing_fields)}"}, 400
             
             if registration_type not in ['Free', 'Paid']:
-                return {'message': 'Incorrect Registration Type'}
+                return {'message': 'Incorrect Registration Type'}, 400
 
             if submission_type == "publish":
                 status = "Published"

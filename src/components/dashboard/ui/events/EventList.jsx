@@ -6,6 +6,7 @@ import MessageToast from '../MessageToast';
 import Search from '../../../public/ui/Search';
 import { FaEye, FaEdit, FaTrash } from 'react-icons/fa';
 import style from '../../../../app/Style';
+import Loading from '../../../public/ui/Loading';
 import ErrorHandle from '../../../public/ui/ErrorHandle';
 
 export default function EventList({ showActions = true, onDelete = () => {} }) {
@@ -45,10 +46,12 @@ export default function EventList({ showActions = true, onDelete = () => {} }) {
     const term = searchTerm.toLowerCase();
     return (
       e.Title.toLowerCase().includes(term) ||
-      e.Description.toLowerCase().includes(term) ||
+      (e.Summary && e.Summary.toLowerCase().includes(term)) ||
+      (e.Description && e.Description.toLowerCase().includes(term)) ||
       (e.Location && e.Location.toLowerCase().includes(term)) ||
       (e.Mode && e.Mode.toLowerCase().includes(term)) ||
-      (e.Status && e.Status.toLowerCase().includes(term))
+      (e.Status && e.Status.toLowerCase().includes(term)) ||
+      (e.ProgressStatus && e.ProgressStatus.toLowerCase().includes(term))
     );
   });
 
@@ -58,7 +61,7 @@ export default function EventList({ showActions = true, onDelete = () => {} }) {
   const endIndex = startIndex + EVENTS_PER_PAGE;
   const eventsToDisplay = filteredEvents.slice(startIndex, endIndex);
 
-  if (loading) return <div>Loading events...</div>;
+  if (loading) return <Loading />;
   if (error) return <ErrorHandle type="Event" errorType="server" message={error} />;
   if (!events || events.length === 0) {
     return <ErrorHandle type="Event" errorType="server" message="No events available." />;
@@ -118,6 +121,27 @@ export default function EventList({ showActions = true, onDelete = () => {} }) {
     setCurrentPage(1);
   };
 
+  // Registration type change handler (outside JSX)
+  async function handleRegistrationTypeChange(e, newType) {
+    const prevType = e.RegistrationType;
+    setEvents((prev) => prev.map(ev => ev.EventID === e.EventID ? { ...ev, RegistrationType: newType } : ev));
+    try {
+      const response = await postEvent({
+        action: 'edit',
+        event: { ...e, RegistrationType: newType },
+      });
+      showMessageToast({ message: response?.data?.message || 'Registration type updated', type: response?.success ? 'success' : 'failure' });
+    } catch (err) {
+      showMessageToast({ message: err?.error || 'Failed to update registration type', type: 'failure' });
+      setEvents((prev) => prev.map(ev => ev.EventID === e.EventID ? { ...ev, RegistrationType: prevType } : ev));
+    }
+  }
+
+  const registrationTypeOptions = [
+    { value: 'Open', label: 'Open' },
+    { value: 'Closed', label: 'Closed' },
+  ];
+
   return (
     <>
       {toastConfig.visible && (
@@ -146,9 +170,37 @@ export default function EventList({ showActions = true, onDelete = () => {} }) {
                   <span className={s.metaValue}>{e.EventType}</span> | {e.Mode} | {e.Location}
                 </p>
                 <p className={s.meta}>
-                  {new Date(e.StartDate).toLocaleDateString()} - {new Date(e.EndDate).toLocaleDateString()}
+                  {new Date(e.StartDate).toLocaleString('en-US', {
+                    year: 'numeric',
+                    month: 'short',
+                    day: '2-digit',
+                    hour: '2-digit',
+                    minute: '2-digit',
+                  })}
+                  {' '}–{' '}
+                  {new Date(e.EndDate).toLocaleString('en-US', {
+                    year: 'numeric',
+                    month: 'short',
+                    day: '2-digit',
+                    hour: '2-digit',
+                    minute: '2-digit',
+                  })}
                 </p>
-                <p className={s.summary}>{e.Description}</p>
+                {e.Summary && <p className={s.summary}>{e.Summary}</p>}
+                {e.Description && <p className={s.summary}>{e.Description}</p>}
+                {/* RegistrationType dropdown */}
+                <div className="flex items-center gap-2 my-2">
+                  <label className="text-sm font-medium text-gray-400">Registration Type:</label>
+                  <select
+                    value={e.RegistrationType}
+                    onChange={(evt) => handleRegistrationTypeChange(e, evt.target.value)}
+                    className="bg-gray-800 text-white px-3 py-1 rounded border border-gray-700 focus:outline-none focus:ring-2 focus:ring-lime-400 text-sm"
+                  >
+                    {registrationTypeOptions.map(opt => (
+                      <option key={opt.value} value={opt.value}>{opt.label}</option>
+                    ))}
+                  </select>
+                </div>
                 {/* Status logic: show ENDED in red if EndDate is past */}
                 {(() => {
                   const now = new Date();
@@ -161,9 +213,14 @@ export default function EventList({ showActions = true, onDelete = () => {} }) {
                     );
                   } else {
                     return (
-                      <p className={s.status}>
-                        Status: <span className={s.statusBadge?.[e.Status] || ''}>{e.Status}</span>
-                      </p>
+                      <>
+                        <p className={s.status}>
+                          Status: <span className={s.statusBadge?.[e.Status] || ''}>{e.Status}</span>
+                        </p>
+                        <p className={s.status}>
+                          Progress: <span className={s.statusBadge?.[e.ProgressStatus] || ''}>{e.ProgressStatus}</span>
+                        </p>
+                      </>
                     );
                   }
                 })()}
