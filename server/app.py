@@ -19,7 +19,7 @@ from api.project.projects import Projects
 from api.podcast.podcasts import Podcasts
 from api.imagerender import ImageRenderer
 from api.achievement.achievements import Achievements
-from api.events import Events
+from api.event.events import Events
 from api.fingerprint import Fingerprint
 from api.likes import Like
 from api.latest import Latest
@@ -44,6 +44,8 @@ from api.team.member import MemberInfo
 from api.team.teammgmt import TeamMgmt
 from api.team.loginmgmt import PasswordMgmt
 from api.aboutteam.aboutteammgmt import AboutTeamMgmt
+from api.event.eventsmgmt import EventsMgmt
+from api.event.eventparticipant import EventParticipants
 
 
 # ======= Initialize app and extensions =========
@@ -159,7 +161,8 @@ api.add_resource(MemberInfo, '/api/auth/memberinfo')
 api.add_resource(TeamMgmt, '/api/auth/teammgmt')
 api.add_resource(AboutTeamMgmt, '/api/auth/aboutteam')
 api.add_resource(PasswordMgmt, '/api/auth/passwordmgmt')
-
+api.add_resource(EventsMgmt, '/api/auth/eventsmgmt')
+api.add_resource(EventParticipants, '/api/auth/eventsmgmt/participants/<string:event_id>')
 
 
 # ===== Run App =====

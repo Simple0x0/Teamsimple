@@ -124,7 +124,7 @@ class Sanitizer():
 
 
     def sanitize_password(self, password):
-        if len(password) >= 6:  
+        if len(password) >= 8:  
             return password
         else:
             return None 
@@ -267,7 +267,24 @@ class Sanitizer():
             raise ValueError(f"Invalid email address: {email}")
         return email
 
+    def sanitize_phone_number(self, phone: str) -> str:
+        """
+        Sanitize and validate a phone number.
+        Removes spaces, dashes, and parentheses.
+        Allows only numbers with optional leading '+'.
+        """
+        if not isinstance(phone, str):
+            return None
 
+        # Remove common separators
+        phone = phone.strip().replace(" ", "").replace("-", "").replace("(", "").replace(")", "")
+
+        # Validate pattern: allows optional '+' followed by 7 to 15 digits (E.164 compliant)
+        pattern = re.compile(r"^\+?[0-9]{7,15}$")
+        if not pattern.match(phone):
+            raise ValueError(f"Invalid phone number: {phone}")
+
+        return phone
 
 
 

@@ -647,7 +647,21 @@ const style = {
         noData: "text-center text-sm text-gray-400 mt-6",
     },
 
-
+    EventParticipants: {
+      wrapper: 'w-full max-w-full px-2 py-4 md:px-8 md:py-6 bg-slate-950 rounded-lg shadow-md min-h-[300px] flex flex-col',
+      title: 'text-2xl font-bold text-lime-400 mb-4 text-center',
+      controls: 'flex flex-col md:flex-row md:items-center md:justify-between gap-4 mb-4',
+      label: 'text-gray-300 font-medium mb-1 md:mb-0',
+      select: 'w-full md:w-64 px-3 py-2 rounded bg-slate-900 text-lime-400 border border-slate-800 focus:border-lime-400 outline-none',
+      searchBar: 'w-full md:w-1/2',
+      loading: 'text-center text-gray-400 py-8',
+      error: 'text-red-500 text-center mb-4',
+      table: 'w-full table-auto border-collapse rounded-lg overflow-x-auto bg-slate-900',
+      th: 'px-2 py-2 bg-slate-800 text-lime-400 font-semibold text-xs md:text-sm',
+      td: 'px-2 py-2 text-gray-200 text-xs md:text-sm break-words',
+      tr: 'border-b border-slate-800 hover:bg-slate-800 transition',
+      noData: 'text-center text-gray-400 py-4',
+    }
 
 
 

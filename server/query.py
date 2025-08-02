@@ -715,7 +715,7 @@ SELECT
     eo.Organization AS OrganizerOrganization,
     eo.ProfilePicture AS OrganizerProfilePicture,
     GROUP_CONCAT(DISTINCT t.TagID) AS TagIDs,
-    GROUP_CONCAT(DISTINCT t.Name) AS TagNames
+    GROUP_CONCAT(DISTINCT t.Name) AS Tags
 FROM `Event` e
 JOIN EventOrganizer eo ON eo.OrganizerID = e.OrganizerID
 LEFT JOIN EventTag et ON e.EventID = et.EventID
@@ -769,23 +769,45 @@ WHERE EventID = %s
 """
 
 REGISTER_EVENT_PARTICIPANT_QUERY = """
-INSERT INTO EventParticipant (Name, Email, ContactNumber, EventID)
-VALUES (%s, %s, %s, %s)
+INSERT INTO EventParticipant (
+    FirstName,
+    LastName,
+    Nickname,
+    Email,
+    ContactNumber,
+    Organization,
+    Position,
+    City,
+    Country,
+    RegistrationType,
+    ParticipantInput,
+    EventID
+) VALUES (
+    %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s
+)
 """
 
 GET_EVENT_PARTICIPANTS_QUERY = """
 SELECT 
     ParticipantID,
-    Name,
+    FirstName,
+    LastName,
+    Nickname,
     Email,
     ContactNumber,
-    RegistrationDate,
+    Organization,
+    Position,
+    City,
+    Country,
+    RegistrationType,
+    ParticipantInput,
     EventID,
     DateCreated
 FROM EventParticipant
 WHERE EventID = %s
-ORDER BY RegistrationDate DESC
+ORDER BY DateCreated DESC
 """
+
 
 DELETE_EVENT_PARTICIPANT_QUERY = """
 DELETE FROM EventParticipant

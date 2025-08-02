@@ -1,7 +1,7 @@
 import os
 import traceback
-from flask import request, jsonify, make_response
-from flask_jwt_extended import jwt_required, get_jwt_identity
+from flask import request
+from flask import current_app as app
 from datetime import datetime
 from core.extensions import db, s, UPLOAD_BASE
 from utils.utils import generate_slug, validate_fingerprint_value
@@ -24,5 +24,5 @@ class Blogs(SerializableResource):
             return {"Blogs": published_blogs}, 200
 
         except Exception:
-            print(f"Error in GET /api/blogs: {traceback.format_exc()}")
+            app.logger.error(f"Error in GET /api/projects: {traceback.format_exc()}")
             return {"message": "Internal server error"}, 500

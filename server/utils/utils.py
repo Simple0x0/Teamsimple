@@ -209,8 +209,6 @@ def validate_input_data(data_type, data):
     return True, {"name": name, "description": description}
 
 
-
-
 def is_allowed_file(filename, filetype):
     if '.' not in filename:
         return False

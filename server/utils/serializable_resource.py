@@ -3,6 +3,7 @@ from datetime import  datetime
 
 # ===== Shared Base Resource =====
 class SerializableResource(Resource):
+    
     @staticmethod
     def serialize_row(row):
         return {

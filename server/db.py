@@ -406,8 +406,8 @@ class Database:
         return cls.execute(DELETE_EVENT_TAGS_QUERY, params=(event_id,), commit=True)
 
     @classmethod
-    def register_participant(cls, name, email, contact, event_id):
-        return cls.execute(REGISTER_EVENT_PARTICIPANT_QUERY, params=(name, email, contact, event_id), commit=True)
+    def register_participant(cls, first_name, last_name, nickname, email, contact_number, organization, position, city, country, registration_type, participant_input, event_id):
+        return cls.execute(REGISTER_EVENT_PARTICIPANT_QUERY, params=(first_name, last_name, nickname, email, contact_number, organization, position, city, country, registration_type, participant_input, event_id), commit=True)
 
     @classmethod
     def get_event_participants(cls, event_id):
