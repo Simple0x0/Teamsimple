@@ -38,7 +38,6 @@ export default function ContentMDEditor({
     setValue(initialContent);
   }, [initialContent]);
 
-
   useEffect(() => {
     onContentChange?.(value);
   }, [value]);
@@ -50,6 +49,15 @@ export default function ContentMDEditor({
   useEffect(() => {
     onCategoriesChange?.(selectedCategory);
   }, [selectedCategory]);
+
+  //   // Fix: For Event, ensure onContentChange is called on mount with initialContent
+  // useEffect(() => {
+  //   if (contentType === 'Event') {
+  //     onContentChange?.(initialContent);
+  //   }
+  //   // eslint-disable-next-line
+  // }, [contentType, initialContent]);
+
 
   const handleScheduleSubmit = () => {
     if (!scheduleDate) {

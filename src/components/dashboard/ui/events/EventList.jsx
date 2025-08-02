@@ -8,6 +8,7 @@ import { FaEye, FaEdit, FaTrash } from 'react-icons/fa';
 import style from '../../../../app/Style';
 import Loading from '../../../public/ui/Loading';
 import ErrorHandle from '../../../public/ui/ErrorHandle';
+import Pagination from '../../../public/ui/PaginationModule';
 
 export default function EventList({ showActions = true, onDelete = () => {} }) {
   const s = style.projectList;
@@ -55,7 +56,7 @@ export default function EventList({ showActions = true, onDelete = () => {} }) {
     );
   });
 
-  const EVENTS_PER_PAGE = 6;
+  const EVENTS_PER_PAGE = 10;
   const totalPages = Math.ceil(filteredEvents.length / EVENTS_PER_PAGE);
   const startIndex = (currentPage - 1) * EVENTS_PER_PAGE;
   const endIndex = startIndex + EVENTS_PER_PAGE;
@@ -192,7 +193,6 @@ export default function EventList({ showActions = true, onDelete = () => {} }) {
                   })}
                 </p>
                 {e.Summary && <p className={s.summary}>{e.Summary}</p>}
-                {e.Description && <p className={s.summary}>{e.Description}</p>}
                 {/* RegistrationType dropdown */}
                 <div className="flex items-center gap-2 my-2">
                   <label className="text-sm font-medium text-gray-400">Registration Type:</label>
@@ -206,28 +206,25 @@ export default function EventList({ showActions = true, onDelete = () => {} }) {
                     ))}
                   </select>
                 </div>
-                {/* Status logic: show ENDED in red if EndDate is past */}
+                {/* Status and ProgressStatus display with Tailwind styling; ENDED in red if past EndDate */}
+                <p className="text-sm font-semibold text-sky-400">
+                  Status: <span className={s.statusBadge?.[e.Status] || ''}>{e.Status}</span>
+                </p>
+                <p className="text-sm font-semibold text-lime-400">
+                  Progress: <span className={s.statusBadge?.[e.ProgressStatus] || ''}>{e.ProgressStatus}</span>
+                </p>
                 {(() => {
                   const now = new Date();
                   const end = new Date(e.EndDate);
-                  if (end < now) {
+                  if (e.ProgressStatus === 'Completed' || end < now) {
+                    // Event completed: show ENDED in red (Tailwind)
                     return (
-                      <p className={s.status}>
-                        Status: <span style={{ color: 'red', fontWeight: 'bold' }}>ENDED</span>
+                      <p className="text-sm font-semibold text-red-500">
+                        <span className="font-bold">ENDED</span>
                       </p>
                     );
-                  } else {
-                    return (
-                      <>
-                        <p className={s.status}>
-                          Status: <span className={s.statusBadge?.[e.Status] || ''}>{e.Status}</span>
-                        </p>
-                        <p className={s.status}>
-                          Progress: <span className={s.statusBadge?.[e.ProgressStatus] || ''}>{e.ProgressStatus}</span>
-                        </p>
-                      </>
-                    );
                   }
+                  return null;
                 })()}
                 {e.Tags && (
                   <p className={s.meta}>
@@ -271,15 +268,12 @@ export default function EventList({ showActions = true, onDelete = () => {} }) {
       {/* Pagination */}
       {totalPages > 1 && (
         <div className={s.pagination}>
-          {Array.from({ length: totalPages }, (_, i) => (
-            <button
-              key={i + 1}
-              className={currentPage === i + 1 ? s.activePage : s.pageBtn}
-              onClick={() => setCurrentPage(i + 1)}
-            >
-              {i + 1}
-            </button>
-          ))}
+          <Pagination
+            currentPage={currentPage}
+            totalPages={totalPages}
+            onPageChange={setCurrentPage}
+            className={s.paginationComponent}
+          />
         </div>
       )}
       <Transition appear show={isOpen} as={Fragment}>

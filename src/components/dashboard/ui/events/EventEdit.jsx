@@ -49,7 +49,7 @@ export default function EventEdit() {
     { value: 'Product Launch', label: 'Product Launch' },
     { value: 'Hackathon', label: 'Hackathon' },
   ];
-  
+
   const registrationTypeOptions = [
     { value: 'Open', label: 'Open' },
     { value: 'Closed', label: 'Closed' },
@@ -105,6 +105,7 @@ export default function EventEdit() {
 
   const handlePublish = async () => {
     const payload = preparePayload();
+    console.log(payload);
     const result = await postEvent({
       event: payload,
       action: 'edit',
@@ -132,7 +133,7 @@ export default function EventEdit() {
       showMessageToast({ message: result?.error || 'Failed to schedule event', type: 'failure' });
     }
   };
-
+  console.log(content);
   return (
     <>
       {toastConfig.visible && (

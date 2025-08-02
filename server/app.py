@@ -98,7 +98,7 @@ app.config['JWT_COOKIE_CSRF_PROTECT'] = False  # Enable if using CSRF protection
 app.config['JWT_ACCESS_COOKIE_PATH'] = '/api'  # Scoped path
 app.config['JWT_ACCESS_TOKEN_EXPIRES'] = timedelta(days=1)
 app.config['JWT_ACCESS_COOKIE_NAME'] = 'access_token'
-app.config["JWT_COOKIE_SAMESITE"] = "None"  # 'Lax' in Dev, 'None' with Ngrok Or 'Strict' in prod (if not !same-origin)
+app.config["JWT_COOKIE_SAMESITE"] = "Lax"  # 'Lax' in Dev, 'None' with Ngrok Or 'Strict' in prod (if not !same-origin)
 #app.config["JWT_ACCESS_CSRF_HEADER_NAME"] = "X-CSRF-TOKEN"
 #limiter = Limiter(get_remote_address, app=app) #TO BE ACTIVATED WHEN READY FOR PRODUCTION
 app.config['MAX_CONTENT_LENGTH'] = 150 * 1024 * 1024 #150MB max
@@ -106,8 +106,6 @@ app.config['MAX_CONTENT_LENGTH'] = 150 * 1024 * 1024 #150MB max
 # ======= Encryption & Token Initialization =========
 bcrypt.init_app(app)
 jwt.init_app(app)
-
-
 
 
 # ======= JWT CONFIGS ==============

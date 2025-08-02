@@ -70,10 +70,7 @@ class EventsMgmt(SerializableResource):
             type_ = s.sanitize_alphanum(raw.get("EventType"))
             image = s.sanitize_image_path(raw.get("EventImage"))
             organizer_id = s.sanitize_id(raw.get("OrganizerID"))
-            upload_key_raw = raw.get("UploadKey", " ")
-            if not isinstance(upload_key_raw, str) or '-' not in upload_key_raw:
-                return {"error": "Invalid UploadKey format. Must contain a dash ('-')."}, 400
-            upload_key = s.sanitize_upload_key(upload_key_raw)
+            upload_key = s.sanitize_upload_key(raw.get("UploadKey"))
             payment_type = s.sanitize_alphanum(raw.get("PaymentType"))
             registration_type = s.sanitize_alphanum(raw.get("RegistrationType"))
             summary = s.sanitize_summary(raw.get("Summary"))
@@ -96,7 +93,7 @@ class EventsMgmt(SerializableResource):
             if missing_fields:
                 return {"error": f"Missing or invalid event fields: {', '.join(missing_fields)}"}, 400
             
-            if registration_type not in ['Open', 'Close']:
+            if registration_type not in ['Open', 'Closed']:
                 return {'message': 'Incorrect Registration Type'}, 400
             
             if payment_type not in ['Free', 'Paid']:

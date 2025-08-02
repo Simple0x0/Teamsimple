@@ -64,9 +64,9 @@ export default function ContentMeta({ contentType = '', meta = {}, onChange, mod
   const renderSelect = (label, field, options = []) => {
   const defaultValue = options[0]?.value || '';
 
-    if (!meta[field] && defaultValue) {
-      handleChange(field, defaultValue);
-    }
+    //  if (!meta[field] && defaultValue) {
+    //    handleChange(field, defaultValue);
+    //  }
 
     return (
       <div className="col-span-1">
@@ -121,11 +121,16 @@ export default function ContentMeta({ contentType = '', meta = {}, onChange, mod
 
       {fields.slug && renderInput(`Slug (ReadOnly)`, 'Slug', 'Title-based - AutoGen')}
 
-      {meta.Summary ? fields.summary && renderTextarea('Summary', 'Summary', 'Short summary or excerpt') : fields.aboutus ? <> </> :
+      {fields.summary ? renderTextarea('Summary', 'Summary', 'Short summary or excerpt') : fields.aboutus ? <> </> :
       renderTextarea('Description', 'Description', 'Short Description or excerpt') }
+
+       {/*meta.Summary ? fields.summary && renderTextarea('Summary', 'Summary', 'Short summary or excerpt') : fields.aboutus ? <> </> :
+      renderTextarea('Description', 'Description', 'Short Description or excerpt') }
+      {contentType == 'Event' && fields.summary && renderTextarea('Summary', 'Summary', 'Short summary or excerpt')*/}
 
       {/* Only show status select if statusinput is provided and not for Event (handled by action buttons) */}
       {fields.status && statusinput && statusinput.length > 0 && renderSelect('Status', 'Status', statusinput)}
+      
       {fields.ProgressStatus && renderSelect('Progress Status', 'ProgressStatus', progressStatusinput || [
         { value: 'Upcoming', label: 'Upcoming' },
         { value: 'Ongoing', label: 'Ongoing' },

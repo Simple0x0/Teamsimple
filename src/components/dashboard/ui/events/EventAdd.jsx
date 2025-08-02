@@ -1,4 +1,4 @@
-import { useNavigate } from 'react-router-dom';
+import { Meta, useNavigate } from 'react-router-dom';
 import { useState } from 'react';
 import ContentMeta from '../ContentMeta';
 import Uploads from '../Uploads';
@@ -56,24 +56,34 @@ export default function EventAdd() {
   ];
 
   const handleMetaChange = (updatedMeta) => {
-    setMeta(updatedMeta);
+    setMeta((prev) => ({ ...prev, ...updatedMeta }));
   };
 
   const handleUploadKey = (key) => {
     setMeta((prev) => ({ ...prev, UploadKey: key }));
   };
 
-  const preparePayload = () => ({
-    ...meta,
-    Description: content,
-    Tags: selectedTags.map((tag) => tag.name || tag),
-    CategoryID: selectedCategory?.id,
-    CategoryName: selectedCategory?.name,
-    ProgressStatus: meta.ProgressStatus,
-    Summary: meta.Summary,
-    Slug: meta.Slug,
-    Status: meta.Status, // <-- include status in payload
-  });
+  const preparePayload = () => {
+    // Ensure all required fields are present and mapped from meta
+    const {
+      ProgressStatus,
+      Summary,
+      Slug,
+      Status,
+      ...restMeta
+    } = meta;
+    return {
+      ...restMeta,
+      Description: content,
+      Tags: selectedTags.map((tag) => tag.name || tag),
+      CategoryID: selectedCategory?.id,
+      CategoryName: selectedCategory?.name,
+      ProgressStatus,
+      Summary,
+      Slug,
+      Status,
+    };
+  };
 
   const showToast = ({ message, duration = 6000, type = 'success', redirect = '' }) => {
     setToastConfig({ message, duration, type, redirect, visible: true });
@@ -99,6 +109,7 @@ export default function EventAdd() {
 
   const handlePublish = async () => {
     const payload = preparePayload();
+    console.log(payload);
     const result = await postEvent({
       event: payload,
       action: 'new',
@@ -149,7 +160,7 @@ export default function EventAdd() {
             slug: true,
             summary: true,
             ProgressStatus: true,
-            status: true, // <-- add status field
+            status: true,
             image: 'EventImage',
             start: true,
             end: true,
