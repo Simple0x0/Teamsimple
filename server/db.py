@@ -559,3 +559,22 @@ class Database:
     @classmethod
     def get_latest(cls):
         return cls.execute(LATEST_CONTENT_QUERY, fetchall=True)
+    
+    # ============================================================================================
+    # =============================== PLATFORM CONTACTS QUERIES ===================================
+    # ============================================================================================
+    @classmethod
+    def get_platform_contacts(cls):
+        return cls.execute(PLATFORM_CONTACT_FETCH_ALL_QUERY, fetchall=True)
+
+    @classmethod
+    def insert_platform_contact(cls, Platform, Handle, URL, Icon):
+        return cls.execute(PLATFORM_CONTACT_INSERT_QUERY, params=(Platform, Handle, URL, Icon), commit=True)
+
+    @classmethod
+    def update_platform_contact(cls, ContactID, Platform, Handle, URL, Icon):
+        return cls.execute(PLATFORM_CONTACT_UPDATE_QUERY, params=(Platform, Handle, URL, Icon, ContactID), commit=True)
+
+    @classmethod
+    def delete_platform_contact(cls, ContactID):
+        return cls.execute(PLATFORM_CONTACT_DELETE_QUERY, params=(ContactID,), commit=True)

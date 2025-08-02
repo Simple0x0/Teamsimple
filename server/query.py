@@ -1347,5 +1347,38 @@ INSERT INTO DeletedBin (
 
 DELETE_CONTRIBUTOR_SOCIALS = "DELETE FROM SocialLink WHERE OwnerType = %s AND OwnerID = %s"
 
+# ===================== PLATFORM CONTACTS QUERIES ======================
+
+PLATFORM_CONTACT_FETCH_ALL_QUERY = """
+SELECT ContactID, Platform, Handle, URL, Icon
+FROM PlatformContact
+ORDER BY ContactID ASC;
+"""
+
+PLATFORM_CONTACT_INSERT_QUERY = """
+INSERT INTO PlatformContact (
+    Platform,
+    Handle,
+    URL,
+    Icon
+) VALUES (
+    %s, %s, %s, %s
+);
+"""
+
+PLATFORM_CONTACT_UPDATE_QUERY = """
+UPDATE PlatformContact
+SET Platform = %s,
+    Handle = %s,
+    URL = %s,
+    Icon = %s
+WHERE ContactID = %s;
+"""
+
+PLATFORM_CONTACT_DELETE_QUERY = """
+DELETE FROM PlatformContact
+WHERE ContactID = %s;
+"""
+
 
 
