@@ -21,7 +21,7 @@ export const navItems = [
   // { path: "/dashboard/team", icon: FaEye, label: "The Team" },
   // { path: "/dashboard/values", icon: FaTrophy, label: "Our Values" },
   { path: "/dashboard/events", icon: FaCalendarAlt, label: "Events" },
-  { path: "/dashboard/contact", icon: FaEnvelope, label: "Contacts" },
+  { path: "/dashboard/platform-contacts", icon: FaEnvelope, label: "Contacts" },
   { path: "/dashboard/contributors", icon: FaUserPlus, label: "Contributors" },
 ];
 

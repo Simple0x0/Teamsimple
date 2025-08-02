@@ -46,6 +46,7 @@ import WhoWeAre from '../components/dashboard/ui/who-we-are/WhoWeAre';
 import EventMgmt from '../components/dashboard/ui/events/EventMgmt';
 import EventAdd from '../components/dashboard/ui/events/EventAdd';
 import EventEdit from '../components/dashboard/ui/events/EventEdit';
+import PlatformContacts from '../components/dashboard/ui/contacts/PlatformContacts';
 
 
 const router = createBrowserRouter(
@@ -88,6 +89,7 @@ const router = createBrowserRouter(
 
         
         <Route path="/dashboard/contributors" element={<ContributorsMgmt />} /> 
+        <Route path="/dashboard/platform-contacts" element={<PlatformContacts />} />
         <Route path='/dashboard/who-we-are' element={<WhoWeAre />} />
         <Route path='team-management' element={<TeamMgmt />} />
         {/*

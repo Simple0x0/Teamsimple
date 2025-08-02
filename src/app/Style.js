@@ -661,10 +661,21 @@ const style = {
       td: 'px-2 py-2 text-gray-200 text-xs md:text-sm break-words',
       tr: 'border-b border-slate-800 hover:bg-slate-800 transition',
       noData: 'text-center text-gray-400 py-4',
-    }
-
-
-
+    },
+    platformContacts: {
+        wrapper: 'w-full px-2 md:px-6 py-3 bg-slate-950 rounded-lg shadow-md min-h-[120px] flex flex-col gap-2',
+        title: 'text-lg md:text-xl font-semibold text-lime-400 mb-2 text-center',
+        list: 'w-full flex flex-col gap-2',
+        th: 'font-semibold text-xs md:text-sm text-lime-400',
+        platform: 'font-medium text-lime-400 text-sm md:text-base w-full break-words',
+        handle: 'text-white text-xs md:text-sm w-full break-words',
+        url: 'text-blue-400 underline text-xs md:text-sm w-full break-all',
+        icon: 'text-gray-400 text-base md:text-lg w-full break-words',
+        input: 'bg-slate-800 text-white px-2 py-1 rounded text-xs md:text-sm w-full',
+        removeBtn: 'text-red-400 hover:text-red-500 text-xs md:text-sm whitespace-nowrap',
+        actionBtn: 'bg-slate-700 text-gray-200 px-2 md:px-3 py-1 rounded-md hover:bg-slate-600 transition text-xs md:text-sm shadow-sm mt-1 md:mt-0 w-full md:w-auto',
+        btnRow: 'flex flex-col md:flex-row gap-2 mt-2 w-full justify-center md:justify-start',
+    },
 
 };
 

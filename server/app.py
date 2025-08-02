@@ -46,7 +46,7 @@ from api.team.loginmgmt import PasswordMgmt
 from api.aboutteam.aboutteammgmt import AboutTeamMgmt
 from api.event.eventsmgmt import EventsMgmt
 from api.event.eventparticipant import EventParticipants
-from api.contact.contacts import PlatformContacts
+from api.contact.platformcontact import PlatformContacts
 
 # ======= Initialize app and extensions =========
 load_dotenv()
@@ -161,7 +161,7 @@ api.add_resource(AboutTeamMgmt, '/api/auth/aboutteam')
 api.add_resource(PasswordMgmt, '/api/auth/passwordmgmt')
 api.add_resource(EventsMgmt, '/api/auth/eventsmgmt')
 api.add_resource(EventParticipants, '/api/auth/eventsmgmt/participants/<string:event_id>')
-api.add_resource(PlatformContacts, 'api/contacts')
+api.add_resource(PlatformContacts, '/api/contacts')
 
 
 # ===== Run App =====
