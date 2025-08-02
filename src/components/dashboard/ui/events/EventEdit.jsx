@@ -49,15 +49,7 @@ export default function EventEdit() {
     { value: 'Product Launch', label: 'Product Launch' },
     { value: 'Hackathon', label: 'Hackathon' },
   ];
-  const statusOptions = [
-    { value: 'Draft', label: 'Draft' },
-    { value: 'Scheduled', label: 'Scheduled' },
-    { value: 'Live', label: 'Live' },
-    { value: 'Completed', label: 'Completed' },
-    { value: 'Paused', label: 'Paused' },
-    { value: 'Cancelled', label: 'Cancelled' },
-    { value: 'Deleted', label: 'Deleted' },
-  ];
+  
   const registrationTypeOptions = [
     { value: 'Open', label: 'Open' },
     { value: 'Closed', label: 'Closed' },
@@ -179,7 +171,6 @@ export default function EventEdit() {
           registrationTypeinput={registrationTypeOptions}
           paymentTypeinput={paymentTypeOptions}
           progressStatusinput={progressStatusOptions}
-          statusinput={statusOptions}
         />
         <Uploads
           type="image"

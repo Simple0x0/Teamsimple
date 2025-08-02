@@ -121,16 +121,21 @@ export default function EventList({ showActions = true, onDelete = () => {} }) {
     setCurrentPage(1);
   };
 
-  // Registration type change handler (outside JSX)
   async function handleRegistrationTypeChange(e, newType) {
     const prevType = e.RegistrationType;
     setEvents((prev) => prev.map(ev => ev.EventID === e.EventID ? { ...ev, RegistrationType: newType } : ev));
     try {
-      const response = await postEvent({
-        action: 'edit',
-        event: { ...e, RegistrationType: newType },
+      const result = await postEvent({
+        action: newType === 'Open' ? 'open_registration' : 'close_registration',
+        event: { EventID: e.EventID },
       });
-      showMessageToast({ message: response?.data?.message || 'Registration type updated', type: response?.success ? 'success' : 'failure' });
+      if (result.success) {
+        showMessageToast({ message: result?.data?.message || 'Registration type updated', type: 'success' });
+        setEvents((prev) => prev.map(ev => ev.EventID === e.EventID ? { ...ev, RegistrationType: newType } : ev));
+      } else {
+        showMessageToast({ message: result?.error || 'Failed to update registration type', type: 'failure' });
+        setEvents((prev) => prev.map(ev => ev.EventID === e.EventID ? { ...ev, RegistrationType: prevType } : ev));
+      }
     } catch (err) {
       showMessageToast({ message: err?.error || 'Failed to update registration type', type: 'failure' });
       setEvents((prev) => prev.map(ev => ev.EventID === e.EventID ? { ...ev, RegistrationType: prevType } : ev));

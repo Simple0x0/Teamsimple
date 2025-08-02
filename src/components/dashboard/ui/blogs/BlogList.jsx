@@ -99,7 +99,6 @@ export default function BlogList({ blogs = [], showActions = true, onDelete = ()
           )
         );
       } else {
-        console.log(result.success);
         showMessageToast({
           message: `Failed to publish blog: ${result.error}`,
           duration: 6000,

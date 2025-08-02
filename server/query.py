@@ -763,6 +763,13 @@ SET Title = %s,
 WHERE EventID = %s
 """
 
+REGISTRATION_OPEN_CLOSE_QUERY = """
+UPDATE `Event`
+SET 
+    RegistrationType = %s
+WHERE EventID = %s
+"""
+
 DELETE_EVENT_QUERY = """
 UPDATE `Event`
 SET Status = 'Deleted'

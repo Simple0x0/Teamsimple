@@ -4,7 +4,7 @@ import 'react-datepicker/dist/react-datepicker.css';
 import style from '../../../app/Style';
 import ContributorSelector from './selectors/ContributorSelector';
 
-export default function ContentMeta({ contentType = '', meta = {}, onChange, mode = 'new', fields = {}, statusinput= [], modeinput, eventTypeinput, registrationTypeinput, paymentTypeinput }) {
+export default function ContentMeta({ contentType = '', meta = {}, onChange, mode = 'new', fields = {}, statusinput= [], modeinput, eventTypeinput, registrationTypeinput, paymentTypeinput, progressStatusinput }) {
   const [isSlugEdited, setIsSlugEdited] = useState(false);
 
   const handleChange = (field, value) => {
@@ -126,7 +126,12 @@ export default function ContentMeta({ contentType = '', meta = {}, onChange, mod
 
       {/* Only show status select if statusinput is provided and not for Event (handled by action buttons) */}
       {fields.status && statusinput && statusinput.length > 0 && renderSelect('Status', 'Status', statusinput)}
-      {fields.ProgressStatus && renderSelect('Status', 'ProgressStatus', statusinput)}
+      {fields.ProgressStatus && renderSelect('Progress Status', 'ProgressStatus', progressStatusinput || [
+        { value: 'Upcoming', label: 'Upcoming' },
+        { value: 'Ongoing', label: 'Ongoing' },
+        { value: 'Completed', label: 'Completed' },
+        { value: 'Cancelled', label: 'Cancelled' },
+      ])}
       {fields.image && renderInput('Cover Image URL', fields.image, 'https://domain.com/your-image.jpg')}
       {fields.mode && renderSelect('Mode', 'Mode', modeinput || [
         { value: 'Online', label: 'Online' },

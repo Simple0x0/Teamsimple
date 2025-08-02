@@ -27,11 +27,16 @@ export const fetchEvents = async () => {
 export const postEvent = async ({
   action = 'new', // 'new', 'edit', 'delete', 'archive', etc.
   event,
+  submissionType,
 }) => {
   try {
+    const body =
+      submissionType !== undefined
+        ? { action, event, submission_type: submissionType }
+        : { action, event };
     const res = await axios.post(
       `${BASE_URL}/api/auth/eventsmgmt`,
-      { action, event },
+      body,
       {
         withCredentials: true,
         headers: HEADERS,

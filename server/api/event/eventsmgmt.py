@@ -49,26 +49,31 @@ class EventsMgmt(SerializableResource):
                 if not event_id:
                     return {"error": "Missing EventID for registration action."}, 400
                 reg_status = "Open" if action == "open_registration" else "Closed"
-                success = db.set_event_registration_status(event_id, reg_status)
+                success = db.open_close_event(event_id, reg_status)
                 if success:
                     return {"message": f"Registration {reg_status.lower()}ed successfully."}, 200
                 else:
                     return {"error": f"Failed to {reg_status.lower()} registration."}, 500
 
-            submission_type = data.get("submissionType", "draft").lower()
+            # Accept both 'submissionType' and 'submission_type' from frontend
+            submission_type = data.get("submissionType") or data.get("submission_type") or "draft"
+            submission_type = submission_type.lower()
             raw = data.get("event", {})
 
             event_id = s.sanitize_id(raw.get("EventID"))
             title = s.sanitize_title(raw.get("Title"))
             description = s.sanitize_summary(raw.get("Description"))
-            start = s.sanitize_date(raw.get("Start"))
-            end = s.sanitize_date(raw.get("End"))
+            start = s.sanitize_date(raw.get("StartDate"))
+            end = s.sanitize_date(raw.get("EndDate"))
             mode = s.sanitize_alphanum(raw.get("Mode"))
             location = s.sanitize_summary(raw.get("Location"))
-            type_ = s.sanitize_alphanum(raw.get("Type"))
-            image = s.sanitize_image_path(raw.get("Image"))
+            type_ = s.sanitize_alphanum(raw.get("EventType"))
+            image = s.sanitize_image_path(raw.get("EventImage"))
             organizer_id = s.sanitize_id(raw.get("OrganizerID"))
-            upload_key = s.sanitize_upload_key(raw.get("UploadKey"))
+            upload_key_raw = raw.get("UploadKey", " ")
+            if not isinstance(upload_key_raw, str) or '-' not in upload_key_raw:
+                return {"error": "Invalid UploadKey format. Must contain a dash ('-')."}, 400
+            upload_key = s.sanitize_upload_key(upload_key_raw)
             payment_type = s.sanitize_alphanum(raw.get("PaymentType"))
             registration_type = s.sanitize_alphanum(raw.get("RegistrationType"))
             summary = s.sanitize_summary(raw.get("Summary"))
@@ -91,8 +96,11 @@ class EventsMgmt(SerializableResource):
             if missing_fields:
                 return {"error": f"Missing or invalid event fields: {', '.join(missing_fields)}"}, 400
             
-            if registration_type not in ['Free', 'Paid']:
+            if registration_type not in ['Open', 'Close']:
                 return {'message': 'Incorrect Registration Type'}, 400
+            
+            if payment_type not in ['Free', 'Paid']:
+                return {'message': 'Incorrect Payment Type'}, 400
 
             if submission_type == "publish":
                 status = "Published"

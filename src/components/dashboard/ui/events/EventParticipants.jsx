@@ -80,7 +80,12 @@ export default function EventParticipants() {
     setFilteredParticipants(
       participants.filter(p =>
         (p.Email && p.Email.toLowerCase().includes(lower)) ||
-        (p.Nickname && p.Nickname.toLowerCase().includes(lower))
+        (p.Nickname && p.Nickname.toLowerCase().includes(lower)) || 
+        (p.FirstName && p.FirstName.toLowerCase().includes(lower)) ||
+        (p.LastName && p.LastName.toLowerCase().includes(lower)) ||
+        (p.Organization && p.Organization.toLowerCase().includes(lower)) ||
+        (p.Country && p.Country.toLowerCase().includes(lower)) ||
+        (p.RegistrationType && p.RegistrationType.toLowerCase().includes(lower))
       )
     );
   };
