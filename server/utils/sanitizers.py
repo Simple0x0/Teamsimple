@@ -71,7 +71,6 @@ class Sanitizer():
         except (ValueError, TypeError):
             return None
 
-
     def sanitize_content(self, content: str) -> str:
         return content.strip()
 
@@ -102,6 +101,17 @@ class Sanitizer():
                 return username
             else:
                 return None  
+            
+
+    def sanitize_handle(self, handle):
+        if isinstance(handle, str):
+            handle = handle.strip()
+            # Accepts @ at start, but not required; must be followed by allowed characters
+            match = re.match(r"^@?([a-zA-Z0-9._-]+)$", handle)
+            if match:
+                return '@' + match.group(1)
+        return None
+
             
     def sanitize_fullname(self, username):
         if username:
@@ -260,34 +270,68 @@ class Sanitizer():
 
     def sanitize_email(self, email: str) -> str:
         email = email.strip().lower()
+        had_mailto = False
+        # Remove 'mailto:' prefix if present
+        if email.startswith('mailto:'):
+            email = email[len('mailto:'):]
+            had_mailto = True
         pattern = re.compile(
             r"(^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$)"
         )
         if not pattern.match(email):
             raise ValueError(f"Invalid email address: {email}")
-        return email
+        return ('mailto:' + email) if had_mailto else email
 
     def sanitize_phone_number(self, phone: str) -> str:
         """
         Sanitize and validate a phone number.
         Removes spaces, dashes, and parentheses.
         Allows only numbers with optional leading '+'.
+        Returns 'tel:' + phone if input started with 'tel:', else just the sanitized phone.
         """
         if not isinstance(phone, str):
             return None
-
+        had_tel = False
+        phone = phone.strip()
+        if phone.startswith('tel:'):
+            phone = phone[len('tel:'):]
+            had_tel = True
         # Remove common separators
-        phone = phone.strip().replace(" ", "").replace("-", "").replace("(", "").replace(")", "")
-
+        phone = phone.replace(" ", "").replace("-", "").replace("(", "").replace(")", "")
         # Validate pattern: allows optional '+' followed by 7 to 15 digits (E.164 compliant)
         pattern = re.compile(r"^\+?[0-9]{7,15}$")
         if not pattern.match(phone):
             raise ValueError(f"Invalid phone number: {phone}")
-
-        return phone
-
+        return ('tel:' + phone) if had_tel else phone
 
 
+
+    def sanitize_icon(self, icon: str) -> str | None:
+        if not isinstance(icon, str):
+            return None
+
+        icon = icon.strip()
+        
+        # Only allow letters (a-z, A-Z) and hyphens (-)
+        if re.fullmatch(r"[a-zA-Z-]+", icon):
+            return icon.lower()  # Normalize to lowercase if needed
+        return None
+    
+    def sanitize_platform(self, platform: str) -> str:
+        """
+        Sanitizes a platform name for social/contact links.
+        Allows letters, numbers, spaces, and dashes. Strips leading/trailing whitespace, collapses multiple spaces, and title-cases the result.
+        Returns None if invalid or empty after sanitization.
+        """
+        if not isinstance(platform, str):
+            return None
+        platform = platform.strip()
+        # Only allow letters, numbers, spaces, and dashes
+        platform = re.sub(r'[^a-zA-Z0-9\- ]', '', platform)
+        # Collapse multiple spaces
+        platform = re.sub(r'\s+', ' ', platform)
+        platform = platform.title()
+        return platform if platform else None
 
 
 

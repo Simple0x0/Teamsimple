@@ -578,3 +578,28 @@ class Database:
     @classmethod
     def delete_platform_contact(cls, ContactID):
         return cls.execute(PLATFORM_CONTACT_DELETE_QUERY, params=(ContactID,), commit=True)
+
+    # ============================================================================================
+    # =============================== SCHEDULED CONTENT QUERIES ===================================
+    # ============================================================================================
+    @classmethod
+    def get_scheduled_contents(cls):
+        return cls.execute(SCHEDULED_CONTENT_FETCH_ALL_QUERY, fetchall=True)
+
+    @classmethod
+    def insert_scheduled_content(cls, ContentType, ContentID, ScheduledDate):
+        return cls.execute(SCHEDULED_CONTENT_INSERT_QUERY, params=(ContentType, ContentID, ScheduledDate), commit=True)
+
+    @classmethod
+    def update_scheduled_content(cls, ScheduleID, ContentType, ContentID, ScheduledDate):
+        return cls.execute(SCHEDULED_CONTENT_UPDATE_QUERY, params=(ContentType, ContentID, ScheduledDate, ScheduleID), commit=True)
+
+    @classmethod
+    def delete_scheduled_content(cls, ScheduleID):
+        return cls.execute(SCHEDULED_CONTENT_DELETE_QUERY, params=(ScheduleID,), commit=True)
+
+    @classmethod
+    def get_schedule_id(cls, ContentType, ContentID):
+        query = "SELECT ScheduleID FROM Schedule WHERE ContentType = %s AND ContentID = %s LIMIT 1;"
+        result = cls.execute(query, params=(ContentType, ContentID), fetchone=True)
+        return result['ScheduleID'] if result and 'ScheduleID' in result else None

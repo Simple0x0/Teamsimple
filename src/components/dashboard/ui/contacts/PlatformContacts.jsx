@@ -36,7 +36,7 @@ export default function PlatformContacts() {
   const handleSave = async () => {
     const res = await updatePlatformContacts({ contacts: form, action: 'edit' });
     if (res.success) {
-      setToast({ visible: true, message: 'Contacts updated!', type: 'success' });
+      setToast({ visible: true, message: res.data.message, type: 'success' });
       setContacts(form);
       setEditing(false);
     } else {

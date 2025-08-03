@@ -34,25 +34,27 @@ class WriteUpsMgmt(SerializableResource):
         try:
             data = request.get_json(force=True)
             action = data.get("action", "new").lower()
-            del_writeup = data.get("writeup", {})
+            del_writeup = data.get("writeUp", {})
+            
             if action == "delete":
                 WriteUpID_raw = del_writeup.get("WriteUpID")
                 Reason_raw = del_writeup.get("Reason", "")
                 if not WriteUpID_raw:
                     return {"error": "Please specify WriteUp for deletion"}, 400
-
                 WriteUpID = s.sanitize_id(WriteUpID_raw)
                 reason = s.sanitize_alphanum(Reason_raw)
                 Username = get_jwt_identity()
-                
                 if not reason:
                     return {"error": "Provide a reason of deletion"}, 400
-                
                 writeup_info = db.get_writeup_slug(WriteUpID)
                 if not writeup_info:
                     return make_response(jsonify({"message": "WriteUp not found or already deleted"}), 404)
-
+                # Always delete the content first
                 db.delete_writeup(WriteUpID, writeup_info['Slug'], Username, reason)
+                # Then, if scheduled, delete from Schedule
+                ScheduleID = db.get_schedule_id("WriteUp", WriteUpID_raw)
+                if ScheduleID:
+                    db.delete_scheduled_content(ScheduleID)
                 return make_response(jsonify({"message": "WriteUp successfully deleted"}), 201)
 
             
@@ -108,11 +110,13 @@ class WriteUpsMgmt(SerializableResource):
                 Status = "Published"
             elif submission_type == "schedule":
                 Status = "Scheduled"
+                PublishDate = s.sanitize_date(raw_writeup.get("PublishDate")) or datetime.now()
+                
             elif submission_type == "active":
                 Status = "Active"
             else:
                 Status = "Draft"
-
+            
             if action == "edit" and WriteUpID:
                 success = db.update_writeup(
                     WriteUpID=WriteUpID,
@@ -186,6 +190,14 @@ class WriteUpsMgmt(SerializableResource):
                     target = os.path.join(UPLOAD_BASE, 'writeups', hashuploadKey)
                     if os.path.exists(source):
                         os.rename(source, target)
+
+                    # --- SCHEDULE LOGIC ---
+                    # Always fetch ScheduleID for this WriteUp
+                    schedule_id = db.get_schedule_id("WriteUp", WriteUpID)
+                    if Status == "Scheduled":
+                        db.insert_scheduled_content("WriteUp", WriteUpID, PublishDate)
+                    elif schedule_id:
+                        db.delete_scheduled_content(schedule_id)
 
                     return make_response(jsonify({"message": "WriteUp successfully published", "WriteUpID": WriteUpID}), 201)
 

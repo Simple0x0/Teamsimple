@@ -44,6 +44,13 @@ class BlogsMgmt(SerializableResource):
                 reason = s.sanitize_alphanum(Reason_raw)
                 Username = get_jwt_identity()
 
+                # If ScheduleID not provided, look it up
+                ScheduleID = None
+                if not ScheduleID and BlogID:
+                    ScheduleID = db.get_schedule_id("Blog", BlogID)
+                if ScheduleID:
+                    db.delete_scheduled_content(ScheduleID)
+                    
                 if not reason:
                     return make_response(jsonify({"error": "Provide a reason of deletion"}), 400)
                 
@@ -124,6 +131,13 @@ class BlogsMgmt(SerializableResource):
                     if contributorID:
                         db.insert_blog_contributor(BlogID, contributorID['ContributorID'])
 
+                # --- SCHEDULE LOGIC ---
+                schedule_id = db.get_schedule_id("Blog", BlogID)
+                if Status == "Scheduled":
+                    db.insert_scheduled_content("Blog", BlogID, PublishDate)
+                elif schedule_id:
+                    db.delete_scheduled_content(schedule_id)
+
                 return make_response(jsonify({"message": "Blog successfully edited", "BlogID": BlogID}), 201)
 
             elif action == "new":
@@ -156,6 +170,13 @@ class BlogsMgmt(SerializableResource):
                     target_path = os.path.join(UPLOAD_BASE, 'blogs', hashuploadKey)
                     if os.path.exists(source_path):
                         os.rename(source_path, target_path)
+
+                    # --- SCHEDULE LOGIC ---
+                    schedule_id = db.get_schedule_id("Blog", BlogID)
+                    if Status == "Scheduled":
+                        db.insert_scheduled_content("Blog", BlogID, PublishDate)
+                    elif schedule_id:
+                        db.delete_scheduled_content(schedule_id)
 
                     return make_response(jsonify({"message": "Blog successfully published", "BlogID": BlogID}), 201)
 

@@ -32,6 +32,7 @@ export const postWriteUp = async ({
   action = 'new',
   submissionType = 'draft',
 }) => {
+  console.log(writeupData);
   try {
     const res = await axios.post(
       `${BASE_URL}/api/auth/writeupsmgmt`,

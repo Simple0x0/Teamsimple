@@ -41,6 +41,7 @@ class PodcastMgmt(SerializableResource):
             if action == "delete":
                 PodcastID_raw = del_podcast.get("PodcastID")
                 Reason_raw = del_podcast.get("Reason", "")
+
                 if not PodcastID_raw:
                     return {"error": "Please specify Podcast for deletion"}, 400
 
@@ -56,6 +57,11 @@ class PodcastMgmt(SerializableResource):
                     return make_response(jsonify({"message": "Podcast not found or already deleted"}), 404)
 
                 db.delete_podcast(PodcastID, podcast_info['Slug'], Username, reason)
+                
+                ScheduleID = db.get_schedule_id("Podcast", PodcastID_raw)
+                if ScheduleID:
+                    db.delete_scheduled_content(ScheduleID)
+                    
                 return make_response(jsonify({"message": "Podcast successfully deleted"}), 201)
 
             submission_type = data.get("submissionType", "draft").lower()
@@ -98,6 +104,8 @@ class PodcastMgmt(SerializableResource):
                 Status = "Published"
             elif submission_type == "schedule":
                 Status = "Scheduled"
+                # Insert into Schedule table
+                db.insert_scheduled_content("Podcast", PodcastID, raw_podcast.get("DatePublished"))
             else:
                 Status = "Draft"
 
@@ -117,11 +125,18 @@ class PodcastMgmt(SerializableResource):
                 if not success:
                     return make_response(jsonify({"error": "Failed to update podcast"}), 500)
 
-                db.delete_podcast_speakers(CategoryID)
+                db.delete_podcast_speakers(PodcastID)
                 for speaker in Contributors:
                     contributorID = db.get_contributor_id(speaker)
                     if contributorID:
                         db.insert_podcast_speaker(PodcastID, contributorID['ContributorID'])
+
+                # --- SCHEDULE LOGIC ---
+                schedule_id = db.get_schedule_id("Podcast", PodcastID)
+                if Status == "Scheduled":
+                    db.insert_scheduled_content("Podcast", PodcastID, raw_podcast.get("DatePublished"))
+                elif schedule_id:
+                    db.delete_scheduled_content(schedule_id)
 
                 return make_response(jsonify({"message": "Podcast successfully edited", "PodcastID": PodcastID}), 201)
 
@@ -153,6 +168,13 @@ class PodcastMgmt(SerializableResource):
                     target = os.path.join(UPLOAD_BASE, 'podcasts', hashuploadKey)
                     if os.path.exists(source):
                         os.rename(source, target)
+
+                    # --- SCHEDULE LOGIC ---
+                    schedule_id = db.get_schedule_id("Podcast", PodcastID)
+                    if Status == "Scheduled":
+                        db.insert_scheduled_content("Podcast", PodcastID, raw_podcast.get("DatePublished"))
+                    elif schedule_id:
+                        db.delete_scheduled_content(schedule_id)
 
                     return make_response(jsonify({"message": "Podcast successfully published", "PodcastID": PodcastID}), 201)
 

@@ -47,6 +47,7 @@ from api.aboutteam.aboutteammgmt import AboutTeamMgmt
 from api.event.eventsmgmt import EventsMgmt
 from api.event.eventparticipant import EventParticipants
 from api.contact.platformcontact import PlatformContacts
+from api.schedulcontent import ScheduledContent
 
 # ======= Initialize app and extensions =========
 load_dotenv()
@@ -139,7 +140,7 @@ api.add_resource(Like, '/api/like')
 api.add_resource(Latest, '/api/latest')
 api.add_resource(Contributor, '/api/contributors')
 api.add_resource(ImageRenderer, '/api/files/<string:dir_name>/<string:slug>/<string:filename>')
-
+api.add_resource(ScheduledContent, '/api/scheduledcontents')
 api.add_resource(Login, '/api/auth/login')
 api.add_resource(Logout, '/api/auth/logout')
 api.add_resource(AuthVerify, '/api/auth/verify')
@@ -162,6 +163,7 @@ api.add_resource(PasswordMgmt, '/api/auth/passwordmgmt')
 api.add_resource(EventsMgmt, '/api/auth/eventsmgmt')
 api.add_resource(EventParticipants, '/api/auth/eventsmgmt/participants/<string:event_id>')
 api.add_resource(PlatformContacts, '/api/contacts')
+
 
 
 # ===== Run App =====

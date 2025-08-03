@@ -65,9 +65,9 @@ export default function LeftSideBar() {
         )}
       </div>
 
-      {/* Footer Area */}
+      {/* Footer Area to="/dashboard/profile" */}
       <div className={style.dashSideBar.footerContainer}>
-        <NavLink to="/dashboard/profile" className={style.dashSideBar.footerProfile}>
+        <NavLink to="#" className={style.dashSideBar.footerProfile}>
           <img
             src={member?.photoURL || '/default-avatar.jpg'}
             alt="Profile"

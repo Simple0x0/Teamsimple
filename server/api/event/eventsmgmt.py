@@ -35,6 +35,13 @@ class EventsMgmt(SerializableResource):
                 event_id = s.sanitize_id(raw.get("EventID"))
                 reason = s.sanitize_alphanum(raw.get("Reason", ""))
 
+                # If ScheduleID not provided, look it up
+                ScheduleID = None
+                if not ScheduleID and event_id:
+                    ScheduleID = db.get_schedule_id("Event", event_id)
+                if ScheduleID:
+                    db.delete_scheduled_content(ScheduleID)
+
                 if not event_id or not reason:
                     return {"error": "Missing EventID or Reason for deletion."}, 400
 
@@ -135,6 +142,13 @@ class EventsMgmt(SerializableResource):
                     if tag_obj and 'TagID' in tag_obj:
                         db.add_event_tag(event_id, tag_obj['TagID'])
 
+                # --- SCHEDULE LOGIC ---
+                schedule_id = db.get_schedule_id("Event", event_id)
+                if status == "Scheduled":
+                    db.insert_scheduled_content("Event", event_id, start)
+                elif schedule_id:
+                    db.delete_scheduled_content(schedule_id)
+
                 return {"message": "Event successfully updated.", "EventID": event_id}, 201
 
             elif action == "new":
@@ -163,6 +177,13 @@ class EventsMgmt(SerializableResource):
                     tag_obj = db.get_tag(tag)
                     if tag_obj:
                         db.add_event_tag(new_event_id, tag_obj['TagID'])
+
+                # --- SCHEDULE LOGIC ---
+                schedule_id = db.get_schedule_id("Event", new_event_id)
+                if status == "Scheduled":
+                    db.insert_scheduled_content("Event", new_event_id, start)
+                elif schedule_id:
+                    db.delete_scheduled_content(schedule_id)
 
                 source = os.path.join(UPLOAD_BASE, 'events', upload_key)
                 target = os.path.join(UPLOAD_BASE, 'events', hashed_upload_key)

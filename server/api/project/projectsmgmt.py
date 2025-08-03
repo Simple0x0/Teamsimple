@@ -63,6 +63,11 @@ class ProjectsMgmt(SerializableResource):
                     return make_response(jsonify({"message": "Project not found or already deleted"}), 404)
 
                 db.delete_project(ProjectID, project_info['Slug'], Username, reason)
+                
+                ScheduleID = db.get_schedule_id("Project", ProjectID_raw)
+                if ScheduleID:
+                    db.delete_scheduled_content(ScheduleID)
+                
                 return make_response(jsonify({"message": "Project successfully deleted"}), 201)
             
             
@@ -151,6 +156,13 @@ class ProjectsMgmt(SerializableResource):
                     if contributorID:
                         db.insert_project_contributor(ProjectID, contributorID['ContributorID'])
 
+                # --- SCHEDULE LOGIC ---
+                schedule_id = db.get_schedule_id("Project", ProjectID)
+                if Status == "Scheduled":
+                    db.insert_scheduled_content("Project", ProjectID, StartDate)
+                elif schedule_id:
+                    db.delete_scheduled_content(schedule_id)
+
                 return make_response(jsonify({"message": "Project successfully edited", "ProjectID": ProjectID}), 201)
 
             elif action == "new":
@@ -188,6 +200,13 @@ class ProjectsMgmt(SerializableResource):
                     target = os.path.join(UPLOAD_BASE, 'projects', hashuploadKey)
                     if os.path.exists(source):
                         os.rename(source, target)
+
+                    # --- SCHEDULE LOGIC ---
+                    schedule_id = db.get_schedule_id("Project", ProjectID)
+                    if Status == "Scheduled":
+                        db.insert_scheduled_content("Project", ProjectID, StartDate)
+                    elif schedule_id:
+                        db.delete_scheduled_content(schedule_id)
 
                     return make_response(jsonify({"message": "Project successfully published", "ProjectID": ProjectID}), 201)
 

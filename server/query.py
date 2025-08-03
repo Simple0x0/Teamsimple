@@ -1380,5 +1380,35 @@ DELETE FROM PlatformContact
 WHERE ContactID = %s;
 """
 
+# ===================== SCHEDULED CONTENT QUERIES =====================
+SCHEDULED_CONTENT_FETCH_ALL_QUERY = """
+SELECT ScheduleID, ContentType, ContentID, ScheduledDate
+FROM Schedule
+ORDER BY ScheduledDate ASC;
+"""
+
+SCHEDULED_CONTENT_INSERT_QUERY = """
+INSERT INTO Schedule (
+    ContentType,
+    ContentID,
+    ScheduledDate
+) VALUES (
+    %s, %s, %s
+);
+"""
+
+SCHEDULED_CONTENT_UPDATE_QUERY = """
+UPDATE Schedule
+SET ContentType = %s,
+    ContentID = %s,
+    ScheduledDate = %s
+WHERE ScheduleID = %s;
+"""
+
+SCHEDULED_CONTENT_DELETE_QUERY = """
+DELETE FROM Schedule
+WHERE ScheduleID = %s;
+"""
+
 
 
