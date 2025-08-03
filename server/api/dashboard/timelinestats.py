@@ -4,19 +4,19 @@ from flask_jwt_extended import jwt_required
 from core.extensions import db
 from utils.utils import merge_likes_visitors
 from utils.serializable_resource import SerializableResource
-
+from pprint import pprint 
 
 # ===== Visitors and Likes Timeline API =====
 class VisitorLikeTimeLineStats(SerializableResource):
-    @jwt_required()
-    def post(self):
+    #@jwt_required()
+    def get(self):
         try:
-            data = request.get_json(force=True)
-            timeline = data.get("timeline", "").lower()
+            timeline = request.args.get('timeline', 'week').lower()
 
             if timeline == 'week':
                 likes = db.get_likes_1_week()
                 visitors = db.get_visitors_1_week()
+                pprint(f"Likes for week: {likes}, \nVisitors for week: {visitors}")
             elif timeline == 'month':
                 likes = db.get_likes_1_month()
                 visitors = db.get_visitors_1_month()

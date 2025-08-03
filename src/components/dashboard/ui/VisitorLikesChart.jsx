@@ -10,7 +10,7 @@ import ErrorHandle from '../../public/ui/ErrorHandle';
 export default function VisitorLikesChart() {
   const s = style.DashboardChartStyle;
 
-  const [timeline, setTimeline] = useState('week');
+  const [timeline, setTimeline] = useState('7 Days');
   const [visitorslikes, setVisitorslikes] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(false);
@@ -19,7 +19,8 @@ export default function VisitorLikesChart() {
     setLoading(true);
     setError(false);
     try {
-      const res = await VisitorLikeStats({ timeline });
+      const timelineParam = timeline === '7 Days' ? 'week' : timeline === '31 Days' ? 'month' : 'year';
+      const res = await VisitorLikeStats({ timeline: timelineParam });
       setVisitorslikes(res.stats || []);
     } catch (err) {
       console.error("Fetch Error:", err);
@@ -38,7 +39,7 @@ export default function VisitorLikesChart() {
     <div className={s.wrapper}>
       {/* Timeline Selector */}
       <div className={s.selectorWrapper}>
-        {["week", "month", "year"].map((t) => (
+        {["7 Days", "31 Days", "year"].map((t) => (
           <button
             key={t}
             onClick={() => setTimeline(t)}

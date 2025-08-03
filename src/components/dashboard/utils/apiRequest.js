@@ -161,13 +161,12 @@ export async function TVisitorsStats() {
 
 export async function VisitorLikeStats({ timeline = "week" }) {
   try {
-    const res = await axios.post(
+    const res = await axios.get(
       `${import.meta.env.VITE_API_URL}/api/auth/visitorslikes`,
-      JSON.stringify({ timeline }), 
       {
+        params: { timeline },
         withCredentials: true,
         headers: {
-          'Content-Type': 'application/json',
           'ngrok-skip-browser-warning': '69420',
         },
       }

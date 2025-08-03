@@ -488,28 +488,27 @@ class Database:
     
     @classmethod
     def get_likes_1_year(cls):
-        return cls.execute(LIKES_BY_1_YEAR, fetchall=True)
+        return cls.execute(LIKES_BY_LAST_12_MONTHS, fetchall=True)
     
     @classmethod
     def get_likes_1_month(cls):
-        return cls.execute(LIKES_BY_1_MONTH, fetchall=True)
+        return cls.execute(LIKES_BY_LAST_30_DAYS, fetchall=True)
     
     @classmethod
     def get_likes_1_week(cls):
-        return cls.execute(LIKES_BY_1_WEEK, fetchall=True)
+        return cls.execute(LIKES_BY_LAST_7_DAYS, fetchall=True)
     
     @classmethod
     def get_visitors_1_year(cls):
-        return cls.execute(VISITORS_BY_1_YEAR, fetchall=True)
+        return cls.execute(VISITORS_BY_LAST_12_MONTHS, fetchall=True)
     
     @classmethod
     def get_visitors_1_month(cls):
-        return cls.execute(VISITORS_BY_1_MONTH, fetchall=True)
+        return cls.execute(VISITORS_BY_LAST_30_DAYS, fetchall=True)
     
     @classmethod
     def get_visitors_1_week(cls):
-        return cls.execute(VISITORS_BY_1_WEEK, fetchall=True)
-
+        return cls.execute(VISITORS_BY_LAST_7_DAYS, fetchall=True)
 
     # ============================================================================================
     # =================================== CAT, TAG, TECH QUERIES =================================

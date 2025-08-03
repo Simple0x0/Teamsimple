@@ -2,7 +2,7 @@ import requests
 import re
 import os
 from dotenv import load_dotenv
-from datetime import datetime
+from datetime import datetime, timedelta
 import bcrypt
 from pprint import pprint
 import unicodedata
@@ -190,7 +190,11 @@ def merge_likes_visitors(likes, visitors, key="date", timeline="week"):
     for r in result:
         r["date"] = format_date_label(r["date"])
 
-    return sorted(result, key=sort_key)
+    if timeline == "month":
+        return sorted(result, key=sort_key, reverse=True)
+    else:
+        return sorted(result, key=sort_key)
+
 
 
 def validate_input_data(data_type, data):
