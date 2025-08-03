@@ -1410,5 +1410,10 @@ DELETE FROM Schedule
 WHERE ScheduleID = %s;
 """
 
+SCHEDULED_ID_QUERY = """
+SELECT ScheduleID FROM Schedule WHERE ContentType = %s AND ContentID = %s LIMIT 1;
+"""
+
+
 
 

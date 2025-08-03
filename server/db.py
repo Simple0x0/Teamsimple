@@ -600,6 +600,6 @@ class Database:
 
     @classmethod
     def get_schedule_id(cls, ContentType, ContentID):
-        query = "SELECT ScheduleID FROM Schedule WHERE ContentType = %s AND ContentID = %s LIMIT 1;"
-        result = cls.execute(query, params=(ContentType, ContentID), fetchone=True)
+        result = cls.execute(SCHEDULED_ID_QUERY, params=(ContentType, ContentID), fetchone=True)
         return result['ScheduleID'] if result and 'ScheduleID' in result else None
+    

@@ -27,10 +27,10 @@ from api.contributor.contributors import Contributor
 from api.login import Login
 from api.logout import Logout
 from api.authverify import AuthVerify
-from api.quickanalytics import QuickAnalytics
-from api.totalvisitors import TotalVisitors
-from api.toplikes import TopLikes
-from api.timelinestats import VisitorLikeTimeLineStats
+from api.dashboard.quickanalytics import QuickAnalytics
+from api.dashboard.totalvisitors import TotalVisitors
+from api.dashboard.toplikes import TopLikes
+from api.dashboard.timelinestats import VisitorLikeTimeLineStats
 from api.tagcattech import TagCategoryTechStack
 from api.uploads import Uploads
 
@@ -47,7 +47,7 @@ from api.aboutteam.aboutteammgmt import AboutTeamMgmt
 from api.event.eventsmgmt import EventsMgmt
 from api.event.eventparticipant import EventParticipants
 from api.contact.platformcontact import PlatformContacts
-from api.schedulcontent import ScheduledContent
+from api.dashboard.schedulcontent import ScheduledContent
 
 # ======= Initialize app and extensions =========
 load_dotenv()

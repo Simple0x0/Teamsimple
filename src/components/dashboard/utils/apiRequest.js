@@ -306,3 +306,19 @@ export const uploadFile = async ({ file, type, contentType, uploadKey }) => {
 };
 
 
+// ========== SCHEDULED CONTENTS ==========
+
+/**
+ * Fetch all scheduled contents.
+ */
+export const fetchScheduledContents = async () => {
+  try {
+    const res = await axios.get(`${BASE_URL}/api/scheduledcontents`, {
+      withCredentials: true,
+      headers: HEADERS,
+    });
+    return res.data;
+  } catch (err) {
+    handleError(err);
+  }
+};

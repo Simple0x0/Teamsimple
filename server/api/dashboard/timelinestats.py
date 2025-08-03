@@ -45,3 +45,4 @@ class VisitorLikeTimeLineStats(SerializableResource):
                 message="Internal server error",
                 error=str(e)
             ), 500)
+

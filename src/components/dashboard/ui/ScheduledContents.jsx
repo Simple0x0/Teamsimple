@@ -1,46 +1,41 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { FaCalendarAlt, FaChevronLeft, FaChevronRight } from "react-icons/fa";
 import { FaPodcast, FaBlog, FaFeatherAlt } from "react-icons/fa";
 import { MdEvent } from "react-icons/md";
 import style from "../../../app/Style";
-
-const scheduledData = [
-  {
-    id: 1,
-    type: "Blog",
-    title: "Understanding Supply Chain Attacks",
-    scheduledFor: "2025-06-20 14:00",
-  },
-  {
-    id: 2,
-    type: "Podcast",
-    title: "Deep Dive into AI Security",
-    scheduledFor: "2025-06-22 17:30",
-  },
-  {
-    id: 3,
-    type: "Event",
-    title: "Cybersec Africa Meetup",
-    scheduledFor: "2025-07-01 10:00",
-  },
-  {
-    id: 4,
-    type: "Writeup",
-    title: "CTF Challenge: Reversing Fun",
-    scheduledFor: "2025-06-25 09:00",
-  },
-];
+import { fetchScheduledContents } from "../utils/apiRequest";
+import { useNavigate } from "react-router-dom";
 
 const iconMap = {
   Blog: <FaBlog className="text-lime-400 w-4 h-4 mr-2" />,
   Podcast: <FaPodcast className="text-lime-400 w-4 h-4 mr-2" />,
   Event: <MdEvent className="text-lime-400 w-4 h-4 mr-2" />,
   Writeup: <FaFeatherAlt className="text-lime-400 w-4 h-4 mr-2" />,
+  Project: <FaFeatherAlt className="text-lime-400 w-4 h-4 mr-2" />,
+};
+
+const routeMap = {
+  Blog: "/dashboard/blogs",
+  Podcast: "/dashboard/podcasts",
+  Event: "/dashboard/events",
+  WriteUp: "/dashboard/writeups",
+  Project: "/dashboard/projects",
 };
 
 export default function ScheduledContents() {
   const s = style.scheduledContents;
+  const [scheduledData, setScheduledData] = useState([]);
   const [index, setIndex] = useState(0);
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    fetchScheduledContents()
+      .then((data) => {
+        // Expecting data.ScheduledContents or similar
+        setScheduledData(data?.scheduled || []);
+      })
+      .catch(() => setScheduledData([]));
+  }, []);
 
   const handlePrev = () => {
     setIndex((prev) => (prev - 1 + scheduledData.length) % scheduledData.length);
@@ -50,7 +45,33 @@ export default function ScheduledContents() {
     setIndex((prev) => (prev + 1) % scheduledData.length);
   };
 
+  if (!scheduledData.length) {
+    return (
+      <div className={s.wrapper}>
+        <div className={s.headerTitle}>
+          <p className={s.title}>Scheduled</p>
+        </div>
+        <div className="text-center py-8 text-gray-400">No scheduled content.</div>
+      </div>
+    );
+  }
+
   const current = scheduledData[index];
+  // Format date as 'Aug 3, 2025, 2:30 PM' (or similar, locale-friendly)
+  let formattedDate = "";
+  if (current?.ScheduledDate) {
+    const dateObj = new Date(current.ScheduledDate);
+    formattedDate = new Intl.DateTimeFormat('en-US', {
+      year: 'numeric',
+      month: 'short',
+      day: 'numeric',
+      hour: 'numeric',
+      minute: '2-digit',
+      hour12: true
+    }).format(dateObj);
+  }
+  const contentType = current.ContentType || current.type;
+  const goToRoute = routeMap[contentType] || "/dashboard";
 
   return (
     <div className={s.wrapper}>
@@ -69,16 +90,18 @@ export default function ScheduledContents() {
         <FaChevronLeft className={s.navIcon} onClick={handlePrev} />
         <div className={s.item}>
           <div className={s.itemHeader}>
-            {iconMap[current.type]}
-            <p className={s.itemType}>{current.type}</p>
+            {iconMap[contentType]}
+            <p className={s.itemType}>{contentType}</p>
           </div>
-          <p className={s.itemTitle}>{current.title}</p>
+          <p className={s.itemTitle}>{current.Title || current.title}</p>
           <p className={s.itemDate}>
             <FaCalendarAlt className="inline-block mr-1 text-gray-500" />
-            {new Date(current.scheduledFor).toLocaleString()}
+            {formattedDate}
           </p>
 
-          <button className={s.publishBtn}>Publish Now</button>
+          <button className={s.publishBtn} onClick={() => navigate(goToRoute)}>
+            Go to {contentType}
+          </button>
         </div>
         <FaChevronRight className={s.navIcon} onClick={handleNext} />
       </div>
