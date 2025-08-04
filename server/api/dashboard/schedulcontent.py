@@ -13,5 +13,3 @@ class ScheduledContent(SerializableResource):
         except Exception as e:
             app.logger.error(traceback.format_exc())
             return make_response(jsonify({"success": False, "message": str(e)}), 500)
-
-#        @jwt_required()
