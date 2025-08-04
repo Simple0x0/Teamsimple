@@ -1,3 +1,4 @@
+import datetime
 import traceback
 from flask import jsonify, make_response, request
 from flask_jwt_extended import jwt_required
@@ -16,7 +17,28 @@ class VisitorLikeTimeLineStats(SerializableResource):
             if timeline == 'week':
                 likes = db.get_likes_1_week()
                 visitors = db.get_visitors_1_week()
-                pprint(f"Likes for week: {likes}, \nVisitors for week: {visitors}")
+
+                # Get the current day of the week
+                current_day = datetime.datetime.now().strftime('%a')
+                days_order = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun']
+
+                # Reorder days to ensure the current day is last
+                start_index = days_order.index(current_day)
+                ordered_days = days_order[start_index + 1:] + days_order[:start_index + 1]
+
+                # Merge and map data to the desired format
+                visitors_likes = merge_likes_visitors(likes, visitors, key="date", timeline=timeline)
+                stats = []
+                for day in ordered_days:
+                    day_data = next((item for item in visitors_likes if item['date'] == day), {'date': day, 'likes': 0, 'visitors': 0})
+                    stats.append(day_data)
+
+                return make_response(jsonify(
+                    authenticated=True,
+                    timeline=timeline,
+                    stats=stats
+                ), 200)
+
             elif timeline == 'month':
                 likes = db.get_likes_1_month()
                 visitors = db.get_visitors_1_month()
