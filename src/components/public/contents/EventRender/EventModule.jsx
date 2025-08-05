@@ -79,7 +79,7 @@ export default function EventModule({ events }) {
                   <span className="text-xs bg-slate-800 text-white px-3 py-1 rounded-full">Mode: {event.Mode}</span>
                   <span className="text-xs bg-slate-800 text-white px-3 py-1 rounded-full">Payment: {event.PaymentType}</span>
                   <span className="text-xs bg-slate-800 text-white px-3 py-1 rounded-full">Registration: {event.RegistrationType}</span>
-                  <span className="text-xs bg-slate-800 text-white px-3 py-1 rounded-full">Status: {event.Status}</span>
+                  <span className="text-xs bg-lime-900 text-white font-bold px-3 py-1 rounded-full">Type: {event.EventType}</span>
                   {event.RegistrationType === 'Open' && (
                     <button
                       className="ml-4 px-5 py-2 bg-gradient-to-r from-lime-400 to-lime-600 hover:from-lime-500 hover:to-lime-700 text-slate-950 font-bold rounded-full shadow-xl transition duration-150 border-2 border-lime-300"

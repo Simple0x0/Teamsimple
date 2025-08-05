@@ -33,7 +33,7 @@ export default function Header() {
                 <div className="flex items-center space-x-4 ml-auto">
                     {/* Always visible */}
                     <NavLink to="/" className={style.header.menu}>Main Hub</NavLink>
-                    <NavLink to="#" className={style.header.menu}>Team</NavLink> {/* Implement Team Pages */}
+                    <NavLink to="/team" className={style.header.menu}>Team</NavLink> {/* Implement Team Pages */}
                     <NavLink to="/login" className={style.header.menu}>Login</NavLink>
                     {/* Show Toggle Button Only on sm: & md: */}
                     <button 
