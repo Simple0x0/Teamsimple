@@ -15,6 +15,7 @@ import Achievements from '../components/public/sections/Achievements';
 import BlogRender from '../components/public/contents/BlogRender/BlogRender'
 import WriteUpRender from '../components/public/contents/WriteUpRender/WriteUpRender'
 import ProjectRender from '../components/public/contents/ProjectRender/ProjectRender'
+import Events from '../components/public/sections/Events';
 
 // Auth
 import {AuthRoute} from '../components/dashboard/Auth/AuthPrivateRoute';
@@ -59,6 +60,7 @@ const router = createBrowserRouter(
         <Route path="projects" element={<Projects />} />
         <Route path="podcasts" element={<PodCast />} />
         <Route path="achievements" element={<Achievements />} />
+        <Route path="events" element={<Events />} />
         <Route path="blogs/:slug" element={<BlogRender />} />
         <Route path="writeups/:slug" element={<WriteUpRender />} />
         <Route path="projects/:slug" element={<ProjectRender />} />

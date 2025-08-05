@@ -1,6 +1,6 @@
 import React from 'react';
 import { NavLink } from 'react-router-dom';
-import { FaFileAlt, FaClipboardList, FaProjectDiagram, FaPodcast, FaTrophy } from "react-icons/fa";
+import { FaFileAlt, FaClipboardList, FaProjectDiagram, FaPodcast, FaTrophy, FaCalendarAlt } from "react-icons/fa";
 import style from '../../../app/Style';
 
 export default function LeftSideBar() {
@@ -20,6 +20,9 @@ export default function LeftSideBar() {
             </NavLink>
             <NavLink to="/achievements" className={style.leftbarmenu.menuItem}>
                 <FaTrophy className={style.leftbarmenu.icon} /> Achievements
+            </NavLink>
+            <NavLink to="/events" className={style.leftbarmenu.menuItem}>
+                <FaCalendarAlt className={style.leftbarmenu.icon} /> Events
             </NavLink>
         </div>
     );
