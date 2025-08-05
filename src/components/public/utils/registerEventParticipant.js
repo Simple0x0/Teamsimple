@@ -2,7 +2,7 @@ import axios from 'axios';
 
 export async function registerEventParticipant(eventId, data) {
   try {
-    const res = await axios.post('/api/events', {
+    const res = await axios.post(`${import.meta.env.VITE_API_URL}/api/events`, {
       ...data,
       EventID: eventId,
     });

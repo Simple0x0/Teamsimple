@@ -3,6 +3,7 @@ from flask import current_app as app
 from flask import request
 from utils.serializable_resource import SerializableResource
 from core.extensions import db, s, PUBLIC_EXCLUDED_STATUSES
+from pprint import pprint
 
 # ===== Events API =====
 class Events(SerializableResource):
@@ -29,14 +30,14 @@ class Events(SerializableResource):
         try:
             data = request.get_json()
             EventID = s.sanitize_id(data.get('EventID', ''))
-
+        
             # Check if event exists and registration is open
             event = db.get_event_by_id(EventID)
             if not event:
                 return {"message": "Event not found."}, 404
             if event.get("RegistrationType") == "Closed":
                 return {"message": "Registration for this event is closed."}, 403
-            
+            pprint(f"Event data: {data}")
             FirstName = s.sanitize_fullname(data.get('FirstName', ''))
             LastName = s.sanitize_fullname(data.get('LastName', ''))
             Nickname = s.sanitize_username(data.get('Nickname', 'Anonymous'))

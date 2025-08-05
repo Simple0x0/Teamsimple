@@ -387,8 +387,8 @@ class Database:
 
     @classmethod
     def get_event_by_id(cls, event_id):
-        result = cls.execute(GET_EVENT_BY_ID_QUERY, params=(event_id,))
-        return result[0] if result else None
+        result = cls.execute(GET_EVENT_BY_ID_QUERY, params=(event_id,), fetchone=True)
+        return result if result else None
 
     @classmethod
     def create_event(cls, title, summary, description, start, end, mode, location, type_, progress_status, slug, status, organizer_id, image, upload_key, payment_type, registration_type):

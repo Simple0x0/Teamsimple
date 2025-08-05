@@ -85,7 +85,8 @@ export default function EventParticipants() {
         (p.LastName && p.LastName.toLowerCase().includes(lower)) ||
         (p.Organization && p.Organization.toLowerCase().includes(lower)) ||
         (p.Country && p.Country.toLowerCase().includes(lower)) ||
-        (p.RegistrationType && p.RegistrationType.toLowerCase().includes(lower))
+        (p.RegistrationType && p.RegistrationType.toLowerCase().includes(lower)) ||
+        (p.DateCreated && p.DateCreated.toLowerCase().includes(lower))
       )
     );
   };
@@ -127,16 +128,17 @@ export default function EventParticipants() {
         <div className="overflow-x-auto w-full">
           <table className={s.table}>
             <thead>
-              <tr>
+              <tr className="text-center">
                 <th className={s.th}>Name</th>
                 <th className={s.th}>Nickname</th>
                 <th className={s.th}>Email</th>
                 <th className={s.th}>Organization</th>
                 <th className={s.th}>Registration Type</th>
                 <th className={s.th}>Country</th>
+                <th className={s.th}>Registration Date</th>
               </tr>
             </thead>
-            <tbody>
+            <tbody className="text-center">
               {filteredParticipants.length === 0 ? (
                 <tr><td className={s.noData} colSpan="6">No participants found.</td></tr>
               ) : (
@@ -148,6 +150,7 @@ export default function EventParticipants() {
                     <td className={s.td}>{p.Organization}</td>
                     <td className={s.td}>{p.RegistrationType}</td>
                     <td className={s.td}>{p.Country}</td>
+                    <td className={s.td}>{new Date(p.DateCreated).toLocaleString('en-US', { year: 'numeric', month: 'short', day: '2-digit', hour: '2-digit', minute: '2-digit', })}</td>
                   </tr>
                 ))
               )}
