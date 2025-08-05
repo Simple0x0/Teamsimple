@@ -13,6 +13,7 @@ import logging
 from logging.handlers import RotatingFileHandler
 
 # ======== Importing API's ==========
+from api.home_latest import HomeLatest
 from api.blog.blogs import Blogs
 from api.writeup.writeups import WriteUps
 from api.project.projects import Projects
@@ -129,6 +130,7 @@ def revoked_token_callback(jwt_header, jwt_payload):
 
 
 # ===== Endpoints Registration =====
+api.add_resource(HomeLatest, '/api/home_latest')
 api.add_resource(Blogs, '/api/blogs')
 api.add_resource(WriteUps, '/api/writeups')
 api.add_resource(Projects, '/api/projects')

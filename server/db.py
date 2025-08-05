@@ -558,6 +558,10 @@ class Database:
     @classmethod
     def get_latest(cls):
         return cls.execute(LATEST_CONTENT_QUERY, fetchall=True)
+
+    @classmethod
+    def get_home_latest(cls):
+        return cls.execute(HOME_LATEST_CONTENT_QUERY, fetchall=True)
     
     # ============================================================================================
     # =============================== PLATFORM CONTACTS QUERIES ===================================

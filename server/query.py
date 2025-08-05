@@ -871,7 +871,7 @@ WHERE ParticipantID = %s
 
 
 # ===============================================================================================================
-# ================================================== DASHBOARD QUEIRES ==========================================
+# ================================================== DASHBOARD QUERIES ==========================================
 # ===============================================================================================================
 
 LATEST_CONTENT_QUERY = """
@@ -913,7 +913,60 @@ WHERE (lc.LatestContentID, lc.ContentType) IN (
 
 ORDER BY DateCreated DESC
 LIMIT 6;
+"""
 
+# New: Top 3 latest items per content type for Home page (MariaDB compatible)
+HOME_LATEST_CONTENT_QUERY = """
+SELECT * FROM (
+    SELECT * FROM (
+        SELECT 'Blog' AS ContentType, b.BlogID AS ContentID, b.Title, b.BlogImage AS Image, b.Summary AS Description, b.DateCreated, b.Slug
+        FROM Blogs b
+        WHERE b.Status = 'Published'
+        ORDER BY b.DateCreated DESC
+        LIMIT 3
+    ) blog
+    UNION ALL
+    SELECT * FROM (
+        SELECT 'WriteUp' AS ContentType, w.WriteUpID AS ContentID, w.MachineName AS Title, w.WriteUpImage AS Image, w.Summary AS Description, w.DateCreated, w.Slug
+        FROM WriteUp w
+        WHERE w.Status = 'Published'
+        ORDER BY w.DateCreated DESC
+        LIMIT 3
+    ) writeup
+    UNION ALL
+    SELECT * FROM (
+        SELECT 'Project' AS ContentType, p.ProjectID AS ContentID, p.Title, p.CoverImage AS Image, p.Description, p.DateCreated, p.Slug
+        FROM Projects p
+        WHERE p.Status = 'Published'
+        ORDER BY p.DateCreated DESC
+        LIMIT 3
+    ) project
+    UNION ALL
+    SELECT * FROM (
+        SELECT 'Podcast' AS ContentType, pc.PodcastID AS ContentID, pc.Title, pc.CoverImage AS Image, pc.Description, pc.DateCreated, pc.Slug
+        FROM Podcast pc
+        WHERE pc.Status = 'Published'
+        ORDER BY pc.DateCreated DESC
+        LIMIT 3
+    ) podcast
+    UNION ALL
+    SELECT * FROM (
+        SELECT 'Achievement' AS ContentType, a.AchievementID AS ContentID, a.Title, a.Image, a.Description, a.DateCreated, NULL AS Slug
+        FROM Achievements a
+        WHERE a.Status = 'Published'
+        ORDER BY a.DateCreated DESC
+        LIMIT 3
+    ) achievement
+    UNION ALL
+    SELECT * FROM (
+        SELECT 'Event' AS ContentType, e.EventID AS ContentID, e.Title, e.EventImage AS Image, e.Description, e.DateCreated, e.Slug
+        FROM Event e
+        WHERE e.Status != 'Deleted'
+        ORDER BY e.DateCreated DESC
+        LIMIT 3
+    ) event
+) AS home_latest
+ORDER BY DateCreated DESC;
 """
 
 ANALYTICS_QUERY = """

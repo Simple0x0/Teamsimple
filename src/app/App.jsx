@@ -52,8 +52,8 @@ import PlatformContacts from '../components/dashboard/ui/contacts/PlatformContac
 const router = createBrowserRouter(
   createRoutesFromElements(
     <>
-      <Route path="/" element={<MainLayout />}>
-        <Route index element={<Blogs />} /> {/* <Home /> WILL BE USED LATER*/}
+      <Route path="/" element={<MainLayout />}> 
+        <Route index element={<Home />} />
         <Route path="blogs" element={<Blogs />} />
         <Route path="writeups" element={<WriteUps />} />
         <Route path="projects" element={<Projects />} />
@@ -91,16 +91,11 @@ const router = createBrowserRouter(
         <Route path="/dashboard/contributors" element={<ContributorsMgmt />} /> 
         <Route path="/dashboard/platform-contacts" element={<PlatformContacts />} />
         <Route path='/dashboard/who-we-are' element={<WhoWeAre />} />
-        <Route path='team-management' element={<TeamMgmt />} />
-        {/*
-        <Route path="/dashboard/contributors/edit" element={<ContributorEdit />} /> 
-        <Route path="/dashboard/contributors/new" element={<ContributorAdd />} /> 
-        <Route path="/dashboard/blogs" element={<BlogMngt />} />
-        <Route path="adduser" element={<AddUser />} />
-        <Route path="modifyuser" element={<ModifyUser />} />
-        */}
+        <Route path='/dashboard/team-management' element={<TeamMgmt />} />
+        
+        <Route path='/dashboard/*' element={<Dashboard />} />
       </Route>
-      <Route path="*" element={<Navigate to="/blogs" replace />} />
+      <Route path="*" element={<Navigate to="/" replace />} />
     </>
   ),
   {
