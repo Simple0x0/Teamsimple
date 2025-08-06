@@ -1,12 +1,15 @@
 import React, { useState, useEffect, useRef } from "react";
-import { Link, NavLink } from "react-router-dom";
+import { NavLink, useLocation } from "react-router-dom";
 import { FaBars, FaTimes, FaFileAlt, FaClipboardList, FaProjectDiagram, FaPodcast, FaTrophy } from "react-icons/fa";
+import { IoIosArrowRoundBack } from "react-icons/io";
 import style from "../../../app/Style";
 import logo from "../../../assets/logo.png";
 
 export default function Header() {
     const [menuOpen, setMenuOpen] = useState(false);
     const menuRef = useRef(null);
+    const location = useLocation();
+    const isTeamBar = location.pathname.startsWith('/team');
 
     useEffect(() => {
         function handleClickOutside(event) {
@@ -17,7 +20,6 @@ export default function Header() {
         if (menuOpen) {
             document.addEventListener("mousedown", handleClickOutside);
         }
-
         return () => {
             document.removeEventListener("mousedown", handleClickOutside);
         };
@@ -33,9 +35,8 @@ export default function Header() {
                 <div className="flex items-center space-x-4 ml-auto">
                     {/* Always visible */}
                     <NavLink to="/" className={style.header.menu}>Main Hub</NavLink>
-                    <NavLink to="/team" className={style.header.menu}>Team</NavLink> {/* Implement Team Pages */}
+                    <NavLink to="/team" className={style.header.menu}>Team</NavLink>
                     <NavLink to="/login" className={style.header.menu}>Login</NavLink>
-                    {/* Show Toggle Button Only on sm: & md: */}
                     <button 
                         onClick={() => setMenuOpen(!menuOpen)} 
                         className={`${style.header.menuButton}`}>
@@ -48,21 +49,39 @@ export default function Header() {
             {menuOpen && (
                 <div ref={menuRef} className={style.header.menudiv} >
                     <div className={style.header.mobileMenu}>
-                        <NavLink to="/blogs" className={style.header.menu} onClick={() => setMenuOpen(false)}>
-                            <FaFileAlt className={style.header.icon} /> Blogs
-                        </NavLink>
-                        <NavLink to="/writeups" className={style.header.menu} onClick={() => setMenuOpen(false)}>
-                            <FaClipboardList className={style.header.icon} /> WriteUps
-                        </NavLink>
-                        <NavLink to="/projects" className={style.header.menu} onClick={() => setMenuOpen(false)}>
-                            <FaProjectDiagram className={style.header.icon} /> Projects
-                        </NavLink>
-                        <NavLink to="/podcasts" className={style.header.menu} onClick={() => setMenuOpen(false)}>
-                            <FaPodcast className={style.header.icon} /> PodCasts
-                        </NavLink>
-                        <NavLink to="/achievements" className={style.header.menu} onClick={() => setMenuOpen(false)}>
-                            <FaTrophy className={style.header.icon} /> Achievements
-                        </NavLink>
+                        {isTeamBar ? (
+                            <>
+                                <NavLink to="/" className="flex items-center gap-2 text-lime-400 hover:text-lime-600 mb-6 py-2 px-4 rounded-lg transition-all shadow-md">
+                                    <span className="inline-flex items-center justify-center mr-2 animate-ping ">
+                                        <IoIosArrowRoundBack size={24} className="text-slate-950" />
+                                    </span>
+                                    <span >Return</span>
+                                </NavLink>
+                                <NavLink to="/team" className={style.header.menu} onClick={() => setMenuOpen(false)}>Who We Are</NavLink>
+                                <NavLink to="/team/vision-mission" className={style.header.menu} onClick={() => setMenuOpen(false)}>Vision & Mission</NavLink>
+                                <NavLink to="/team/values" className={style.header.menu} onClick={() => setMenuOpen(false)}>Values</NavLink>
+                                <NavLink to="/team/members" className={style.header.menu} onClick={() => setMenuOpen(false)}>The Team</NavLink>
+                                <button className="mt-4 py-3 px-6 bg-gradient-to-r from-lime-400 to-lime-600 text-slate-950 font-bold rounded-full shadow-xl text-center hover:from-lime-500 hover:to-lime-700 border-2 border-lime-300 text-lg">Join Team</button>
+                            </>
+                        ) : (
+                            <>
+                                <NavLink to="/blogs" className={style.header.menu} onClick={() => setMenuOpen(false)}>
+                                    <FaFileAlt className={style.header.icon} /> Blogs
+                                </NavLink>
+                                <NavLink to="/writeups" className={style.header.menu} onClick={() => setMenuOpen(false)}>
+                                    <FaClipboardList className={style.header.icon} /> WriteUps
+                                </NavLink>
+                                <NavLink to="/projects" className={style.header.menu} onClick={() => setMenuOpen(false)}>
+                                    <FaProjectDiagram className={style.header.icon} /> Projects
+                                </NavLink>
+                                <NavLink to="/podcasts" className={style.header.menu} onClick={() => setMenuOpen(false)}>
+                                    <FaPodcast className={style.header.icon} /> PodCasts
+                                </NavLink>
+                                <NavLink to="/achievements" className={style.header.menu} onClick={() => setMenuOpen(false)}>
+                                    <FaTrophy className={style.header.icon} /> Achievements
+                                </NavLink>
+                            </>
+                        )}
                     </div>
                 </div>
             )}

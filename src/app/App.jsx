@@ -41,13 +41,16 @@ import AchievementEdit from '../components/dashboard/ui/achievements/Achievement
 import AchievementAdd from '../components/dashboard/ui/achievements/AchievementAdd';
 import ContributorsMgmt from '../components/dashboard/ui/contributors/ContributorsMgmt';
 import TeamMgmt from '../components/dashboard/ui/team/TeamMgmt';
-//import ContributorEdit from '../components/dashboard/ui/contributors/del_ContributorEdit';
-//import ContributorAdd from '../components/dashboard/ui/contributors/del_ContributorAdd';
 import WhoWeAre from '../components/dashboard/ui/who-we-are/WhoWeAre';
 import EventMgmt from '../components/dashboard/ui/events/EventMgmt';
 import EventAdd from '../components/dashboard/ui/events/EventAdd';
 import EventEdit from '../components/dashboard/ui/events/EventEdit';
 import PlatformContacts from '../components/dashboard/ui/contacts/PlatformContacts';
+
+import TeamWhoWeAre from '../components/public/team/TeamWhoWeAre';
+import TeamVisionMission from '../components/public/team/TeamVisionMission';
+import TeamValues from '../components/public/team/TeamValues';
+import TeamJoin from '../components/public/team/TeamJoin';
 
 
 const router = createBrowserRouter(
@@ -64,7 +67,12 @@ const router = createBrowserRouter(
         <Route path="blogs/:slug" element={<BlogRender />} />
         <Route path="writeups/:slug" element={<WriteUpRender />} />
         <Route path="projects/:slug" element={<ProjectRender />} />
+        <Route path="/team" element={<TeamWhoWeAre />} />
+        <Route path="/team/vision-mission" element={<TeamVisionMission />} />
+        <Route path="/team/values" element={<TeamValues />} />
+        <Route path="/team/join" element={<TeamJoin />} />
       </Route>
+
 
       <Route path="/login" element={<AuthRoute > <Login /> </ AuthRoute >} />
       <Route path="/reset-password" element={<AuthRoute > <ResetPassword /> </ AuthRoute >} />

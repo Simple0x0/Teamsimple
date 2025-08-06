@@ -82,7 +82,7 @@ export default function EventModule({ events }) {
                   <span className="text-xs bg-lime-900 text-white font-bold px-3 py-1 rounded-full">Type: {event.EventType}</span>
                   {event.RegistrationType === 'Open' && (
                     <button
-                      className="ml-4 px-5 py-2 bg-gradient-to-r from-lime-400 to-lime-600 hover:from-lime-500 hover:to-lime-700 text-slate-950 font-bold rounded-full shadow-xl transition duration-150 border-2 border-lime-300"
+                      className="ml-4 px-5 py-2 bg-none hover:bg-purple-900/30 hover:cursor-pointer text-lime-300 hover:text-white font-bold rounded-full shadow-xl transition duration-150 border-2 border-lime-300"
                       onClick={() => handleRegister(event.EventID, event.Title)}
                     >
                       Register Now
