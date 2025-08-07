@@ -1,7 +1,7 @@
 import React from 'react';
 import { NavLink, useLocation } from 'react-router-dom';
 import { FaFileAlt, FaClipboardList, FaProjectDiagram, FaPodcast, FaTrophy, FaCalendarAlt } from "react-icons/fa";
-import { IoIosArrowRoundBack } from "react-icons/io";
+import { IoIosArrowRoundBack, IoMdArrowForward } from "react-icons/io";
 import style from '../../../app/Style';
 
 export default function LeftSideBar() {
@@ -33,6 +33,10 @@ export default function LeftSideBar() {
                         Join Team
                     </a>
                 </div>
+                <NavLink to="/login" className="flex items-center text-xs text-blue-400 gap-1 mt-2">
+                    <IoMdArrowForward size={14} className="text-blue-400" />
+                    <span>Login</span>
+                </NavLink>
             </aside>
         );
     }

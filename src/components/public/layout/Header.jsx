@@ -36,7 +36,6 @@ export default function Header() {
                     {/* Always visible */}
                     <NavLink to="/" className={style.header.menu}>Main Hub</NavLink>
                     <NavLink to="/team" className={style.header.menu}>Team</NavLink>
-                    <NavLink to="/login" className={style.header.menu}>Login</NavLink>
                     <button 
                         onClick={() => setMenuOpen(!menuOpen)} 
                         className={`${style.header.menuButton}`}>
