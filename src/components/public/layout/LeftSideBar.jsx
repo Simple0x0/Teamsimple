@@ -24,11 +24,14 @@ export default function LeftSideBar() {
                     <NavLink to="/team/members" className={style.header.menu}>The Team</NavLink>
                 </div>
                 <div className="mt-auto">
-                    <NavLink
-                        className="mb-2 py-2 px-6 bg-none text-white font-bold rounded-full shadow-xl text-center border-2 border-lime-800  w-full"
+                    <a
+                        href="https://discord.gg/kS6QTmm45M"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="mb-2 py-2 px-6 bg-none text-white font-bold rounded-full shadow-xl text-center border-2 border-lime-800  w-full block"
                     >
                         Join Team
-                    </NavLink>
+                    </a>
                 </div>
             </aside>
         );

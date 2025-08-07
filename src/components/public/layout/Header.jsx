@@ -61,7 +61,16 @@ export default function Header() {
                                 <NavLink to="/team/vision-mission" className={style.header.menu} onClick={() => setMenuOpen(false)}>Vision & Mission</NavLink>
                                 <NavLink to="/team/values" className={style.header.menu} onClick={() => setMenuOpen(false)}>Values</NavLink>
                                 <NavLink to="/team/members" className={style.header.menu} onClick={() => setMenuOpen(false)}>The Team</NavLink>
-                                <button className="mt-4 py-3 px-6 bg-gradient-to-r from-lime-400 to-lime-600 text-slate-950 font-bold rounded-full shadow-xl text-center hover:from-lime-500 hover:to-lime-700 border-2 border-lime-300 text-lg">Join Team</button>
+                                <div className="mt-auto">
+                                    <a
+                                        href="https://discord.gg/kS6QTmm45M"
+                                        target="_blank"
+                                        rel="noopener noreferrer"
+                                        className="mb-2 py-2 px-6 bg-none text-white font-bold rounded-full shadow-xl text-center border-2 border-lime-800  w-full block"
+                                    >
+                                        Join Team
+                                    </a>
+                                </div>
                             </>
                         ) : (
                             <>
