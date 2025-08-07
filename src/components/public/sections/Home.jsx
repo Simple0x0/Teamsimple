@@ -39,25 +39,28 @@ export default function Home() {
   return (
     <div className="w-full px-4 md:px-8 py-6">
       {/* Hero Banner */}
-      <section className="w-full relative border border-1 border-lime-900 rounded-3xl overflow-hidden shadow-2xl mb-16">
-        <div className="absolute inset-0 bg-gradient-to-br to-slate-800 opacity-50"></div>
-        <div className="relative px-6 md:px-16 py-20 text-center flex flex-col items-center justify-center">
-          <h1 className="text-4xl md:text-5xl font-extrabold text-white drop-shadow mb-4">
-            Welcome to <span className="text-purple-700">Team Simple</span>
-          </h1>
-          <p className="text-gray-100 text-lg md:text-xl max-w-3xl leading-relaxed">
-            Simplifying the complex—one blog, project, and idea at a time.
-          </p>
-          <p className="text-gray-100 text-lg md:text-xl max-w-3xl mb-6 leading-relaxed">
-            One team. One vision. Simpler, smarter, and more human-centered
-          </p>
-          <a href="/blogs" className="mt-2 inline-block bg-lime-400 hover:bg-lime-500 text-slate-900 font-semibold px-8 py-3 rounded-full transition duration-200 shadow-xl">
-            Explore Our Content
-          </a>
-        </div>
-      </section>
+        <section className="w-full relative border border-1 border-lime-900 rounded-3xl overflow-hidden shadow-2xl mb-16">
+          <div className="absolute inset-0 bg-gradient-to-br to-slate-800 opacity-50"></div>
+          <div className="relative px-6 md:px-16 py-20 text-center flex flex-col items-center justify-center">
+            <h1 className="text-4xl md:text-5xl font-extrabold text-white drop-shadow mb-4">
+          Welcome to <span className="text-purple-700">Team Simple</span>
+            </h1>
+            <p className="text-gray-100 text-lg md:text-xl max-w-3xl leading-relaxed">
+          Simplifying the complex—one blog, project, and idea at a time.
+            </p>
+            <p className="text-gray-100 text-lg md:text-xl max-w-3xl mb-6 leading-relaxed">
+          One team. One vision. Simpler, smarter, and more human-centered
+            </p>
+            <button
+          onClick={() => navigate('/blogs')}
+          className="mt-2 inline-block bg-lime-400 hover:bg-lime-500 text-slate-900 font-semibold px-8 py-3 rounded-full transition duration-200 shadow-xl"
+            >
+          Explore Our Content
+            </button>
+          </div>
+        </section>
 
-      {/* Featured */}
+        {/* Featured */}
       {featured && (
         <section className="mb-16 relative">
           <div className="flex items-center mb-6">

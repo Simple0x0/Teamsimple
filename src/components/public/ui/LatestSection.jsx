@@ -1,8 +1,10 @@
 import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { FaChevronLeft, FaChevronRight } from 'react-icons/fa';
 
 export default function LatestSection({ title, items = [], link }) {
   const [index, setIndex] = useState(0);
+  const navigate = useNavigate();
   if (!items.length) return null;
 
   const maxIndex = items.length - 1;
@@ -14,12 +16,13 @@ export default function LatestSection({ title, items = [], link }) {
       <div className="flex justify-between items-center mb-6 px-2 md:px-0">
         <h3 className="text-xl md:text-2xl font-bold text-lime-400">{title}</h3>
         {link && (
-          <a
-            href={link}
-            className="text-sm md:text-base text-blue-400 hover:underline flex items-center gap-1"
+          <button
+            type="button"
+            onClick={() => navigate(link)}
+            className="text-sm md:text-base text-blue-400 hover:underline flex items-center gap-1 bg-transparent border-none outline-none cursor-pointer"
           >
             See More <FaChevronRight className="inline-block text-xs mt-0.5" />
-          </a>
+          </button>
         )}
       </div>
       <div className="relative flex items-center justify-center w-full group">
@@ -37,9 +40,10 @@ export default function LatestSection({ title, items = [], link }) {
         )}
 
         {/* Carousel Item */}
-        <a
-          href={`/${items[index].ContentType.toLowerCase()}s/${items[index].Slug || ''}`}
-          className="block w-full bg-slate-900 border border-slate-800 rounded-xl overflow-hidden shadow hover:shadow-lg transition-all duration-300 px-0 md:px-8"
+        <button
+          type="button"
+          onClick={() => navigate(`/${items[index].ContentType.toLowerCase()}s/${items[index].Slug || ''}`)}
+          className="block w-full bg-slate-900 border border-slate-800 rounded-xl overflow-hidden shadow hover:shadow-lg transition-all duration-300 px-0 md:px-8 text-left cursor-pointer"
         >
           {items[index].Image && (
             <img
@@ -60,7 +64,7 @@ export default function LatestSection({ title, items = [], link }) {
               <span>{new Date(items[index].DateCreated).toLocaleDateString(undefined, { year: 'numeric', month: 'short', day: 'numeric' })}</span>
             </div>
           </div>
-        </a>
+        </button>
 
         {/* Next Icon - fixed on mobile, visible on hover otherwise */}
         {showNext && (

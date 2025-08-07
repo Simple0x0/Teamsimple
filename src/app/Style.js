@@ -21,7 +21,7 @@ const style = {
         container: "container z-10 relative bg-slate-950 w-full max-h-16 rounded-b-lg border-b-2 border-gray-800 " + "lg:max-h-32 lg:w-3/5 lg:rounded-b-xl " ,
         //container: "z-10 relative container bg-slate-950 w-full max-h-16 rounded-b-lg border-b-2 border-gray-800 lg:max-h-32 lg:w-3/5 lg:rounded-b-xl",
         contentContainer: "flex items-center px-6 py-3 w-full justify-between ",
-        logo: "h-12 pointer-events-none select-none " + " lg:h-16",
+        logo: "h-12 pointer-events-none select-none " + " lg:h-20",
         menudiv: " lg:hidden ", 
         mobileMenu: "absolute w-full  w-48 bg-slate-900 p-2 top-15 mt-2 flex flex-col space-y-1 overflow-y-auto rounded-md " + " md:max-w-1/4 md:p-2 md:right-22  lg:hidden shadow-lg",
         menu: "flex items-center px-4 py-2 rounded-md transition duration-300 text-sm " + 
