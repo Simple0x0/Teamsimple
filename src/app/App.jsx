@@ -50,6 +50,7 @@ import PlatformContacts from '../components/dashboard/ui/contacts/PlatformContac
 import TeamWhoWeAre from '../components/public/team/TeamWhoWeAre';
 import TeamVisionMission from '../components/public/team/TeamVisionMission';
 import TeamValues from '../components/public/team/TeamValues';
+import TheTeam from '../components/public/team/TheTeam';
 import TeamJoin from '../components/public/team/TeamJoin';
 
 
@@ -70,6 +71,7 @@ const router = createBrowserRouter(
         <Route path="/team" element={<TeamWhoWeAre />} />
         <Route path="/team/vision-mission" element={<TeamVisionMission />} />
         <Route path="/team/values" element={<TeamValues />} />
+        <Route path="/team/members" element={<TheTeam />} />
         <Route path="/team/join" element={<TeamJoin />} />
       </Route>
 
