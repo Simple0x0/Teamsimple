@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import style from '../../../app/Style';
+import { useNavigate } from 'react-router-dom';
 import '../../../index.css';
 import LatestSection from '../ui/LatestSection';
 import { fetchHomeLatest } from '../utils/fetchHomeLatest';
@@ -10,6 +11,7 @@ export default function Home() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [featured, setFeatured] = useState(null);
+  const navigate = useNavigate();
 
   useEffect(() => {
     fetchHomeLatest()
@@ -111,9 +113,12 @@ export default function Home() {
         <p className="text-gray-400 mb-6 text-lg">
           Join the team that’s simplifying tech & security for everyone. Future-forward, inclusive, and impactful.
         </p>
-        <a href="/team" className="bg-lime-500 hover:bg-lime-600 text-white px-8 py-3 rounded-full text-lg transition-all">
+        <button
+          onClick={() => navigate('/team')}
+          className="bg-lime-500 hover:bg-lime-600 text-white px-8 py-3 rounded-full text-lg transition-all"
+        >
           Meet the Team
-        </a>
+        </button>
       </section>
     </div>
   );

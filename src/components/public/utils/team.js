@@ -12,7 +12,6 @@ export async function fetchTeamSection(section) {
 export async function fetchAllTeamMembers() {
   try {
     const res = await axios.post(`${import.meta.env.VITE_API_URL}/api/auth/memberinfo`, { member: 'all' });
-    console.log(res.data.team);
     return res.data.team || [];
   } catch (err) {
     throw new Error('Failed to load team members');
