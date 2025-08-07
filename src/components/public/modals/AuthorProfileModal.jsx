@@ -32,7 +32,7 @@ export default function AuthorProfileModal({ isOpen, onClose, username }) {
                     {/* Header */}
                     <div className={style.Modal.HeaderContainer}>
                         <Dialog.Title className={style.Modal.Title}>
-                            {author?.FullName || author?.Username || 'Loading Bio ...'}
+                            {author?.FullName ?? author?.Username ?? 'Loading Bio ...'}
                         </Dialog.Title>
                         <button onClick={onClose} className={style.Modal.XButton}>
                             <X size={24} />
@@ -48,32 +48,28 @@ export default function AuthorProfileModal({ isOpen, onClose, username }) {
                         ) : (
                             <div className="space-y-4">
                                 {/* Profile Picture */}
-                                {author?.ProfilePicture && (
-                                    <img
-                                        src={author.ProfilePicture}
-                                        alt={author.Username}
-                                        className={style.ProfileModal.image}
-                                    />
-                                )}
+                                <img
+                                    src={author?.ProfilePicture ?? '/default-avatar.jpg'}
+                                    alt={author?.Username ?? 'Member'}
+                                    className={style.ProfileModal.image}
+                                />
                                 {/* Username */}
-                                <h4 className={style.ProfileModal.username} >{author?.Username}</h4>
+                                <h4 className={style.ProfileModal.username} >{author?.Username ?? 'unknown'}</h4>
                                 {/* Bio */}
-                                {author?.Bio && (
-                                    <p className={style.ProfileModal.bio}>{author.Bio}</p>
-                                )}
+                                <p className={style.ProfileModal.bio}>{author?.Bio ?? ''}</p>
 
                                 {/* Social Links */}
-                                {author?.SocialLinks?.length > 0 && (
+                                {Array.isArray(author?.SocialLinks) && author.SocialLinks.length > 0 && (
                                     <div className={style.ProfileModal.socialLinkContainer}>
                                         {author.SocialLinks.map((link, idx) => (
                                             <a
                                                 key={idx}
-                                                href={link.URL}
+                                                href={link?.URL ?? '#'}
                                                 target="_blank"
                                                 rel="noopener noreferrer"
                                                 className={style.ProfileModal.socialLink}
                                             >
-                                                {link.Platform}
+                                                {link?.Platform ?? ''}
                                             </a>
                                         ))}
                                     </div>

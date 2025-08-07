@@ -19,7 +19,7 @@ export default function TeamWhoWeAre() {
   }, []);
 
   if (loading) return <Loading />;
-  if (error) return <ErrorHandle type="Who We Are" errorType="server" message={error} />;
+  if (error) return <ErrorHandle type="Who We Are" errorType="server" message={error ?? 'Unknown error'} />;
   if (!content) return null;
 
   // ContentMDRender expects an object with a Content property
@@ -28,7 +28,7 @@ export default function TeamWhoWeAre() {
       <h2 className="text-3xl font-bold text-lime-400 mb-6">Who We Are</h2>
       <ContentMDRender
         Header={() => null}
-        Contents={{ Content: content }}
+        Contents={{ Content: content ?? '' }}
         Footer={() => null}
       />
     </section>

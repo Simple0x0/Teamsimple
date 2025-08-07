@@ -19,7 +19,7 @@ export default function TeamVisionMission() {
   }, []);
 
   if (loading) return <Loading />;
-  if (error) return <ErrorHandle type="Vision & Mission" errorType="server" message={error} />;
+  if (error) return <ErrorHandle type="Vision & Mission" errorType="server" message={error ?? 'Unknown error'} />;
   if (!content) return null;
 
   return (
@@ -27,7 +27,7 @@ export default function TeamVisionMission() {
       <h2 className="text-3xl font-bold text-lime-400 mb-6">Vision & Mission</h2>
       <ContentMDRender
         Header={() => null}
-        Contents={{ Content: content }}
+        Contents={{ Content: content ?? '' }}
         Footer={() => null}
       />
     </section>

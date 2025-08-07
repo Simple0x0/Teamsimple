@@ -27,34 +27,34 @@ export default function TheTeam() {
     <section className="max-w-5xl mx-auto py-12 px-4">
       <h2 className="text-3xl font-bold text-lime-400 mb-8 text-center">Meet the Team</h2>
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3">
-        {members.map(member => (
-          <div key={member.TeamMemberID || member.id} className="bg-slate-900 rounded-xl shadow-lg p-6 flex flex-col items-center text-center border border-lime-700 hover:shadow-2xl transition">
+        {Array.isArray(members) && members.map(member => (
+          <div key={member?.TeamMemberID ?? member?.id ?? Math.random()} className="bg-slate-900 rounded-xl shadow-lg p-6 flex flex-col items-center text-center border border-lime-700 hover:shadow-2xl transition">
             <img
-              src={member.ProfilePicture || '/default-avatar.jpg'}
-              alt={member.Username}
+              src={member?.ProfilePicture || '/default-avatar.jpg'}
+              alt={member?.Username ?? 'Member'}
               className="w-24 h-24 rounded-full object-cover mb-4 border-4 border-lime-400 shadow"
             />
-            <h3 className="text-sm text-lime-300 mb-1">{`@${member.Username}`}</h3>
+            <h3 className="text-md text-lime-300 mb-1">{`@${member?.Username ?? 'unknown'}`}</h3>
             {/* Social Links */}
-            {Array.isArray(member.SocialLinks) && member.SocialLinks.length > 0 && (
+            {Array.isArray(member?.SocialLinks) && member.SocialLinks.length > 0 && (
               <div className="flex gap-2 mb-2">
                 {member.SocialLinks.map((link, idx) => (
                   <a
                     key={idx}
-                    href={link.URL}
+                    href={link?.URL ?? '#'}
                     target="_blank"
                     rel="noopener noreferrer"
                     className="inline-block text-blue-800 hover:text-lime-200 text-md"
                   >
-                    <span>{link.Platform}</span>
+                    <span>{link?.Platform ?? ''}</span>
                   </a>
                 ))}
               </div>
             )}
             {/* Bio Preview and Read More */}
             <p className="text-gray-300 text-sm mb-2">
-              {member.BioPreview || member.Bio}
-              {member.Bio && member.BioPreview && member.Bio !== member.BioPreview && (
+              {member?.BioPreview ?? member?.Bio ?? ''}
+              {member?.Bio && member?.BioPreview && member.Bio !== member.BioPreview && (
                 <>
                   {' '}
                   <button
@@ -67,11 +67,11 @@ export default function TheTeam() {
               )}
             </p>
             {/* AuthorProfileModal for full bio */}
-            {bioModal.open && bioModal.member?.TeamMemberID === member.TeamMemberID && (
+            {bioModal.open && bioModal.member?.TeamMemberID === member?.TeamMemberID && (
               <AuthorProfileModal
                 isOpen={bioModal.open}
                 onClose={() => setBioModal({ open: false, member: null })}
-                username={member.Username}
+                username={member?.Username ?? ''}
               />
             )}
           </div>

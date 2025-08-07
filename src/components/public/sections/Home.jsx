@@ -18,9 +18,9 @@ export default function Home() {
       .then(data => {
         setHomeLatest(data);
         setLoading(false);
-        if (data && data.length) {
-          const sorted = [...data].sort((a, b) => new Date(b.DateCreated) - new Date(a.DateCreated));
-          setFeatured(sorted[0]);
+        if (Array.isArray(data) && data.length) {
+          const sorted = [...data].sort((a, b) => new Date(b?.DateCreated ?? 0) - new Date(a?.DateCreated ?? 0));
+          setFeatured(sorted[0] ?? null);
         }
       })
       .catch(err => {
@@ -30,10 +30,11 @@ export default function Home() {
   }, []);
 
   const groupByType = (type) => {
-    const sorted = [...homeLatest]
-      .filter(item => item.ContentType === type)
-      .sort((a, b) => new Date(b.DateCreated) - new Date(a.DateCreated));
-    return sorted.slice(0, 3);
+    const sorted = Array.isArray(homeLatest) ? [...homeLatest] : [];
+    return sorted
+      .filter(item => (item?.ContentType ?? '') === (type ?? ''))
+      .sort((a, b) => new Date(b?.DateCreated ?? 0) - new Date(a?.DateCreated ?? 0))
+      .slice(0, 3);
   };
 
   return (
@@ -78,20 +79,20 @@ export default function Home() {
           </div>
           <div className="flex flex-col md:flex-row gap-6 items-center">
             <img
-              src={featured.Image?.startsWith('http') ? featured.Image : `/${featured.Image}`}
-              alt={featured.Title}
+              src={featured?.Image?.startsWith('http') ? featured.Image : featured?.Image ? `/${featured.Image}` : '/default-image.jpg'}
+              alt={featured?.Title ?? 'Featured'}
               className="w-full md:w-1/2 h-72 object-cover rounded-xl shadow-lg"
             />
             <div className="flex-1 text-gray-300">
-              <h3 className="text-2xl font-semibold mb-2">{featured.Title}</h3>
-              <p className="mb-4 text-base md:text-lg leading-relaxed">{featured.Description}</p>
+              <h3 className="text-2xl font-semibold mb-2">{featured?.Title ?? 'Untitled'}</h3>
+              <p className="mb-4 text-base md:text-lg leading-relaxed">{featured?.Description ?? ''}</p>
               <div className="text-sm text-gray-500">
-                <span className="mr-4 bg-slate-700 px-3 py-1 rounded-full text-white">{featured.ContentType}</span>
-                <span>{new Date(featured.DateCreated).toLocaleDateString(undefined, {
+                <span className="mr-4 bg-slate-700 px-3 py-1 rounded-full text-white">{featured?.ContentType ?? ''}</span>
+                <span>{featured?.DateCreated ? new Date(featured.DateCreated).toLocaleDateString(undefined, {
                   year: 'numeric',
                   month: 'short',
                   day: 'numeric',
-                })}</span>
+                }) : ''}</span>
               </div>
             </div>
           </div>

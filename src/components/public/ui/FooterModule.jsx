@@ -9,7 +9,7 @@ import fetchContacts from '../utils/fetchContacts';
 
 export default function FooterModule() {
   const currentYear = new Date().getFullYear();
-  const [contacts, setContacts] = useState([]);
+  const [contacts, setContacts] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
@@ -44,7 +44,7 @@ export default function FooterModule() {
 
   useEffect(() => {
     fetchContacts()
-      .then(setContacts)
+        .then(data => setContacts(data ?? []))
       .catch(() => setError('Failed to load contacts'))
       .finally(() => setLoading(false));
   }, []);
@@ -55,15 +55,15 @@ export default function FooterModule() {
         {loading && <span className="text-xs text-slate-400">Loading...</span>}
         {error && <span className="text-xs text-red-400">{error}</span>}
         {!loading && !error && contacts.map((contact, idx) => {
-          const normalized = normalizeIconName(contact.Icon);
-          const Icon = iconMap[normalized];
+          const normalized = normalizeIconName(contact?.Icon);
+          const Icon = iconMap?.[normalized];
           if (!Icon) return null; // Only show icons that are enabled in iconMap
           return (
             <a
-              key={idx}
-              href={contact.URL}
+              key={contact?.ID ?? idx}
+              href={contact?.URL ?? '#'}
               className={style.footer.iconLink}
-              aria-label={contact.Platform}
+              aria-label={contact?.Platform ?? ''}
               target="_blank"
               rel="noopener noreferrer"
             >
