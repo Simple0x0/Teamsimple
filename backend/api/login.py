@@ -2,13 +2,14 @@ import traceback
 from flask import request, make_response, current_app as app
 from flask_jwt_extended import create_access_token, set_access_cookies
 from datetime import datetime
-from core.extensions import db, s
+from core.extensions import db, s, limiter
 from utils.auth import passwordcheck
 from utils.serializable_resource import SerializableResource
 from pprint import pprint
 
 # ===== Login API =====
 class Login(SerializableResource):
+    decorators = [limiter.limit("5 per minute")]
     def post(self):
         try:
             data = request.get_json(force=True)

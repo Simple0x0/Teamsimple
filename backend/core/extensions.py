@@ -3,12 +3,19 @@ from flask_bcrypt import Bcrypt
 from flask_jwt_extended import JWTManager
 from db import Database
 from utils.sanitizers import Sanitizer
+from flask_limiter import Limiter
+from flask_limiter.util import get_remote_address
 
 # ======= GLOBAL SHARED CLASS EXTENSIONS INSTANCES ==============
 bcrypt = Bcrypt()
 jwt = JWTManager()
 db = Database()
 s = Sanitizer()
+limiter = Limiter(
+    key_func=get_remote_address,
+    default_limits=["200/day", "50/hour"],
+    storage_uri = os.getenv("REDIS_URL", "sqlite:////var/www/teamsimple/backend/data/rate_limits.sqlite")
+)
 
 # ======= GLOBAL VARIABLES ==============
 SLEEP = 1
@@ -29,3 +36,7 @@ SECTION_MAP = {
     "Values": "Values"
 }
 ADMINS = ['Superadmin', 'Admin']
+
+
+
+

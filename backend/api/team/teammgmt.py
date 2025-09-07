@@ -3,7 +3,7 @@ import traceback
 from flask import request, jsonify, make_response
 from flask import current_app as app
 from flask_jwt_extended import jwt_required, get_jwt_identity
-from core.extensions import db, s, UPLOAD_BASE
+from core.extensions import db, s, UPLOAD_BASE, limiter
 from utils.utils import flatten_contributor
 from collections import defaultdict
 from utils.serializable_resource import SerializableResource
@@ -44,7 +44,7 @@ class TeamMgmt(SerializableResource):
             app.logger.error(f"[ContributorMgmt:POST] Error: {traceback_str}")
             return {"message": "Internal server error"}, 500
 
-
+    @limiter.limit("3 per minute")
     @jwt_required()
     def post(self):
         try:

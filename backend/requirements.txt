@@ -9,3 +9,4 @@ python-dotenv
 Flask-JWT-Extended
 Flask-Limiter
 pymysql
+requests

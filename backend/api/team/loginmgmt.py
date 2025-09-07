@@ -2,7 +2,7 @@ import os
 import traceback
 from flask import request, jsonify, make_response, current_app as app
 from flask_jwt_extended import jwt_required, get_jwt_identity
-from core.extensions import db, s
+from core.extensions import db, s, limiter
 from utils.auth import passwordhash, passwordcheck
 from utils.serializable_resource import SerializableResource
 from pprint import pprint
@@ -41,6 +41,7 @@ def credential_mgmt(username: str, password: str, action: str = 'reset', memberi
 
 # ===== Password Manager API =====
 class PasswordMgmt(SerializableResource):
+    decorators = [limiter.limit("5 per minute")] 
     @jwt_required()
     def post(self):
         try:
