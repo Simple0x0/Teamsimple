@@ -3,7 +3,7 @@ import traceback
 import uuid
 from flask import jsonify, make_response, request
 from flask_jwt_extended import jwt_required
-from core.extensions import UPLOAD_BASE
+from core.extensions import UPLOAD_BASE, limiter
 from utils.uploads_validator import file_validate
 from werkzeug.utils import secure_filename
 from utils.utils import is_allowed_file
@@ -43,6 +43,7 @@ class Uploads(SerializableResource):
             print(f"[Uploads:GET] Error: {traceback.format_exc()}")
             return {"error": "Internal server error"}, 500
 
+    @limiter.limit("10 per minute")
     @jwt_required()
     def post(self, file_type, dir_name, UploadKey):
         try:
