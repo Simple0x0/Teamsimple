@@ -8,7 +8,6 @@ from utils.serializable_resource import SerializableResource
 from pprint import pprint
 
 # ===== Login API =====
-@limiter.limit("5 per minute")
 class Login(SerializableResource):
     def post(self):
         try:
