@@ -1,10 +1,26 @@
 import axios from 'axios';
 
 const BASE_URL = import.meta.env.VITE_API_URL;
-const HEADERS = {
-  'ngrok-skip-browser-warning': '69420',
-  'Content-Type': 'application/json',
-};
+
+import getCsrfToken from './csrf.js';
+
+
+function buildHeaders(extra = {}) {
+  return {
+    'Content-Type': 'application/json',
+    ...extra,
+  };
+}
+
+
+function buildCsrfHeaders(extra = {}) {
+  const csrfToken = getCsrfToken();
+  return {
+    'Content-Type': 'application/json',
+    ...(csrfToken && { 'X-CSRF-TOKEN': csrfToken }),
+    ...extra,
+  };
+}
 
 const handleError = (err) => {
   throw err.response?.data || { message: err.message };
@@ -16,7 +32,7 @@ export const fetchEvents = async () => {
   try {
     const res = await axios.get(`${BASE_URL}/api/auth/eventsmgmt`, {
       withCredentials: true,
-      headers: HEADERS,
+      headers: buildHeaders(),
     });
     return res.data;
   } catch (err) {
@@ -39,7 +55,7 @@ export const postEvent = async ({
       body,
       {
         withCredentials: true,
-        headers: HEADERS,
+        headers: buildCsrfHeaders(),
       }
     );
     return { success: true, data: res.data, status: res.status };
@@ -58,7 +74,7 @@ export const fetchEventParticipants = async (eventId) => {
       `${BASE_URL}/api/auth/eventsmgmt/participants/${eventId}`,
       {
         withCredentials: true,
-        headers: HEADERS,
+        headers: buildHeaders(),
       }
     );
     console.log(res.data);

@@ -1,10 +1,24 @@
 import axios from 'axios';
 
 const BASE_URL = import.meta.env.VITE_API_URL;
-const HEADERS = {
-  'ngrok-skip-browser-warning': '69420',
-  'Content-Type': 'application/json',
-};
+
+import getCsrfToken from './csrf.js';
+
+function buildHeaders(extra = {}) {
+  return {
+    'Content-Type': 'application/json',
+    ...extra,
+  };
+}
+
+function buildCsrfHeaders(extra = {}) {
+  const csrfToken = getCsrfToken();
+  return {
+    'Content-Type': 'application/json',
+    ...(csrfToken && { 'X-CSRF-TOKEN': csrfToken }),
+    ...extra,
+  };
+}
 
 const formatError = (err, defaultMsg = 'Unknown error occurred') => ({
   success: false,
@@ -16,7 +30,7 @@ export const fetchBlogs = async () => {
   try {
     const response = await axios.get(`${BASE_URL}/api/auth/blogsmgmt`, {
       withCredentials: true,
-      headers: HEADERS
+      headers: buildHeaders()
     });
     
     return response.data.Blogs;
@@ -38,7 +52,7 @@ export const postBlog = async ({
     const res = await axios.post(
       `${BASE_URL}/api/auth/blogsmgmt`,
       { action, submissionType, blog: blogData },
-      { withCredentials: true, headers: HEADERS }
+      { withCredentials: true, headers: buildCsrfHeaders() }
     );
     return { success: true, data: res.data, status: res.status };
   } catch (err) {
@@ -54,7 +68,7 @@ export const BlogDelete = async ({ blog, action = 'delete' }) => {
     const res = await axios.post(
       `${BASE_URL}/api/auth/blogsmgmt`,
       { action, blog },
-      { withCredentials: true, headers: HEADERS }
+      { withCredentials: true, headers: buildCsrfHeaders() }
     );
     return { success: true, data: res.data, status: res.status };
   } catch (err) {

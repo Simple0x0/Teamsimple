@@ -1,10 +1,24 @@
 import axios from 'axios';
 
 const BASE_URL = import.meta.env.VITE_API_URL;
-const HEADERS = {
-  'ngrok-skip-browser-warning': '69420',
-  'Content-Type': 'application/json',
-};
+
+import getCsrfToken from './csrf.js';
+
+function buildHeaders(extra = {}) {
+  return {
+    'Content-Type': 'application/json',
+    ...extra,
+  };
+}
+
+function buildCsrfHeaders(extra = {}) {
+  const csrfToken = getCsrfToken();
+  return {
+    'Content-Type': 'application/json',
+    ...(csrfToken && { 'X-CSRF-TOKEN': csrfToken }),
+    ...extra,
+  };
+}
 
 const handleError = (err) => {
   throw err.response?.data || { message: err.message };
@@ -16,7 +30,7 @@ export const fetchTeamMembers = async (username = "") => {
   try {
     const res = await axios.get(`${BASE_URL}/api/auth/teammgmt`, {
       params: { username },
-      headers: HEADERS,
+      headers: buildHeaders(),
       withCredentials: true,
     });
     return res.data;
@@ -35,7 +49,7 @@ export const postTeamMember = async ({
       { action, member: memberData },
       {
         withCredentials: true,
-        headers: HEADERS,
+        headers: buildCsrfHeaders(),
       }
     );
     return { success: true, data: res.data, status: res.status };

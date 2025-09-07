@@ -7,49 +7,8 @@ from utils.auth import passwordcheck
 from utils.serializable_resource import SerializableResource
 from pprint import pprint
 
-
-"""
 # ===== Login API =====
-#@limiter.limit("5 per minute")
-class Login(SerializableResource):
-    def post(self):
-        try:
-            data = request.get_json(force=True)
-            username = s.sanitize_alphanum(data.get('username')).lower()
-            password = s.sanitize_password(data.get('password'))
-
-            if not username or not password:
-                return {"message": "Invalid username or password"}, 400
-
-            user = db.get_user_login(username)
-            pprint(user)
-            if not (user and passwordcheck(password, user["PasswordHash"])):
-                return {"message": "Invalid username or password"}, 401
-
-            db.update_last_login(user['LoginID'], datetime.utcnow())
-            access_token = create_access_token(identity=str(user['Username']))
-            
-            if bool(user.get('Isfirstlogin')):
-                response = make_response({
-                    "message": f"Welcome to the team {user['Username']}! Please change your password",
-                    #"csrf_token": get_csrf_token(access_token)
-                })
-            
-            response = make_response({
-                "message": "Login successful",
-                #"csrf_token": get_csrf_token(access_token)
-            })
-            
-            set_access_cookies(response, access_token)
-            return response
-
-        except Exception as e:
-            print(f"[Login API] Error: {traceback.format_exc()}")
-            return {"message": "Internal server error"}, 500
-
-"""
-# ===== Login API =====
-#@limiter.limit("5 per minute")
+@limiter.limit("5 per minute")
 class Login(SerializableResource):
     def post(self):
         try:

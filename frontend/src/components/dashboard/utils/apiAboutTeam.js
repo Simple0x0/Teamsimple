@@ -3,10 +3,24 @@
 import axios from 'axios';
 
 const BASE_URL = import.meta.env.VITE_API_URL;
-const HEADERS = {
-  'ngrok-skip-browser-warning': '69420',
-  'Content-Type': 'application/json',
-};
+
+import getCsrfToken from './csrf.js';
+
+function buildHeaders(extra = {}) {
+  return {
+    'Content-Type': 'application/json',
+    ...extra,
+  };
+}
+
+function buildCsrfHeaders(extra = {}) {
+  const csrfToken = getCsrfToken();
+  return {
+    'Content-Type': 'application/json',
+    ...(csrfToken && { 'X-CSRF-TOKEN': csrfToken }),
+    ...extra,
+  };
+}
 
 const formatError = (err, defaultMsg = 'Unknown error occurred') => ({
   success: false,
@@ -22,7 +36,7 @@ export const fetchAboutTeamContent = async (section) => {
   try {
     const response = await axios.get(`${BASE_URL}/api/auth/aboutteam?section=${section}`, {
       withCredentials: true,
-      headers: HEADERS,
+      headers: buildHeaders(),
     });
 
     return { success: true, data: response.data};
@@ -46,7 +60,7 @@ export const updateAboutTeamContent = async ({
       },
       {
         withCredentials: true,
-        headers: HEADERS,
+        headers: buildCsrfHeaders(),
       }
     );
 

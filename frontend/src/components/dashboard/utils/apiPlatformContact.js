@@ -1,10 +1,24 @@
 import axios from 'axios';
 
 const BASE_URL = import.meta.env.VITE_API_URL;
-const HEADERS = {
-  'ngrok-skip-browser-warning': '69420',
-  'Content-Type': 'application/json',
-};
+
+import getCsrfToken from './csrf.js';
+
+function buildHeaders(extra = {}) {
+  return {
+    'Content-Type': 'application/json',
+    ...extra,
+  };
+}
+
+function buildCsrfHeaders(extra = {}) {
+  const csrfToken = getCsrfToken();
+  return {
+    'Content-Type': 'application/json',
+    ...(csrfToken && { 'X-CSRF-TOKEN': csrfToken }),
+    ...extra,
+  };
+}
 
 const formatError = (err, defaultMsg = 'Unknown error occurred') => ({
   success: false,
@@ -20,7 +34,7 @@ export const fetchPlatformContacts = async () => {
   try {
     const response = await axios.get(`${BASE_URL}/api/contacts`, {
       withCredentials: true,
-      headers: HEADERS,
+      headers: buildHeaders(),
     });
     return response.data.contacts;
   } catch (err) {
@@ -35,7 +49,7 @@ export const updatePlatformContacts = async ({ contacts, action = 'edit' }) => {
       { contacts, action },
       {
         withCredentials: true,
-        headers: HEADERS,
+        headers: buildCsrfHeaders(),
       }
     );
     return { success: true, data: res.data, status: res.status };
