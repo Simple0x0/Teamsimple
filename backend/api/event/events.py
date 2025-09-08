@@ -9,9 +9,7 @@ from pprint import pprint
 class Events(SerializableResource):
     def get(self):
         try:
-            events = db.get_events()
-            if not events:
-                return {"message": "Events are not yet available"}, 404
+            events = db.get_events() or []
 
             public_events = []
             for row in events:
@@ -38,7 +36,6 @@ class Events(SerializableResource):
                 return {"message": "Event not found."}, 404
             if event.get("RegistrationType") == "Closed":
                 return {"message": "Registration for this event is closed."}, 403
-            pprint(f"Event data: {data}")
             FirstName = s.sanitize_fullname(data.get('FirstName', ''))
             LastName = s.sanitize_fullname(data.get('LastName', ''))
             Nickname = s.sanitize_username(data.get('Nickname', 'Anonymous'))
