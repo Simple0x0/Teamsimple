@@ -8,5 +8,7 @@ flask-cors
 python-dotenv 
 Flask-JWT-Extended
 Flask-Limiter
-pymysql
 requests
+redis>=3.0.0
+cryptography
+mysqlclient

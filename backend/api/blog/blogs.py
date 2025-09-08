@@ -17,12 +17,11 @@ class Blogs(SerializableResource):
                 if not valide:
                     return {"message": msg}, 404
 
-            blogs = db.get_blogs(fingerprint)
-            if not blogs:
-                return {"message": "Blogs are not yet Available"}, 404
-            published_blogs = [blog for blog in [self.serialize_row(b) for b in blogs] if blog.get("Status") == "Published"]
+            blogs = db.get_blogs(fingerprint) or []
+            published_blogs = [blog for blog in (self.serialize_row(b) for b in blogs) if blog.get("Status") == "Published"]
             return {"Blogs": published_blogs}, 200
 
         except Exception:
             app.logger.error(f"Error in GET /api/projects: {traceback.format_exc()}")
             return {"message": "Internal server error"}, 500
+Something went wrong while loading the blog.

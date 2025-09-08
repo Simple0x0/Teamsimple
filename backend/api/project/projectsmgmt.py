@@ -19,16 +19,15 @@ class ProjectsMgmt(SerializableResource):
                 valide, msg = validate_fingerprint_value(fingerprint)
                 if not valide:
                     return {"message": msg}, 404
-            projects = db.get_projects(fingerprint)
-            if not projects:
-                return {"message": "Projects are not yet Available"}, 404
+            projects = db.get_projects(fingerprint) or []
+
             # Filter and serialize only published projects
             published_projects = []
             for project_row in projects:
-                serialized_project = self.serialize_row(project_row)
-                status = serialized_project.get("Status", "").strip()
-                if status not in ['Deleted']:
-                    published_projects.append(serialized_project)
+                serialized = self.serialize_row(project_row)
+                status = serialized.get("Status", "").strip()
+                if status != "Deleted":
+                    published_projects.append(serialized)
 
             # Return the filtered list with a 200 OK HTTP response
             return {"Projects": published_projects}, 200

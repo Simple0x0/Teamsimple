@@ -20,10 +20,8 @@ class WriteUpsMgmt(SerializableResource):
                 valide, msg = validate_fingerprint_value(fingerprint)
                 if not valide:
                     return {"message": msg}, 404
-            writeups = db.get_writeups(fingerprint)
-            if not writeups:
-                return {"message": "WriteUps are not yet Available"}, 404
-            writeups_list = [writeup for writeup in [self.serialize_row(w) for w in writeups] if writeup.get("Status") != "Deleted"]
+            writeups = db.get_writeups(fingerprint) or []
+            writeups_list = [ writeup for writeup in (self.serialize_row(w) for w in writeups) if writeup.get("Status") != "Deleted" ]
             return {"Writeups": writeups_list}, 200
         except Exception as e:
             app.logger.error(f"Error in GET /api/writeups: {traceback.format_exc()}")

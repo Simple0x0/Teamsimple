@@ -26,7 +26,7 @@ export default function BlogsMgmt() {
       setLoading(true);
       const result = await fetchBlogs();
 
-      if (result.success === false) {
+      if (!result.success) {
         setError(result.error);
         setBlogs([]);
       } else {

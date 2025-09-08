@@ -18,13 +18,7 @@ class AboutTeamMgmt(SerializableResource):
 
             if not section_normalized:
                 return {"error": "Invalid section"}, 400
-
-            result = db.about_team_section(section=section_normalized)
-
-            if not result:
-                return {"message": "No content found for section."}, 404
-
-            #return jsonify(result), 200
+            result = db.about_team_section(section=section_normalized) or []
             return {"AboutTeam": result}, 200
 
         except Exception:

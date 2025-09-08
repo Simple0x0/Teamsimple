@@ -12,11 +12,8 @@ class EventsMgmt(SerializableResource):
     @jwt_required()
     def get(self):
         try:
-            events = db.get_events()
-            if not events:
-                return {"message": "Events are not yet available"}, 404
-
-            events_list = [event for event in [self.serialize_row(e) for e in events] if event.get("Status") != "Deleted"]
+            events = db.get_events() or []
+            events_list = [event for event in (self.serialize_row(e) for e in events) if event.get("Status") != "Deleted"]
             return {"Events": events_list}, 200
 
         except Exception:

@@ -18,11 +18,8 @@ class AchievementMgmt(SerializableResource):
                 if not valid:
                     return {"message": msg}, 404
 
-            achievements = db.get_achievements(fingerprint)
-            if not achievements:
-                return {"message": "Achievements are not yet available"}, 404
-
-            result = [a for a in [self.serialize_row(a) for a in achievements] if a.get("Status") != "Deleted"]
+            achievements = db.get_achievements(fingerprint) or []
+            result = [a for a in (self.serialize_row(a) for a in achievements) if a.get("Status") != "Deleted"]
             return {"Achievements": result}, 200
 
         except Exception:

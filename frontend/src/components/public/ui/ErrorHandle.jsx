@@ -16,7 +16,7 @@ export default function ErrorHandle({ type = 'Content', errorType = 'public', me
 
   const defaultMessage = {
     public: `${type} not found.`,
-    server: `Something went wrong while loading the ${type.toLowerCase()}.`,
+    server: `Something went wrong while loading ${type.toLowerCase()}.`,
   };
 
   return (

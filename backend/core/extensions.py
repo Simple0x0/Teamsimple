@@ -14,7 +14,7 @@ s = Sanitizer()
 limiter = Limiter(
     key_func=get_remote_address,
     default_limits=["200/day", "50/hour"],
-    storage_uri = os.getenv("REDIS_URL", "sqlite:////var/www/teamsimple/backend/data/rate_limits.sqlite")
+    storage_uri=os.getenv("REDIS_URL", "redis://localhost:6379/0"),
 )
 
 # ======= GLOBAL VARIABLES ==============

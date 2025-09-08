@@ -1,5 +1,7 @@
 import os
-import pymysql
+#import pymysql
+import MySQLdb
+from MySQLdb.cursors import DictCursor  
 from dotenv import load_dotenv
 from query import *
 
@@ -11,7 +13,8 @@ DB_CONFIG = {
     'password': os.getenv('DB_PASSWORD'),
     'database': os.getenv('DB_NAME'),
     'port': int(os.getenv('DB_PORT', 3306)),
-    'cursorclass': pymysql.cursors.DictCursor
+    #'cursorclass': pymysql.cursors.DictCursor
+    'charset': 'utf8mb4'
 }
 
 ContentTypes = {
@@ -24,13 +27,14 @@ ContentTypes = {
 class Database:
     @staticmethod
     def get_connection():
-        return pymysql.connect(**DB_CONFIG)
+        #return pymysql.connect(**DB_CONFIG)
+        return MySQLdb.connect(**DB_CONFIG)
 
     @classmethod
     def execute(cls, query, params=None, fetchone=False, fetchall=False, commit=False):
         try:
             with cls.get_connection() as conn:
-                with conn.cursor() as cur:
+                with conn.cursor(DictCursor) as cur:
                     cur.execute(query, params or ())
                     
                     if commit:

@@ -19,14 +19,12 @@ class ContributorsMgmt(SerializableResource):
             if username:
                 contributor = db.get_contributor(username)
                 if not contributor:
-                    return {"message": "Contributor not found"}, 404
+                    return {"Contributor": {}}, 200
                 return {
                     "Contributor": flatten_contributor(self.serialize_rows(contributor))
                 }, 200
 
-            contributors = db.get_all_contributors()
-            if not contributors:
-                return {"message": "No contributors found"}, 404
+            contributors = db.get_all_contributors() or []
 
             grouped = defaultdict(list)
             for row in contributors:

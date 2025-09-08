@@ -115,8 +115,9 @@ def handle_exception(e):
 # ===== CSRF Token in Header =====
 @app.after_request
 def add_csrf_token(response):
+    access_token = request.cookies.get("access_token")
     if "access_token" in request.cookies:
-        csrf_token = get_csrf_token()
+        csrf_token = get_csrf_token(access_token)
         response.headers["X-CSRF-Token"] = csrf_token
     return response
 

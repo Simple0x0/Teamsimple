@@ -20,11 +20,8 @@ class PodcastMgmt(SerializableResource):
                 if not valid:
                     return {"message": msg}, 404
 
-            podcasts = db.get_podcasts(fingerprint)
-            if not podcasts:
-                return {"message": "Podcasts are not yet Available"}, 404
-
-            podcasts_list = [podcast for podcast in [self.serialize_row(p) for p in podcasts] if podcast.get("Status") != "Deleted"]
+            podcasts = db.get_podcasts(fingerprint) or []
+            podcasts_list = [podcast for podcast in (self.serialize_row(p) for p in podcasts) if podcast.get("Status") != "Deleted"]
             return {"Podcasts": podcasts_list}, 200
 
         except Exception:
