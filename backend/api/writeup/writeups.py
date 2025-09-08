@@ -16,9 +16,7 @@ class WriteUps(SerializableResource):
                 if not valide:
                     return {"message": msg}, 404
 
-            writeups = db.get_writeups(fingerprint)
-            if not writeups:
-                return {"message": "WriteUps are not yet Available"}, 404
+            writeups = db.get_writeups(fingerprint) or []
 
             serialized_list = []
             for w in writeups:
