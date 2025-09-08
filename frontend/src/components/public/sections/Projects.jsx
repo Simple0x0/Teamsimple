@@ -42,7 +42,22 @@ export default function Projects() {
     const endIndex = startIndex + PROJECTS_PER_PAGE;
     const projectsToDisplay = filteredProjects.slice(startIndex, endIndex);
 
+    // Early returns for loading and server error
     if (loading) return <Loading />;
+    if (error) return <ErrorHandle type="Project" errorType="server" />;
+
+    // Public error if no projects
+    if (projectsToDisplay.length === 0) {
+        return (
+            <ErrorHandle
+                type="Project"
+                errorType="public"
+                message="Projects are currently not available, come back soon"
+                rightbar={false}
+                path="/"
+            />
+        );
+    }
 
     return (
         <div key={currentPage}>
@@ -52,19 +67,7 @@ export default function Projects() {
                 onSearchChange={handleSearchChange}
                 showFilter={false} 
             />
-
-            {projectsToDisplay.length === 0 && !loading ? (
-                <ErrorHandle
-                    type="Project"
-                    errorType="public"
-                    message="Projects are currently not available, come back soon"
-                    rightbar={false}
-                    path="/projects"
-                />
-            ) : (
-                <ProjectModule projects={projectsToDisplay} />
-            )}
-
+            <ProjectModule projects={projectsToDisplay} />
             {filteredProjects.length > PROJECTS_PER_PAGE && (
                 <Pagination 
                     currentPage={currentPage} 
@@ -72,8 +75,6 @@ export default function Projects() {
                     onPageChange={setCurrentPage} 
                 />
             )}
-
-            {error && <ErrorHandle type="Project" errorType="server" />}
         </div>
     );
 }

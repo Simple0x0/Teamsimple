@@ -13,6 +13,7 @@ const WRITEUPS_PER_PAGE = 5;
 export default function WriteUps() {
     const dispatch = useDispatch();
     const { writeups, loading, error, success } = useSelector((state) => state.writeups);
+
     const [currentPage, setCurrentPage] = useState(1);
     const [searchTerm, setSearchTerm] = useState('');
     const [selectedFilters, setSelectedFilters] = useState([]);
@@ -47,7 +48,22 @@ export default function WriteUps() {
     const endIndex = startIndex + WRITEUPS_PER_PAGE;
     const writeupsToDisplay = filteredWriteups.slice(startIndex, endIndex);
 
+    // Early returns for loading and server error
     if (loading) return <Loading />;
+    if (error) return <ErrorHandle type="WriteUp" errorType="server" />;
+
+    // Public error if no write-ups
+    if (writeupsToDisplay.length === 0) {
+        return (
+            <ErrorHandle
+                type="WriteUp"
+                errorType="public"
+                message="Write-ups are currently not available, come back soon"
+                rightbar={false}
+                path="/"
+            />
+        );
+    }
 
     return (
         <div key={currentPage}>
@@ -58,19 +74,7 @@ export default function WriteUps() {
                 onSearchChange={handleSearchChange}
                 onFilterChange={handleFilterChange}
             />
-
-            {writeupsToDisplay.length === 0 && !loading ? (
-                <ErrorHandle
-                    type="WriteUp"
-                    errorType="public"
-                    message="Write-ups are currently not available, come back soon"
-                    rightbar={false}
-                    path="/writeups"
-                />
-            ) : (
-                <WriteUpModule writeups={writeupsToDisplay} />
-            )}
-
+            <WriteUpModule writeups={writeupsToDisplay} />
             {filteredWriteups.length > WRITEUPS_PER_PAGE && (
                 <Pagination 
                     currentPage={currentPage} 
@@ -78,8 +82,6 @@ export default function WriteUps() {
                     onPageChange={setCurrentPage} 
                 />
             )}
-
-            {error && <ErrorHandle type="WriteUp" errorType="server" />}
         </div>
     );
 }

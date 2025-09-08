@@ -49,8 +49,24 @@ export default function PodCast() {
     const endIndex = startIndex + PODCASTS_PER_PAGE;
     const podcastsToDisplay = filteredPodcasts.slice(startIndex, endIndex);
 
+    // Handle loading and errors first
     if (loading) return <Loading />;
+    if (error) return <ErrorHandle type="Podcast" errorType="server" />;
 
+    // Handle empty podcasts (public error)
+    if (podcastsToDisplay.length === 0) {
+        return (
+            <ErrorHandle
+                type="Podcast"
+                errorType="public"
+                message="Podcasts are currently not available, come back soon"
+                rightbar={false}
+                path="/"
+            />
+        );
+    }
+
+    // Normal render
     return (
         <div key={currentPage}> 
             <Search 
@@ -61,19 +77,7 @@ export default function PodCast() {
                 filterOptions={['Latest', 'Oldest', 'Popular']} 
                 showFilter={false} 
             />
-
-            {podcastsToDisplay.length === 0 && !loading ? (
-                <ErrorHandle
-                    type="Podcast"
-                    errorType="public"
-                    message="Podcasts are currently not available, come back soon"
-                    rightbar={false}
-                    path="/podcasts"
-                />
-            ) : (
-                <PodCastModule podcasts={podcastsToDisplay} />
-            )}
-
+            <PodCastModule podcasts={podcastsToDisplay} />
             {filteredPodcasts.length > PODCASTS_PER_PAGE && (
                 <Pagination 
                     currentPage={currentPage} 
@@ -81,8 +85,6 @@ export default function PodCast() {
                     onPageChange={setCurrentPage} 
                 />
             )}
-
-            {error && <ErrorHandle type="Podcast" errorType="server" />}
         </div>
     );
 }

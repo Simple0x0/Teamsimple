@@ -28,6 +28,7 @@ export default function Blogs() {
         setCurrentPage(1);
     };
 
+    // Only search (no filtering)
     const filteredBlogs = filterItems(
         blogs,
         searchTerm,
@@ -41,8 +42,24 @@ export default function Blogs() {
     const endIndex = startIndex + BLOGS_PER_PAGE;
     const blogsToDisplay = filteredBlogs.slice(startIndex, endIndex);
 
+    // Handle loading and errors first
     if (loading) return <Loading />;
+    if (error) return <ErrorHandle type="Blog" errorType="server" />;
 
+    // Handle empty blogs (public error)
+    if (blogsToDisplay.length === 0) {
+        return (
+            <ErrorHandle
+                type="Blog"
+                errorType="public"
+                message="Blogs are currently not available, come back soon"
+                rightbar={false}
+                path="/"
+            />
+        );
+    }
+
+    // Normal render
     return (
         <div key={currentPage}>
             <Search
@@ -52,19 +69,7 @@ export default function Blogs() {
                 filterOptions={[]}
                 showFilter={false}
             />
-
-            {blogsToDisplay.length === 0 && !loading ? (
-                <ErrorHandle
-                    type="Blog"
-                    errorType="public"
-                    message="Blogs are currently not available, come back soon"
-                    rightbar={false}
-                    path="/blogs"
-                />
-            ) : (
-                <BlogModule blog={blogsToDisplay} />
-            )}
-
+            <BlogModule blog={blogsToDisplay} />
             {filteredBlogs.length > BLOGS_PER_PAGE && (
                 <Pagination
                     currentPage={currentPage}
@@ -72,8 +77,6 @@ export default function Blogs() {
                     onPageChange={setCurrentPage}
                 />
             )}
-
-            {error && <ErrorHandle type="Blog" errorType="server" />}
         </div>
     );
 }

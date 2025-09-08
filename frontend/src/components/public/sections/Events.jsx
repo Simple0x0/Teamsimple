@@ -42,8 +42,24 @@ export default function Events() {
     const endIndex = startIndex + EVENTS_PER_PAGE;
     const eventsToDisplay = filteredEvents.slice(startIndex, endIndex);
 
+    // Handle loading and errors first
     if (loading) return <Loading />;
+    if (error) return <ErrorHandle type="Event" errorType="server" />;
 
+    // Handle empty events (public error)
+    if (eventsToDisplay.length === 0) {
+        return (
+            <ErrorHandle
+                type="Event"
+                errorType="public"
+                message="No events are currently available, come back soon"
+                rightbar={false}
+                path="/"
+            />
+        );
+    }
+
+    // Normal render
     return (
         <div key={currentPage}>
             <Search
@@ -52,19 +68,7 @@ export default function Events() {
                 onSearchChange={handleSearchChange}
                 showFilter={false}
             />
-
-            {eventsToDisplay.length === 0 && !loading ? (
-                <ErrorHandle
-                    type="Event"
-                    errorType="public"
-                    message="No events are currently available, come back soon"
-                    rightbar={false}
-                    path="/events"
-                />
-            ) : (
-                <EventModule events={eventsToDisplay} />
-            )}
-
+            <EventModule events={eventsToDisplay} />
             {filteredEvents.length > EVENTS_PER_PAGE && (
                 <Pagination
                     currentPage={currentPage}
@@ -72,8 +76,6 @@ export default function Events() {
                     onPageChange={setCurrentPage}
                 />
             )}
-
-            {error && <ErrorHandle type="Event" errorType="server" />}
         </div>
     );
 }

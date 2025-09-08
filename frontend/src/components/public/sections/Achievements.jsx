@@ -26,22 +26,27 @@ export default function Achievements() {
     const endIndex = startIndex + ACHIEVEMENTS_PER_PAGE;
     const achievementsToDisplay = achievements?.slice(startIndex, endIndex) || [];
 
+    // Handle loading and errors first
     if (loading) return <Loading />;
+    if (error) return <ErrorHandle type="Achievement" errorType="server" />;
 
+    // Handle empty achievements (public error)
+    if (achievementsToDisplay.length === 0) {
+        return (
+            <ErrorHandle
+                type="Achievement"
+                errorType="public"
+                message="No achievements are currently available, come back soon"
+                rightbar={false}
+                path="/"
+            />
+        );
+    }
+
+    // Normal render
     return (
         <div key={currentPage}>
-            {achievementsToDisplay.length === 0 && !loading ? (
-                <ErrorHandle
-                    type="Achievement"
-                    errorType="public"
-                    message="No achievements are currently available, come back soon"
-                    rightbar={false}
-                    path="/achievements"
-                />
-            ) : (
-                <AchievementsModule achievements={achievementsToDisplay} />
-            )}
-
+            <AchievementsModule achievements={achievementsToDisplay} />
             {achievements?.length > ACHIEVEMENTS_PER_PAGE && (
                 <Pagination
                     currentPage={currentPage}
@@ -49,8 +54,6 @@ export default function Achievements() {
                     onPageChange={setCurrentPage}
                 />
             )}
-
-            {error && <ErrorHandle type="Achievement" errorType="server" />}
         </div>
     );
 }
