@@ -4,7 +4,6 @@ import WriteUpModule from '../ui/WriteupModule';
 import Search from '../ui/Search';
 import Pagination from '../ui/PaginationModule';
 import Loading from '../ui/Loading';
-import ErrorMessage from '../ui/ErrorMessage';
 import ErrorHandle from '../ui/ErrorHandle';
 import { fetchWriteups } from '../redux/actions/writeupActions';
 import { filterItems } from '../utils/searchFilter';
@@ -13,34 +12,34 @@ const WRITEUPS_PER_PAGE = 5;
 
 export default function WriteUps() {
     const dispatch = useDispatch();
-    const { writeups, loading, error } = useSelector((state) => state.writeups);
+    const { writeups, loading, error, success } = useSelector((state) => state.writeups);
     const [currentPage, setCurrentPage] = useState(1);
     const [searchTerm, setSearchTerm] = useState('');
     const [selectedFilters, setSelectedFilters] = useState([]);
 
+    // Fetch write-ups only once
     useEffect(() => {
-      if (!writeups || writeups.length === 0){
-          dispatch(fetchWriteups());
-      }
-    }, [dispatch, writeups]);
+        if (!success) {
+            dispatch(fetchWriteups());
+        }
+    }, [dispatch, success]);
 
     const handleSearchChange = (term) => {
-      setSearchTerm(term);
-      setCurrentPage(1);
+        setSearchTerm(term.toLowerCase());
+        setCurrentPage(1);
     };
 
     const handleFilterChange = (filters) => {
-      setSelectedFilters(filters);
-      setCurrentPage(1);
+        setSelectedFilters(filters);
+        setCurrentPage(1);
     };
 
-    // Use reusable filterItems utility here
     const filteredWriteups = filterItems(
-      writeups,
-      searchTerm,
-      selectedFilters,
-      ['Title', 'Slug', 'Summary', 'CategoryName'],     // search keys
-      ['CategoryName']  // filter keys
+        writeups,
+        searchTerm,
+        selectedFilters,
+        ['Title', 'Slug', 'Summary', 'CategoryName'],
+        ['CategoryName']
     );
 
     const totalPages = Math.ceil(filteredWriteups.length / WRITEUPS_PER_PAGE);
@@ -49,11 +48,9 @@ export default function WriteUps() {
     const writeupsToDisplay = filteredWriteups.slice(startIndex, endIndex);
 
     if (loading) return <Loading />;
-    if (error) return <ErrorHandle type="Blog" errorType="server"  />;
-    //if (error) return <ErrorMessage message={error} />;
 
     return (
-        <div key={currentPage}> 
+        <div key={currentPage}>
             <Search 
                 title="WriteUps" 
                 placeholder="Search for write-ups..." 
@@ -61,12 +58,28 @@ export default function WriteUps() {
                 onSearchChange={handleSearchChange}
                 onFilterChange={handleFilterChange}
             />
-            <WriteUpModule writeups={writeupsToDisplay} /> 
-            <Pagination 
-                currentPage={currentPage} 
-                totalPages={totalPages} 
-                onPageChange={setCurrentPage} 
-            />
+
+            {writeupsToDisplay.length === 0 && !loading ? (
+                <ErrorHandle
+                    type="WriteUp"
+                    errorType="public"
+                    message="Write-ups are currently not available, come back soon"
+                    rightbar={false}
+                    path="/writeups"
+                />
+            ) : (
+                <WriteUpModule writeups={writeupsToDisplay} />
+            )}
+
+            {filteredWriteups.length > WRITEUPS_PER_PAGE && (
+                <Pagination 
+                    currentPage={currentPage} 
+                    totalPages={totalPages} 
+                    onPageChange={setCurrentPage} 
+                />
+            )}
+
+            {error && <ErrorHandle type="WriteUp" errorType="server" />}
         </div>
     );
 }
