@@ -10,7 +10,7 @@ class TopLikes(SerializableResource):
     @jwt_required()
     def get(self):
         try:
-            toplikes = db.get_toplikes()
+            toplikes = db.get_toplikes() or []
             return make_response(jsonify(authenticated=True, toplikes=toplikes), 200)
         except Exception as e: 
             print(f"[TopLikes] Error: {traceback.format_exc()}")

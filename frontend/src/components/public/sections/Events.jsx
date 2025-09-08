@@ -11,53 +11,69 @@ import { filterItems } from '../utils/searchFilter';
 const EVENTS_PER_PAGE = 5;
 
 export default function Events() {
-  const dispatch = useDispatch();
-  const { events, loading, error } = useSelector((state) => state.events);
+    const dispatch = useDispatch();
+    const { events, loading, error, success } = useSelector((state) => state.events);
 
-  const [currentPage, setCurrentPage] = useState(1);
-  const [searchTerm, setSearchTerm] = useState('');
+    const [currentPage, setCurrentPage] = useState(1);
+    const [searchTerm, setSearchTerm] = useState('');
 
-  useEffect(() => {
-    if (!events || events.length === 0) {
-      dispatch(fetchEvents());
-    }
-  }, [dispatch, events]);
+    // Fetch events once on mount
+    useEffect(() => {
+        if (!success) {
+            dispatch(fetchEvents());
+        }
+    }, [dispatch, success]);
 
-  const handleSearchChange = (term) => {
-    setSearchTerm(term);
-    setCurrentPage(1);
-  };
+    const handleSearchChange = (term) => {
+        setSearchTerm(term.toLowerCase());
+        setCurrentPage(1);
+    };
 
-  const filteredEvents = filterItems(
-    events,
-    searchTerm,
-    [],
-    ['Title', 'Description', 'Location'],
-    []
-  );
+    const filteredEvents = filterItems(
+        events,
+        searchTerm,
+        [],
+        ['Title', 'Description', 'Location'],
+        []
+    );
 
-  const totalPages = Math.ceil(filteredEvents.length / EVENTS_PER_PAGE);
-  const startIndex = (currentPage - 1) * EVENTS_PER_PAGE;
-  const endIndex = startIndex + EVENTS_PER_PAGE;
-  const eventsToDisplay = filteredEvents.slice(startIndex, endIndex);
+    const totalPages = Math.ceil(filteredEvents.length / EVENTS_PER_PAGE);
+    const startIndex = (currentPage - 1) * EVENTS_PER_PAGE;
+    const endIndex = startIndex + EVENTS_PER_PAGE;
+    const eventsToDisplay = filteredEvents.slice(startIndex, endIndex);
 
-  if (loading) return <Loading />;
-  if (error) return <ErrorHandle type="Event" errorType="server" />;
+    if (loading) return <Loading />;
 
-  return (
-    <div key={currentPage}>
-      <Search
-        title="Events"
-        placeholder="Search for events..."
-        onSearchChange={handleSearchChange}
-        showFilter={false}
-      />
-      <EventModule events={eventsToDisplay} />
-      <Pagination
-        currentPage={currentPage}
-        totalPages={totalPages}
-        onPageChange={setCurrentPage}
-      />
-    </div>
-  );
+    return (
+        <div key={currentPage}>
+            <Search
+                title="Events"
+                placeholder="Search for events..."
+                onSearchChange={handleSearchChange}
+                showFilter={false}
+            />
+
+            {eventsToDisplay.length === 0 && !loading ? (
+                <ErrorHandle
+                    type="Event"
+                    errorType="public"
+                    message="No events are currently available, come back soon"
+                    rightbar={false}
+                    path="/events"
+                />
+            ) : (
+                <EventModule events={eventsToDisplay} />
+            )}
+
+            {filteredEvents.length > EVENTS_PER_PAGE && (
+                <Pagination
+                    currentPage={currentPage}
+                    totalPages={totalPages}
+                    onPageChange={setCurrentPage}
+                />
+            )}
+
+            {error && <ErrorHandle type="Event" errorType="server" />}
+        </div>
+    );
 }

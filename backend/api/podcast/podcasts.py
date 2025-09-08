@@ -17,11 +17,8 @@ class Podcasts(SerializableResource):
                 valide, msg = validate_fingerprint_value(fingerprint)
                 if not valide:
                     return {"message": msg}, 404
-            podcasts = db.get_podcasts(fingerprint)
-            if not podcasts:
-                return {"message": "Podcasts are not yet Available"}, 404
-                
-            published_podcasts = [podcast for podcast in [self.serialize_row(p) for p in podcasts] if podcast.get("Status") == "Published"]
+            podcasts = db.get_podcasts(fingerprint) or []
+            published_podcasts = [podcast for podcast in (self.serialize_row(p) for p in podcasts) if podcast.get("Status") == "Published"]
             return {"Podcasts": published_podcasts}, 200
         except Exception as e:
             print(f"Error in GET /api/projects: {e}")

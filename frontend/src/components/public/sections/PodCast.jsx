@@ -4,7 +4,6 @@ import PodCastModule from '../ui/PodCastModule';
 import Search from '../ui/Search';
 import Pagination from '../ui/PaginationModule';
 import Loading from '../ui/Loading';
-import ErrorMessage from '../ui/ErrorMessage';
 import ErrorHandle from '../ui/ErrorHandle';
 import { fetchPodcasts } from '../redux/actions/podcastActions';
 import { filterItems } from '../utils/searchFilter';
@@ -13,17 +12,18 @@ const PODCASTS_PER_PAGE = 10;
 
 export default function PodCast() {
     const dispatch = useDispatch();
-    const { podcasts, loading, error } = useSelector((state) => state.podcasts);
+    const { podcasts, loading, error, success } = useSelector((state) => state.podcasts);
 
     const [currentPage, setCurrentPage] = useState(1);
     const [searchTerm, setSearchTerm] = useState('');
     const [selectedFilters, setSelectedFilters] = useState([]);
 
+    // Fetch podcasts once on mount
     useEffect(() => {
-        if(!podcasts || podcasts.length === 0){
+        if (!success) {
             dispatch(fetchPodcasts());
         }
-    }, [dispatch, podcasts]);
+    }, [dispatch, success]);
 
     const handleSearchChange = (term) => {
         setSearchTerm(term.toLowerCase());
@@ -40,8 +40,8 @@ export default function PodCast() {
         podcasts,
         searchTerm,
         selectedFilters,
-        ['Title', 'Description', 'Host', 'Guests'], // adjust these keys based on your podcast data
-        ['Category'] // or 'CategoryName' if that's how it's named
+        ['Title', 'Description', 'Host', 'Guests'],
+        ['Category'] 
     );
 
     const totalPages = Math.ceil(filteredPodcasts.length / PODCASTS_PER_PAGE);
@@ -50,8 +50,6 @@ export default function PodCast() {
     const podcastsToDisplay = filteredPodcasts.slice(startIndex, endIndex);
 
     if (loading) return <Loading />;
-    if (error) return <ErrorHandle type="Blog" errorType="server"  />;
-    //if (error) return <ErrorMessage message={error} />;
 
     return (
         <div key={currentPage}> 
@@ -61,14 +59,30 @@ export default function PodCast() {
                 onSearchChange={handleSearchChange}
                 onFilterChange={handleFilterChange}
                 filterOptions={['Latest', 'Oldest', 'Popular']} 
-                showFilter={false} // toggle if filter dropdown needed
+                showFilter={false} 
             />
-            <PodCastModule podcasts={podcastsToDisplay} /> 
-            <Pagination 
-                currentPage={currentPage} 
-                totalPages={totalPages} 
-                onPageChange={setCurrentPage} 
-            />
+
+            {podcastsToDisplay.length === 0 && !loading ? (
+                <ErrorHandle
+                    type="Podcast"
+                    errorType="public"
+                    message="Podcasts are currently not available, come back soon"
+                    rightbar={false}
+                    path="/podcasts"
+                />
+            ) : (
+                <PodCastModule podcasts={podcastsToDisplay} />
+            )}
+
+            {filteredPodcasts.length > PODCASTS_PER_PAGE && (
+                <Pagination 
+                    currentPage={currentPage} 
+                    totalPages={totalPages} 
+                    onPageChange={setCurrentPage} 
+                />
+            )}
+
+            {error && <ErrorHandle type="Podcast" errorType="server" />}
         </div>
     );
 }

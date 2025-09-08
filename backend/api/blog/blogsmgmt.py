@@ -20,7 +20,6 @@ class BlogsMgmt(SerializableResource):
                     return {"message": msg}, 404
             blogs = db.get_blogs(fingerprint) or []
             blogs_list = [ blog for blog in (self.serialize_row(b) for b in blogs) if blog.get("Status") != "Deleted" ]
-            #blogs_list = [blog for blog in [self.serialize_row(b) for b in blogs] if blog.get("Status") != "Deleted"]
             return {"Blogs": blogs_list}, 200
             
         except Exception:

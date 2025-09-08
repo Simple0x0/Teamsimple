@@ -1,0 +1,7 @@
+login : decorators = [limiter.limit("5 per minute")]
+POST - upload : @limiter.limit("10 per minute")
+PasswordMgmt : decorators = [limiter.limit("5 per minute")] //password reset
+POST TeamMgmt : @limiter.limit("3 per minute") //Creating & updater member
+POST event : @limiter.limit("5 per minute") //event registeration
+
+

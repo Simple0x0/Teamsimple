@@ -9,7 +9,7 @@ from pprint import pprint
 
 # ===== Visitors and Likes Timeline API =====
 class VisitorLikeTimeLineStats(SerializableResource):
-    #@jwt_required()
+    @jwt_required()
     def get(self):
         try:
             timeline = request.args.get('timeline', 'week').lower()

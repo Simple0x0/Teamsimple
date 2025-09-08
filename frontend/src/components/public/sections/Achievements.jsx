@@ -3,7 +3,6 @@ import { useDispatch, useSelector } from 'react-redux';
 import AchievementsModule from '../ui/AchievementsModule';
 import Pagination from '../ui/PaginationModule';
 import Loading from '../ui/Loading';
-import ErrorMessage from '../ui/ErrorMessage';
 import ErrorHandle from '../ui/ErrorHandle';
 import { fetchAchievements } from '../redux/actions/achievementsActions';
 
@@ -11,15 +10,16 @@ const ACHIEVEMENTS_PER_PAGE = 5;
 
 export default function Achievements() {
     const dispatch = useDispatch();
-    const { achievements, loading, error } = useSelector((state) => state.achievements);
+    const { achievements, loading, error, success } = useSelector((state) => state.achievements);
 
     const [currentPage, setCurrentPage] = useState(1);
 
+    // Fetch achievements once
     useEffect(() => {
-        if(!achievements || achievements.length === 0 ){
+        if (!success) {
             dispatch(fetchAchievements());
         }
-    }, [dispatch, achievements]);
+    }, [dispatch, success]);
 
     const totalPages = Math.ceil((achievements?.length || 0) / ACHIEVEMENTS_PER_PAGE);
     const startIndex = (currentPage - 1) * ACHIEVEMENTS_PER_PAGE;
@@ -27,17 +27,30 @@ export default function Achievements() {
     const achievementsToDisplay = achievements?.slice(startIndex, endIndex) || [];
 
     if (loading) return <Loading />;
-    if (error) return <ErrorHandle type="Achievement" errorType="server"  />;
-    //if (error) return <ErrorMessage message={error} />;
 
     return (
         <div key={currentPage}>
-            <AchievementsModule achievements={achievementsToDisplay} />
-            <Pagination 
-                currentPage={currentPage} 
-                totalPages={totalPages} 
-                onPageChange={setCurrentPage} 
-            />
+            {achievementsToDisplay.length === 0 && !loading ? (
+                <ErrorHandle
+                    type="Achievement"
+                    errorType="public"
+                    message="No achievements are currently available, come back soon"
+                    rightbar={false}
+                    path="/achievements"
+                />
+            ) : (
+                <AchievementsModule achievements={achievementsToDisplay} />
+            )}
+
+            {achievements?.length > ACHIEVEMENTS_PER_PAGE && (
+                <Pagination
+                    currentPage={currentPage}
+                    totalPages={totalPages}
+                    onPageChange={setCurrentPage}
+                />
+            )}
+
+            {error && <ErrorHandle type="Achievement" errorType="server" />}
         </div>
     );
 }

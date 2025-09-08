@@ -22,6 +22,5 @@ class Blogs(SerializableResource):
             return {"Blogs": published_blogs}, 200
 
         except Exception:
-            app.logger.error(f"Error in GET /api/projects: {traceback.format_exc()}")
+            app.logger.error(f"Error in GET /api/blogs: {traceback.format_exc()}")
             return {"message": "Internal server error"}, 500
-Something went wrong while loading the blog.

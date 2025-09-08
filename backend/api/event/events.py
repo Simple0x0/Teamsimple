@@ -2,7 +2,7 @@ import traceback
 from flask import current_app as app
 from flask import request
 from utils.serializable_resource import SerializableResource
-from core.extensions import db, s, PUBLIC_EXCLUDED_STATUSES
+from core.extensions import db, s, PUBLIC_EXCLUDED_STATUSES, limiter
 from pprint import pprint
 
 # ===== Events API =====
@@ -26,6 +26,7 @@ class Events(SerializableResource):
             app.logger.error(f"Error in GET /api/events: {traceback.format_exc()}")
             return {"message": "Internal server error"}, 500
 
+    @limiter.limit("5 per minute")
     def post(self):
         try:
             data = request.get_json()

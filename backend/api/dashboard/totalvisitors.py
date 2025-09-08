@@ -1,7 +1,7 @@
 import traceback
 from flask import jsonify, make_response
 from flask_jwt_extended import jwt_required
-from core.extensions import db, SLEEP
+from core.extensions import db
 from utils.serializable_resource import SerializableResource
 
 # ===== Total Visitor Count API =====

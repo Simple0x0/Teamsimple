@@ -11,8 +11,7 @@ class QuickAnalytics(SerializableResource):
     @jwt_required()
     def get(self):
         try:
-            quickanalytics = db.get_quickanalytics()
-            sleep(SLEEP)
+            quickanalytics = db.get_quickanalytics() or []
             return make_response(jsonify(authenticated=True, quickanalytics=quickanalytics), 200)
         except Exception as e: 
             print(f"[QuickAnalytics] Error: {traceback.format_exc()}")

@@ -18,9 +18,7 @@ class Achievements(SerializableResource):
                 valide, msg = validate_fingerprint_value(fingerprint)
                 if not valide:
                     return {"message": msg}, 404
-            achievements = db.get_achievements(fingerprint)
-            if not achievements:
-                return {"message": "Achievements are not yet Available"}, 404
+            achievements = db.get_achievements(fingerprint) or []
             published_achievements = [achievement for achievement in [self.serialize_row(p) for p in achievements] if achievement.get("Status") == "Published"]
             return {"Achievements": published_achievements}, 200
         except Exception as e:

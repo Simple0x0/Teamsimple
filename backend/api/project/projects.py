@@ -16,9 +16,7 @@ class Projects(SerializableResource):
                 valide, msg = validate_fingerprint_value(fingerprint)
                 if not valide:
                     return {"message": msg}, 404
-            projects = db.get_projects(fingerprint)
-            if not projects:
-                return {"message": "Projects are not yet Available"}, 404
+            projects = db.get_projects(fingerprint) or []
 
             # Filter and serialize only published projects
             published_projects = []

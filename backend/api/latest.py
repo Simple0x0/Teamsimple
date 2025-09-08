@@ -7,10 +7,7 @@ from utils.serializable_resource import SerializableResource
 class Latest(SerializableResource):
     def get(self):
         try:
-            latest = db.get_latest()
-            if not latest:
-                return {"message": "Latest are not yet Available"}, 404
-            sleep(SLEEP)
+            latest = db.get_latest() or []
             return {"Latest": [self.serialize_row(w) for w in latest]}, 200
         except Exception as e:
             print(f"Error in GET /api/latest: {e}")

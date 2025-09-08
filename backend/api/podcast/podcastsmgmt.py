@@ -11,7 +11,7 @@ from pprint import pprint
 
 # ===== PodcastMgmt API =====
 class PodcastMgmt(SerializableResource):
-    #@jwt_required()
+    @jwt_required()
     def get(self):
         try:
             fingerprint = request.args.get('f')

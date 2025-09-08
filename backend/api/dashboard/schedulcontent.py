@@ -8,7 +8,7 @@ class ScheduledContent(SerializableResource):
     @jwt_required()
     def get(self):
         try:
-            scheduled = db.get_scheduled_contents()
+            scheduled = db.get_scheduled_contents() or []
             return jsonify({"success": True, "scheduled": scheduled})
         except Exception as e:
             app.logger.error(traceback.format_exc())
