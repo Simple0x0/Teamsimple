@@ -15,6 +15,7 @@ from core.extensions import bcrypt, jwt, limiter
 from flask_jwt_extended.exceptions import NoAuthorizationError
 from jwt.exceptions import ExpiredSignatureError
 
+
 # ===== Load environment variables =====
 load_dotenv()
 
@@ -68,10 +69,10 @@ app.config.update({
     "JWT_COOKIE_SAMESITE": "Strict",
     "MAX_CONTENT_LENGTH": 100 * 1024 * 1024,
     "JWT_ACCESS_TOKEN_EXPIRES": timedelta(days=1),
-    "JWT_REFRESH_TOKEN_EXPIRES": timedelta(days=30), 
-    "JWT_REFRESH_COOKIE_NAME": "refresh_token",
-    "JWT_REFRESH_COOKIE_PATH": "/api/auth/refresh",
-    "JWT_REFRESH_COOKIE_SECURE": True,
+    #"JWT_REFRESH_TOKEN_EXPIRES": timedelta(days=30), 
+    #"JWT_REFRESH_COOKIE_NAME": "refresh_token",
+    #"JWT_REFRESH_COOKIE_PATH": "/api/auth/refresh",
+    #"JWT_REFRESH_COOKIE_SECURE": True,
 })
 
 # ===== Extensions =====
@@ -117,17 +118,22 @@ def handle_exception(e):
         "error": True,
         "message": "Internal server error"
     }), 500
-"""
+
 # ===== CSRF Token in Header =====
 @app.after_request
 def add_csrf_token(response):
     access_token = request.cookies.get("access_token")
-    if "access_token" in request.cookies:
-        csrf_token = get_csrf_token(access_token)
-        response.headers["X-CSRF-Token"] = csrf_token
+    if access_token:
+        try:
+            csrf_token = get_csrf_token(access_token)
+            response.headers["X-CSRF-Token"] = csrf_token
+        except (NoAuthorizationError, ExpiredSignatureError):
+            # Token missing or expired → skip CSRF header
+            pass
     return response
-"""
 
+
+"""
 
 @app.after_request
 def add_csrf_token(response):
@@ -156,7 +162,7 @@ def add_csrf_token(response):
 
     return response
 
-
+"""
 # ===== Endpoint Registration =====
 from api.home_latest import HomeLatest
 from api.blog.blogs import Blogs
@@ -193,7 +199,7 @@ from api.event.eventsmgmt import EventsMgmt
 from api.event.eventparticipant import EventParticipants
 from api.contact.platformcontact import PlatformContacts
 from api.dashboard.schedulcontent import ScheduledContent
-from api.tokenrefresh import RefreshToken
+#from api.tokenrefresh import RefreshToken
 
 # ----- API Endpoints -----
 api.add_resource(HomeLatest, '/api/home_latest')
@@ -232,7 +238,7 @@ api.add_resource(EventsMgmt, '/api/auth/eventsmgmt')
 
 api.add_resource(EventParticipants, '/api/auth/eventsmgmt/participants/<string:event_id>')
 api.add_resource(PlatformContacts, '/api/contacts')
-api.add_resource(RefreshToken, '/api/auth/refresh')
+#api.add_resource(RefreshToken, '/api/auth/refresh')
 
 # ===== Info =====
 app.logger.info("Flask app ready for production. Serve with Gunicorn behind Nginx/HTTPS.")
