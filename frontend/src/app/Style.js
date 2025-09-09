@@ -199,7 +199,7 @@ const style = {
         h6: "text-base font-semibold mt-6 mb-4 text-white",
         hr: "my-4 border-t border-gray-800",
         paragraph: "mb-4 leading-relaxed text-gray-300",
-        img: `rounded-xl shadow-md mx-auto my-4 md:w-4/5 w-full`,
+        img: `rounded-xl shadow-md mx-auto my-4 md:w-4/5 w-full cursor-zoom-in transition-transform duration-300 ease-in-out hover:scale-105`,
         list: "list-disc ml-6 mb-4",
         listItem: "mb-2",
 

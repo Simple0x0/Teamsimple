@@ -11,7 +11,18 @@ import style from '../../../app/Style';
 export default function ContentMDRender({ Header, Contents, Footer }) {
     const markdown = Contents.Content;
 
-    
+    const [modalImg, setModalImg] = useState(null);
+    const [isVisible, setIsVisible] = useState(false);
+
+    const openModal = (src) => {
+        setModalImg(src);
+        setIsVisible(true);
+    };
+
+    const closeModal = () => {
+        setIsVisible(false);
+        setTimeout(() => setModalImg(null), 300); // wait for animation to finish
+    };
 
     return (
         <div className={style.contentmd.container}>
@@ -50,7 +61,14 @@ export default function ContentMDRender({ Header, Contents, Footer }) {
                         li: ({ node, ...props }) => <li className={style.contentmd.listItem} {...props} />,
                         hr: ({ node, ...props }) => <hr className={style.contentmd.hr} {...props} />,
                         a: ({ node, ...props }) => ( <a className={style.contentmd.link} target="_blank" rel="noopener noreferrer" {...props} /> ),
-                        img: ({ node, ...props }) => ( <img className={style.contentmd.img} {...props} /> ),
+                        img: ({ node, ...props }) => ( <img
+                            {...props}
+                            className="rounded-xl shadow-md mx-auto my-4 md:w-4/5 w-full 
+                                    cursor-zoom-in transition-transform duration-300 ease-in-out 
+                                    hover:scale-105"
+                            onClick={() => openModal(props.src)}
+                            alt={props.alt || 'Markdown Image'}
+                        /> ),
                         blockquote: ({ node, ...props }) => ( <blockquote className={style.contentmd.blockquote} {...props} /> ),
                         table: ({ node, ...props }) => ( <table className={style.contentmd.table} {...props} /> ),
                         th: ({ node, ...props }) => <th className={style.contentmd.th} {...props} />,
@@ -58,7 +76,21 @@ export default function ContentMDRender({ Header, Contents, Footer }) {
                     }}
                 />
             </div>
-
+            {/* Modal for fullscreen image */}
+            {modalImg && (
+                <div
+                    onClick={closeModal}
+                    className={`fixed inset-0 z-50 flex items-center justify-center 
+                                bg-slate-800/50 bg-opacity-60 backdrop-blur-sm cursor-zoom-out transition-opacity duration-300`}
+                >
+                    <img
+                        src={modalImg}
+                        alt="Zoomed"
+                        className={`rounded-lg shadow-lg transition-transform duration-300 ease-in-out 
+                                    max-h-[90vh] max-w-[90vw] transform scale-95 ${isVisible ? 'scale-100' : 'scale-95'}`}
+                    />
+                </div>
+            )}
             <Footer />
         </div>
     );

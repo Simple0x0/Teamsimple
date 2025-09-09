@@ -66,7 +66,7 @@ class WriteUpsMgmt(SerializableResource):
             OsType = s.sanitize_ostype(raw_writeup.get("OsType"))
             IPAddress = s.sanitize_ipaddress(raw_writeup.get("IPAddress"))
             Reference = s.sanitize_url(raw_writeup.get('Reference'))
-            Platform = s.sanitize_title(raw_writeup.get("Platform"))
+            Platform = s.sanitize_MachineName(raw_writeup.get("Platform"))
             ToolsUsed = s.sanitize_tool_list(raw_writeup.get("ToolsUsed"))
             BoxCreator = s.sanitize_title(raw_writeup.get("BoxCreator"))
             ReleaseDate = s.sanitize_date(raw_writeup.get("ReleaseDate"))
