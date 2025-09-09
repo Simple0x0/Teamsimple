@@ -5,26 +5,26 @@
 BLOGS_QUERY = """
 SELECT 
     b.BlogID, 
-    b.Title, 
-    b.Slug, 
-    b.Content, 
-    b.Summary, 
-    b.PublishDate, 
-    b.LastUpdated, 
-    b.Status, 
-    b.BlogImage,
-    b.DateCreated,
-    b.UploadKey,
+    ANY_VALUE(b.Title) AS Title, 
+    ANY_VALUE(b.Slug) AS Slug, 
+    ANY_VALUE(b.Content) AS Content, 
+    ANY_VALUE(b.Summary) AS Summary, 
+    ANY_VALUE(b.PublishDate) AS PublishDate, 
+    ANY_VALUE(b.LastUpdated) AS LastUpdated, 
+    ANY_VALUE(b.Status) AS Status, 
+    ANY_VALUE(b.BlogImage) AS BlogImage,
+    ANY_VALUE(b.DateCreated) AS DateCreated,
+    ANY_VALUE(b.UploadKey) AS UploadKey,
     
     GROUP_CONCAT(DISTINCT con.Username) AS Contributors,
     GROUP_CONCAT(DISTINCT con.ContributorID) AS ContributorIDs,
 
-    c.CategoryID, 
-    c.Name AS CategoryName,
+    ANY_VALUE(c.CategoryID) AS CategoryID, 
+    ANY_VALUE(c.Name) AS CategoryName,
 
     GROUP_CONCAT(DISTINCT t.Name) AS Tags,
 
-    COALESCE(l.LikeCount, 0) AS TotalLikes,
+    ANY_VALUE(COALESCE(l.LikeCount, 0)) AS TotalLikes,
 
     CASE 
         WHEN user_like.ContentID IS NOT NULL THEN TRUE
@@ -55,9 +55,10 @@ LEFT JOIN (
 ) user_like ON user_like.ContentID = b.BlogID
 
 GROUP BY b.BlogID
-ORDER BY b.PublishDate DESC;
+ORDER BY PublishDate DESC;
 -- LIMIT 10;
 """
+
 
 BLOG_ID_QUERY = """
 SELECT BlogID FROM Blogs WHERE Slug = %s ;
@@ -122,33 +123,33 @@ WHERE BlogID = %s AND Slug = %s;
 WRITEUPS_QUERY = """
 SELECT 
     w.WriteUpID,
-    w.MachineName,
-    w.OsType,
-    w.Slug,
-    w.Difficulty,
-    w.Summary,
-    w.Content,
-    w.IPAddress,
-    w.ToolsUsed,
-    w.DateCreated,
-    w.DateModified,
-    w.Reference,
-    w.Status,
-    w.WriteUpImage,
-    w.Platform,
-    w.BoxCreator,
-    w.ReleaseDate,
-    w.UploadKey,
+    ANY_VALUE(w.MachineName) AS MachineName,
+    ANY_VALUE(w.OsType) AS OsType,
+    ANY_VALUE(w.Slug) AS Slug,
+    ANY_VALUE(w.Difficulty) AS Difficulty,
+    ANY_VALUE(w.Summary) AS Summary,
+    ANY_VALUE(w.Content) AS Content,
+    ANY_VALUE(w.IPAddress) AS IPAddress,
+    ANY_VALUE(w.ToolsUsed) AS ToolsUsed,
+    ANY_VALUE(w.DateCreated) AS DateCreated,
+    ANY_VALUE(w.DateModified) AS DateModified,
+    ANY_VALUE(w.Reference) AS Reference,
+    ANY_VALUE(w.Status) AS Status,
+    ANY_VALUE(w.WriteUpImage) AS WriteUpImage,
+    ANY_VALUE(w.Platform) AS Platform,
+    ANY_VALUE(w.BoxCreator) AS BoxCreator,
+    ANY_VALUE(w.ReleaseDate) AS ReleaseDate,
+    ANY_VALUE(w.UploadKey) AS UploadKey,
 
     GROUP_CONCAT(DISTINCT con.Username) AS Contributors,
     GROUP_CONCAT(DISTINCT con.ContributorID) AS ContributorIDs,
 
-    c.CategoryID,
-    c.Name AS CategoryName,
+    ANY_VALUE(c.CategoryID) AS CategoryID,
+    ANY_VALUE(c.Name) AS CategoryName,
 
     GROUP_CONCAT(DISTINCT t.Name) AS Tags,
 
-    COALESCE(l.LikeCount, 0) AS TotalLikes,
+    ANY_VALUE(COALESCE(l.LikeCount, 0)) AS TotalLikes,
 
     CASE 
         WHEN user_like.ContentID IS NOT NULL THEN TRUE
@@ -163,7 +164,6 @@ LEFT JOIN Category c ON w.CategoryID = c.CategoryID
 LEFT JOIN WriteUpTag wt ON w.WriteUpID = wt.WriteUpID
 LEFT JOIN Tag t ON wt.TagID = t.TagID
 
--- Total likes per WriteUp
 LEFT JOIN (
     SELECT ContentID, COUNT(*) AS LikeCount
     FROM LikeLogs
@@ -171,7 +171,6 @@ LEFT JOIN (
     GROUP BY ContentID
 ) l ON l.ContentID = w.WriteUpID
 
--- Check if user (by fingerprint) liked the write-up
 LEFT JOIN (
     SELECT DISTINCT ContentID
     FROM LikeLogs
@@ -268,23 +267,23 @@ WHERE WriteUpID = %s AND Slug = %s;
 PROJECTS_QUERY = """
 SELECT 
     p.ProjectID, 
-    p.Title, 
-    p.Slug,
-    p.Content,
-    p.Description, 
-    p.StartDate, 
-    p.EndDate, 
-    p.Status, 
-    p.RepoURL, 
-    p.DemoURL, 
-    p.ProgressPercentage,
-    p.ProgressStatus, 
-    p.CoverImage,
-    p.DateCreated,
-    p.UploadKey,
+    ANY_VALUE(p.Title) AS Title, 
+    ANY_VALUE(p.Slug) AS Slug,
+    ANY_VALUE(p.Content) AS Content,
+    ANY_VALUE(p.Description) AS Description, 
+    ANY_VALUE(p.StartDate) AS StartDate, 
+    ANY_VALUE(p.EndDate) AS EndDate, 
+    ANY_VALUE(p.Status) AS Status, 
+    ANY_VALUE(p.RepoURL) AS RepoURL, 
+    ANY_VALUE(p.DemoURL) AS DemoURL, 
+    ANY_VALUE(p.ProgressPercentage) AS ProgressPercentage,
+    ANY_VALUE(p.ProgressStatus) AS ProgressStatus, 
+    ANY_VALUE(p.CoverImage) AS CoverImage,
+    ANY_VALUE(p.DateCreated) AS DateCreated,
+    ANY_VALUE(p.UploadKey) AS UploadKey,
 
-    c.CategoryID, 
-    c.Name AS CategoryName,
+    ANY_VALUE(c.CategoryID) AS CategoryID, 
+    ANY_VALUE(c.Name) AS CategoryName,
 
     GROUP_CONCAT(DISTINCT con.ContributorID) AS ContributorIDs,
     GROUP_CONCAT(DISTINCT con.Username) AS Contributors,
@@ -292,7 +291,7 @@ SELECT
     GROUP_CONCAT(DISTINCT t.Name) AS Tags,
     GROUP_CONCAT(DISTINCT ts.Name) AS TechStacks,
 
-    COALESCE(l.LikeCount, 0) AS TotalLikes,
+    ANY_VALUE(COALESCE(l.LikeCount, 0)) AS TotalLikes,
 
     CASE 
         WHEN user_like.ContentID IS NOT NULL THEN TRUE
@@ -328,8 +327,9 @@ LEFT JOIN (
 ) user_like ON user_like.ContentID = p.ProjectID
 
 GROUP BY p.ProjectID
-ORDER BY p.DateCreated DESC;
+ORDER BY DateCreated DESC;
 """
+
 
 PROJECT_SLUG_QUERY = """
 SELECT ProjectID FROM Projects WHERE Slug = %s ;
@@ -422,28 +422,28 @@ SELECT Slug FROM Projects WHERE ProjectID = %s;
 PODCAST_QUERY = """
 SELECT 
     p.PodcastID,
-    p.Title,
-    p.Slug,
-    p.Description,
-    p.Content,
-    p.CoverImage,
-    p.Duration,
-    p.EpisodeNumber,
-    p.AudioURL,
-    p.DatePublished,
-    p.Status,
-    p.DateCreated,
-    p.UploadKey,
+    ANY_VALUE(p.Title) AS Title,
+    ANY_VALUE(p.Slug) AS Slug,
+    ANY_VALUE(p.Description) AS Description,
+    ANY_VALUE(p.Content) AS Content,
+    ANY_VALUE(p.CoverImage) AS CoverImage,
+    ANY_VALUE(p.Duration) AS Duration,
+    ANY_VALUE(p.EpisodeNumber) AS EpisodeNumber,
+    ANY_VALUE(p.AudioURL) AS AudioURL,
+    ANY_VALUE(p.DatePublished) AS DatePublished,
+    ANY_VALUE(p.Status) AS Status,
+    ANY_VALUE(p.DateCreated) AS DateCreated,
+    ANY_VALUE(p.UploadKey) AS UploadKey,
     
-    c.CategoryID,
-    c.Name AS CategoryName,
+    ANY_VALUE(c.CategoryID) AS CategoryID,
+    ANY_VALUE(c.Name) AS CategoryName,
 
     GROUP_CONCAT(DISTINCT con.ContributorID) AS ContributorIDs,
     GROUP_CONCAT(DISTINCT con.Username) AS Contributors,
     GROUP_CONCAT(DISTINCT con.Bio) AS ContributorBios,
     GROUP_CONCAT(DISTINCT con.ProfilePicture) AS ContributorProfiles,
 
-    COALESCE(l.LikeCount, 0) AS TotalLikes,
+    ANY_VALUE(COALESCE(l.LikeCount, 0)) AS TotalLikes,
 
     CASE 
         WHEN user_like.ContentID IS NOT NULL THEN TRUE
@@ -472,9 +472,10 @@ LEFT JOIN (
 ) user_like ON user_like.ContentID = p.PodcastID
 
 GROUP BY p.PodcastID
-ORDER BY p.DatePublished DESC;
+ORDER BY DatePublished DESC;
 -- LIMIT 50;
 """
+
 
 PODCAST_SLUG_QUERY = """
 SELECT PodcastID FROM Podcast WHERE Slug = %s;
@@ -543,16 +544,16 @@ SELECT Slug FROM Podcast WHERE PodcastID = %s;
 ACHIEVEMENTS_QUERY = """
 SELECT 
     a.AchievementID,
-    a.Title,
-    a.Description,
-    a.DateAchieved,
-    a.Image,
-    a.ReferenceURL,
-    a.DateCreated,
-    a.UploadKey,
-    a.Status,
+    ANY_VALUE(a.Title) AS Title,
+    ANY_VALUE(a.Description) AS Description,
+    ANY_VALUE(a.DateAchieved) AS DateAchieved,
+    ANY_VALUE(a.Image) AS Image,
+    ANY_VALUE(a.ReferenceURL) AS ReferenceURL,
+    ANY_VALUE(a.DateCreated) AS DateCreated,
+    ANY_VALUE(a.UploadKey) AS UploadKey,
+    ANY_VALUE(a.Status) AS Status,
     
-    COALESCE(l.LikeCount, 0) AS TotalLikes,
+    ANY_VALUE(COALESCE(l.LikeCount, 0)) AS TotalLikes,
 
     CASE 
         WHEN user_like.ContentID IS NOT NULL THEN TRUE
@@ -576,9 +577,10 @@ LEFT JOIN (
     WHERE ContentType = 'Achievement' AND FingerprintValue = %s
 ) user_like ON user_like.ContentID = a.AchievementID
 
-ORDER BY a.DateCreated DESC;
+ORDER BY DateCreated DESC;
 -- LIMIT 50;
 """
+
 
 ACHIEVEMENT_INSERT_QUERY = """
 INSERT INTO Achievements (
@@ -695,74 +697,82 @@ SELECT ContributorID FROM Contributor WHERE Username = %s ;
 EVENTS_QUERY = """
 SELECT 
     e.EventID,
-    e.Title,
-    e.Summary,
-    e.Description,
-    e.StartDate,
-    e.EndDate,
-    e.Mode,
-    e.Location,
-    e.EventType,
-    e.ProgressStatus,
-    e.Slug,
-    e.Status,
-    e.PaymentType,
-    e.RegistrationType,
-    e.EventImage,
-    e.DateCreated,
-    e.UploadKey,
-    eo.OrganizerID,
-    eo.Name AS OrganizerName,
-    eo.Email AS OrganizerEmail,
-    eo.ContactNumber AS OrganizerContact,
-    eo.Organization AS OrganizerOrganization,
-    eo.ProfilePicture AS OrganizerProfilePicture,
+    ANY_VALUE(e.Title) AS Title,
+    ANY_VALUE(e.Summary) AS Summary,
+    ANY_VALUE(e.Description) AS Description,
+    ANY_VALUE(e.StartDate) AS StartDate,
+    ANY_VALUE(e.EndDate) AS EndDate,
+    ANY_VALUE(e.Mode) AS Mode,
+    ANY_VALUE(e.Location) AS Location,
+    ANY_VALUE(e.EventType) AS EventType,
+    ANY_VALUE(e.ProgressStatus) AS ProgressStatus,
+    ANY_VALUE(e.Slug) AS Slug,
+    ANY_VALUE(e.Status) AS Status,
+    ANY_VALUE(e.PaymentType) AS PaymentType,
+    ANY_VALUE(e.RegistrationType) AS RegistrationType,
+    ANY_VALUE(e.EventImage) AS EventImage,
+    ANY_VALUE(e.DateCreated) AS DateCreated,
+    ANY_VALUE(e.UploadKey) AS UploadKey,
+
+    ANY_VALUE(eo.OrganizerID) AS OrganizerID,
+    ANY_VALUE(eo.Name) AS OrganizerName,
+    ANY_VALUE(eo.Email) AS OrganizerEmail,
+    ANY_VALUE(eo.ContactNumber) AS OrganizerContact,
+    ANY_VALUE(eo.Organization) AS OrganizerOrganization,
+    ANY_VALUE(eo.ProfilePicture) AS OrganizerProfilePicture,
+
     GROUP_CONCAT(DISTINCT t.TagID) AS TagIDs,
     GROUP_CONCAT(DISTINCT t.Name) AS Tags
+
 FROM `Event` e
 JOIN EventOrganizer eo ON eo.OrganizerID = e.OrganizerID
 LEFT JOIN EventTag et ON e.EventID = et.EventID
 LEFT JOIN Tag t ON et.TagID = t.TagID
 WHERE e.Status != 'Deleted'
 GROUP BY e.EventID
-ORDER BY e.DateCreated DESC
+ORDER BY DateCreated DESC;
 """
+
 
 GET_EVENT_BY_ID_QUERY = """
 SELECT 
     e.EventID,
-    e.Title,
-    e.Summary,
-    e.Description,
-    e.StartDate,
-    e.EndDate,
-    e.Mode,
-    e.Location,
-    e.EventType,
-    e.ProgressStatus,
-    e.Slug,
-    e.Status,
-    e.PaymentType,
-    e.RegistrationType,
-    e.EventImage,
-    e.DateCreated,
-    e.UploadKey,
-    eo.OrganizerID,
-    eo.Name AS OrganizerName,
-    eo.Email AS OrganizerEmail,
-    eo.ContactNumber AS OrganizerContact,
-    eo.Organization AS OrganizerOrganization,
-    eo.ProfilePicture AS OrganizerProfilePicture,
+    ANY_VALUE(e.Title) AS Title,
+    ANY_VALUE(e.Summary) AS Summary,
+    ANY_VALUE(e.Description) AS Description,
+    ANY_VALUE(e.StartDate) AS StartDate,
+    ANY_VALUE(e.EndDate) AS EndDate,
+    ANY_VALUE(e.Mode) AS Mode,
+    ANY_VALUE(e.Location) AS Location,
+    ANY_VALUE(e.EventType) AS EventType,
+    ANY_VALUE(e.ProgressStatus) AS ProgressStatus,
+    ANY_VALUE(e.Slug) AS Slug,
+    ANY_VALUE(e.Status) AS Status,
+    ANY_VALUE(e.PaymentType) AS PaymentType,
+    ANY_VALUE(e.RegistrationType) AS RegistrationType,
+    ANY_VALUE(e.EventImage) AS EventImage,
+    ANY_VALUE(e.DateCreated) AS DateCreated,
+    ANY_VALUE(e.UploadKey) AS UploadKey,
+
+    ANY_VALUE(eo.OrganizerID) AS OrganizerID,
+    ANY_VALUE(eo.Name) AS OrganizerName,
+    ANY_VALUE(eo.Email) AS OrganizerEmail,
+    ANY_VALUE(eo.ContactNumber) AS OrganizerContact,
+    ANY_VALUE(eo.Organization) AS OrganizerOrganization,
+    ANY_VALUE(eo.ProfilePicture) AS OrganizerProfilePicture,
+
     GROUP_CONCAT(DISTINCT t.TagID) AS TagIDs,
     GROUP_CONCAT(DISTINCT t.Name) AS Tags
+
 FROM `Event` e
 JOIN EventOrganizer eo ON eo.OrganizerID = e.OrganizerID
 LEFT JOIN EventTag et ON e.EventID = et.EventID
 LEFT JOIN Tag t ON et.TagID = t.TagID
 WHERE e.EventID = %s AND e.Status != 'Deleted'
 GROUP BY e.EventID
-LIMIT 1
+LIMIT 1;
 """
+
 
 
 EVENT_ID_QUERY = """   
@@ -879,10 +889,38 @@ SELECT
     lc.LatestContentID,
     lc.ContentType,
     lc.ContentID,
-    COALESCE(b.Title, w.MachineName, p.Title, pr.Title, a.Title, e.Title) AS Title,
-    COALESCE(b.BlogImage, w.WriteUpImage, p.CoverImage, pr.CoverImage, a.Image, e.EventImage) AS Image,
-    COALESCE(b.Summary, w.Summary, p.Description, pr.Description, a.Description, e.Description) AS Description,
-    COALESCE(b.DateCreated, w.DateCreated, p.DateCreated, pr.DateCreated, a.DateCreated, e.DateCreated) AS DateCreated
+    COALESCE(
+        ANY_VALUE(b.Title), 
+        ANY_VALUE(w.MachineName), 
+        ANY_VALUE(p.Title), 
+        ANY_VALUE(pr.Title), 
+        ANY_VALUE(a.Title), 
+        ANY_VALUE(e.Title)
+    ) AS Title,
+    COALESCE(
+        ANY_VALUE(b.BlogImage), 
+        ANY_VALUE(w.WriteUpImage), 
+        ANY_VALUE(p.CoverImage), 
+        ANY_VALUE(pr.CoverImage), 
+        ANY_VALUE(a.Image), 
+        ANY_VALUE(e.EventImage)
+    ) AS Image,
+    COALESCE(
+        ANY_VALUE(b.Summary), 
+        ANY_VALUE(w.Summary), 
+        ANY_VALUE(p.Description), 
+        ANY_VALUE(pr.Description), 
+        ANY_VALUE(a.Description), 
+        ANY_VALUE(e.Description)
+    ) AS Description,
+    COALESCE(
+        ANY_VALUE(b.DateCreated), 
+        ANY_VALUE(w.DateCreated), 
+        ANY_VALUE(p.DateCreated), 
+        ANY_VALUE(pr.DateCreated), 
+        ANY_VALUE(a.DateCreated), 
+        ANY_VALUE(e.DateCreated)
+    ) AS DateCreated
 FROM LatestContent lc
 
 -- BLOG
@@ -914,6 +952,7 @@ WHERE (lc.LatestContentID, lc.ContentType) IN (
 ORDER BY DateCreated DESC
 LIMIT 6;
 """
+
 
 # New: Top 3 latest items per content type for Home page (MariaDB compatible)
 HOME_LATEST_CONTENT_QUERY = """
@@ -970,26 +1009,33 @@ ORDER BY DateCreated DESC;
 """
 
 ANALYTICS_QUERY = """
-    SELECT 
-        'Blogs' AS Label,
-        (SELECT COUNT(*) FROM Blogs) AS Total,
-        COALESCE((SELECT COUNT(*) FROM LikeLogs WHERE ContentType = 'Blog'), 0) AS Likes
-    UNION
-    SELECT 
-        'Writeups' AS Label,
-        (SELECT COUNT(*) FROM WriteUp) AS Total,
-        COALESCE((SELECT COUNT(*) FROM LikeLogs WHERE ContentType = 'WriteUp'), 0) AS Likes
-    UNION
-    SELECT 
-        'Projects' AS Label,
-        (SELECT COUNT(*) FROM Projects) AS Total,
-        COALESCE((SELECT COUNT(*) FROM LikeLogs WHERE ContentType = 'Project'), 0) AS Likes
-    UNION
-    SELECT 
-        'Achievements' AS Label,
-        (SELECT COUNT(*) FROM Achievements) AS Total,
-        COALESCE((SELECT COUNT(*) FROM LikeLogs WHERE ContentType = 'Achievement'), 0) AS Likes;
+SELECT 'Blogs' AS Label, COUNT(*) AS Total,
+       COALESCE(SUM(CASE WHEN ContentType = 'Blog' THEN 1 ELSE 0 END), 0) AS Likes
+FROM Blogs
+LEFT JOIN LikeLogs ON LikeLogs.ContentType = 'Blog'
+
+UNION ALL
+
+SELECT 'Writeups', COUNT(*),
+       COALESCE(SUM(CASE WHEN ContentType = 'WriteUp' THEN 1 ELSE 0 END), 0)
+FROM WriteUp
+LEFT JOIN LikeLogs ON LikeLogs.ContentType = 'WriteUp'
+
+UNION ALL
+
+SELECT 'Projects', COUNT(*),
+       COALESCE(SUM(CASE WHEN ContentType = 'Project' THEN 1 ELSE 0 END), 0)
+FROM Projects
+LEFT JOIN LikeLogs ON LikeLogs.ContentType = 'Project'
+
+UNION ALL
+
+SELECT 'Achievements', COUNT(*),
+       COALESCE(SUM(CASE WHEN ContentType = 'Achievement' THEN 1 ELSE 0 END), 0)
+FROM Achievements
+LEFT JOIN LikeLogs ON LikeLogs.ContentType = 'Achievement';
 """
+
 
 
 """
@@ -1026,33 +1072,49 @@ SELECT
   ll.ContentID,
   COUNT(*) AS LikeCount,
 
-  COALESCE(b.Title, w.MachineName, p.Title, pr.Title, a.Title, e.Title) AS Title,
-  COALESCE(b.Slug, w.Slug, p.Slug, pr.Slug, NULL) AS Slug,
-  COALESCE(b.BlogImage, w.WriteUpImage, p.CoverImage, pr.CoverImage, a.Image, e.EventImage) AS Image
+  COALESCE(
+    ANY_VALUE(b.Title), 
+    ANY_VALUE(w.MachineName), 
+    ANY_VALUE(p.Title), 
+    ANY_VALUE(pr.Title), 
+    ANY_VALUE(a.Title), 
+    ANY_VALUE(e.Title)
+  ) AS Title,
+
+  COALESCE(
+    ANY_VALUE(b.Slug), 
+    ANY_VALUE(w.Slug), 
+    ANY_VALUE(p.Slug), 
+    ANY_VALUE(pr.Slug), 
+    NULL
+  ) AS Slug,
+
+  COALESCE(
+    ANY_VALUE(b.BlogImage), 
+    ANY_VALUE(w.WriteUpImage), 
+    ANY_VALUE(p.CoverImage), 
+    ANY_VALUE(pr.CoverImage), 
+    ANY_VALUE(a.Image), 
+    ANY_VALUE(e.EventImage)
+  ) AS Image
 
 FROM LikeLogs ll
 
--- BLOG
 LEFT JOIN Blogs b 
   ON ll.ContentType = 'Blog' AND ll.ContentID = b.BlogID AND b.Status = 'Published'
 
--- WRITEUP
 LEFT JOIN WriteUp w 
   ON ll.ContentType = 'WriteUp' AND ll.ContentID = w.WriteUpID AND w.Status = 'Published'
 
--- PODCAST
 LEFT JOIN Podcast p 
   ON ll.ContentType = 'Podcast' AND ll.ContentID = p.PodcastID AND p.Status = 'Published'
 
--- PROJECT
 LEFT JOIN Projects pr 
   ON ll.ContentType = 'Project' AND ll.ContentID = pr.ProjectID AND pr.Status = 'Published'
 
--- ACHIEVEMENT
 LEFT JOIN Achievements a 
   ON ll.ContentType = 'Achievement' AND ll.ContentID = a.AchievementID
 
--- EVENT
 LEFT JOIN Event e 
   ON ll.ContentType = 'Event' AND ll.ContentID = e.EventID AND e.Status = 'Published'
 
@@ -1060,6 +1122,7 @@ GROUP BY ll.ContentType, ll.ContentID
 ORDER BY LikeCount DESC
 LIMIT 5;
 """
+
 LIKES_BY_LAST_12_MONTHS = """
 WITH months AS (
   SELECT DATE_FORMAT(DATE_SUB(CURDATE(), INTERVAL seq MONTH), '%%Y-%%m') AS month
@@ -1133,7 +1196,7 @@ SELECT
   COALESCE(COUNT(v.VisitorID), 0) AS total_visitors
 FROM days d
 LEFT JOIN Visitor v ON DATE(v.LastVisit) = d.day
-GROUP BY d.day
+GROUP BY d.day, DAY(d.day)
 ORDER BY d.day;
 """
 
@@ -1168,9 +1231,10 @@ SELECT
   COALESCE(COUNT(v.VisitorID), 0) AS total_visitors
 FROM days d
 LEFT JOIN Visitor v ON DATE(v.LastVisit) = d.day
-GROUP BY d.day
+GROUP BY d.day, DATE_FORMAT(d.day, '%%a')
 ORDER BY d.day;
 """
+
 
 
 CATEGORY_FETCH_ALL_QUERY = """

@@ -49,23 +49,10 @@ export default function ContentMDRender({ Header, Contents, Footer }) {
                         ul: ({ node, ...props }) => <ul className={style.contentmd.list} {...props} />,
                         li: ({ node, ...props }) => <li className={style.contentmd.listItem} {...props} />,
                         hr: ({ node, ...props }) => <hr className={style.contentmd.hr} {...props} />,
-                        a: ({ node, ...props }) => (
-                            <a
-                                className={style.contentmd.link}
-                                target="_blank"
-                                rel="noopener noreferrer"
-                                {...props}
-                            />
-                        ),
-                        img: ({ node, ...props }) => (
-                            <img className={style.contentmd.img} {...props} />
-                        ),
-                        blockquote: ({ node, ...props }) => (
-                            <blockquote className={style.contentmd.blockquote} {...props} />
-                        ),
-                        table: ({ node, ...props }) => (
-                            <table className={style.contentmd.table} {...props} />
-                        ),
+                        a: ({ node, ...props }) => ( <a className={style.contentmd.link} target="_blank" rel="noopener noreferrer" {...props} /> ),
+                        img: ({ node, ...props }) => ( <img className={style.contentmd.img} {...props} /> ),
+                        blockquote: ({ node, ...props }) => ( <blockquote className={style.contentmd.blockquote} {...props} /> ),
+                        table: ({ node, ...props }) => ( <table className={style.contentmd.table} {...props} /> ),
                         th: ({ node, ...props }) => <th className={style.contentmd.th} {...props} />,
                         td: ({ node, ...props }) => <td className={style.contentmd.td} {...props} />,
                     }}

@@ -9,9 +9,11 @@ from flask_cors import CORS
 from flask_restful import Api
 from flask_limiter import Limiter
 from flask_limiter.util import get_remote_address
-from flask_jwt_extended import get_csrf_token
+from flask_jwt_extended import get_csrf_token, decode_token
 from werkzeug.exceptions import HTTPException
 from core.extensions import bcrypt, jwt, limiter
+from flask_jwt_extended.exceptions import NoAuthorizationError
+from jwt.exceptions import ExpiredSignatureError
 
 # ===== Load environment variables =====
 load_dotenv()
@@ -62,10 +64,14 @@ app.config.update({
     "JWT_COOKIE_SECURE": True,
     "JWT_COOKIE_CSRF_PROTECT": True,
     "JWT_ACCESS_COOKIE_PATH": "/api",
-    "JWT_ACCESS_TOKEN_EXPIRES": timedelta(days=1),
     "JWT_ACCESS_COOKIE_NAME": "access_token",
     "JWT_COOKIE_SAMESITE": "Strict",
-    "MAX_CONTENT_LENGTH": 100 * 1024 * 1024
+    "MAX_CONTENT_LENGTH": 100 * 1024 * 1024,
+    "JWT_ACCESS_TOKEN_EXPIRES": timedelta(days=1),
+    "JWT_REFRESH_TOKEN_EXPIRES": timedelta(days=30), 
+    "JWT_REFRESH_COOKIE_NAME": "refresh_token",
+    "JWT_REFRESH_COOKIE_PATH": "/api/auth/refresh",
+    "JWT_REFRESH_COOKIE_SECURE": True,
 })
 
 # ===== Extensions =====
@@ -111,7 +117,7 @@ def handle_exception(e):
         "error": True,
         "message": "Internal server error"
     }), 500
-
+"""
 # ===== CSRF Token in Header =====
 @app.after_request
 def add_csrf_token(response):
@@ -119,6 +125,35 @@ def add_csrf_token(response):
     if "access_token" in request.cookies:
         csrf_token = get_csrf_token(access_token)
         response.headers["X-CSRF-Token"] = csrf_token
+    return response
+"""
+
+
+@app.after_request
+def add_csrf_token(response):
+    access_token = request.cookies.get(app.config["JWT_ACCESS_COOKIE_NAME"])
+    refresh_token = request.cookies.get(app.config["JWT_REFRESH_COOKIE_NAME"])
+
+    # Handle CSRF header for valid access token
+    if access_token:
+        try:
+            csrf_token = get_csrf_token(access_token)
+            response.headers["X-CSRF-Token"] = csrf_token
+        except ExpiredSignatureError:
+            # Access token expired, remove cookie so frontend knows to refresh
+            response.delete_cookie(
+                app.config["JWT_ACCESS_COOKIE_NAME"],
+                path=app.config["JWT_ACCESS_COOKIE_PATH"],
+                secure=app.config.get("JWT_COOKIE_SECURE", True),
+                samesite=app.config.get("JWT_COOKIE_SAMESITE", "Strict")
+            )
+        except NoAuthorizationError:
+            # Token missing or malformed, skip CSRF header
+            pass
+
+    # Optionally, you could also check refresh token here for custom logging
+    # or analytics without modifying cookies
+
     return response
 
 
@@ -158,6 +193,7 @@ from api.event.eventsmgmt import EventsMgmt
 from api.event.eventparticipant import EventParticipants
 from api.contact.platformcontact import PlatformContacts
 from api.dashboard.schedulcontent import ScheduledContent
+from api.tokenrefresh import RefreshToken
 
 # ----- API Endpoints -----
 api.add_resource(HomeLatest, '/api/home_latest')
@@ -196,6 +232,7 @@ api.add_resource(EventsMgmt, '/api/auth/eventsmgmt')
 
 api.add_resource(EventParticipants, '/api/auth/eventsmgmt/participants/<string:event_id>')
 api.add_resource(PlatformContacts, '/api/contacts')
+api.add_resource(RefreshToken, '/api/auth/refresh')
 
 # ===== Info =====
 app.logger.info("Flask app ready for production. Serve with Gunicorn behind Nginx/HTTPS.")

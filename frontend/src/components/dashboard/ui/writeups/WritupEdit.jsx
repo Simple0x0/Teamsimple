@@ -165,6 +165,7 @@ export default function WritupEdit() {
           onChange={handleMetaChange}
           mode="edit"
           fields={{
+            MachineName: true,
             slug: true,
             summary: true,
             status: false,

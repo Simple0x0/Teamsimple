@@ -28,7 +28,7 @@ export default function WriteUpRender() {
 
     const FooterWithNav = useMemo(() => {
         return () => (
-            <FooterNav
+            <FooterNav  
                 contentsList={writeups}
                 currentSlug={slug}
                 basePath="/writeups"
@@ -37,20 +37,22 @@ export default function WriteUpRender() {
     }, [writeups, slug]);
 
     return (
-        <div className={style}>
-            {loading && <Loading />}
-            {!loading && error && <ErrorHandle type="WriteUp" errorType="public" path='/writeups' />}
-            {!loading && !error && !writeup && (
-                <ErrorHandle type="WriteUp" errorType="public" path='/writeups' />
-            )}
-            {!loading && !error && writeup && (
-                <ContentMDRender
-                    key={slug}
-                    Header={Header}
-                    Contents={writeup}
-                    Footer={FooterWithNav}
-                />
-            )}
+        <div className={style.contentRender.container}>
+            <div className={style.contentRender.contentContainer}>
+                {loading && <Loading />}
+                {!loading && error && <ErrorHandle type="WriteUp" errorType="public" path='/writeups' />}
+                {!loading && !error && !writeup && (
+                    <ErrorHandle type="WriteUp" errorType="public" path='/writeups' />
+                )}
+                {!loading && !error && writeup && (
+                    <ContentMDRender
+                        key={slug}
+                        Header={Header}
+                        Contents={writeup}
+                        Footer={FooterWithNav}
+                    />
+                )}
+            </div>
         </div>
     );
 }

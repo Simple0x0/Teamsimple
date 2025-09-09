@@ -116,7 +116,7 @@ export default function ContentMeta({ contentType = '', meta = {}, onChange, mod
 
   return (
     <div className={`${s.wrapper} grid grid-cols-2 gap-4`}>
-      {meta.MachineName ? renderInput('Machine Name', 'MachineName', 'TryHackMe XYZ', true) : 
+      {fields.MachineName ? renderInput('Machine Name', 'MachineName', 'TryHackMe XYZ', true) : 
       renderInput('Title', 'Title', 'Main title of the content', true) }
 
       {fields.slug && renderInput(`Slug (ReadOnly)`, 'Slug', 'Title-based - AutoGen')}

@@ -32,7 +32,7 @@ class WriteUpsMgmt(SerializableResource):
         try:
             data = request.get_json(force=True)
             action = data.get("action", "new").lower()
-            del_writeup = data.get("writeUp", {})
+            del_writeup = data.get("writeup", {})
             
             if action == "delete":
                 WriteUpID_raw = del_writeup.get("WriteUpID")

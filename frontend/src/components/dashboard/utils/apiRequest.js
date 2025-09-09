@@ -32,6 +32,15 @@ function buildCsrfHeaders(extra = {}) {
   };
 }
 
+function buildCsrfuploadHeaders(extra = {}) {
+  const csrfToken = getCsrfToken();
+  return {
+    ...(csrfToken && { 'X-CSRF-TOKEN': csrfToken }),
+    ...extra,
+  };
+}
+
+
 /* ====================================================
 ========================= HELPERS =====================
 ==================================================== */
@@ -211,7 +220,7 @@ export const uploadFile = async ({ file, type, contentType, uploadKey }) => {
   const uploadUrl = `${BASE_URL}/api/uploads/${type}/${contentType}/${uploadKey}`;
 
   const res = await axios.post(uploadUrl, formData, {
-    headers: buildCsrfHeaders(), // CSRF required for POST
+    headers: buildCsrfuploadHeaders(), // CSRF required for POST
     withCredentials: true,
   });
   return res.data;

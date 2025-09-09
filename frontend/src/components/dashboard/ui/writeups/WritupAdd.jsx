@@ -23,7 +23,6 @@ export default function WritupAdd() {
 
   const handleMetaChange = (updatedMeta) => {
     setMeta(updatedMeta);
-    console.log(meta)
   };
 
   const handleUploadKey = (key) => {
@@ -122,6 +121,7 @@ export default function WritupAdd() {
           onChange={handleMetaChange}
           mode="new"
           fields={{
+            MachineName: true,
             slug: true,
             summary: true,
             status: true,

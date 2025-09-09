@@ -35,7 +35,8 @@ const style = {
     mainlayout: {
         container : "bg-none w-full h-full my-1 flex flex-col gap-y-3 min-h-full" + "md:flex-col "  + ' lg:flex-row lg:mx-5 lg:gap-x-1 lg:justify-end ' + " ",
         leftsidebar:  "hidden bg-slate-950 flex rounded-lg mt-2 " + ' md:mt-0 ' + " lg:flex lg:w-1/5 lg:rounded-none lg:rounded-t-lg lg:justify-center lg:sticky lg:top-0 lg:h-screen " + ' xl:w-1/6',
-        main : "flex bg-slate-950  rounded-lg justify-center min-h-50"+ " " + " lg:w-3/5 lg:rounded-none lg:rounded-t-lg " + ' ',
+        main: "flex bg-slate-950 rounded-lg justify-center min-h-50 w-full lg:w-3/5 lg:rounded-none lg:rounded-t-lg px-4 md:px-6", // add px
+        //main : "flex bg-slate-950  rounded-lg justify-center min-h-50"+ " " + " lg:w-3/5 lg:rounded-none lg:rounded-t-lg " + ' ',
         rightsidebar: `flex flex-col justify-between lg:w-1/5 lg:sticky lg:top-0 lg:h-screen bg-none rounded-lg lg:rounded-none lg:rounded-t-lg`,
     },
     
@@ -179,9 +180,17 @@ const style = {
         container: 'flex items-center justify-center h-full w-full',
         text: 'text-red-500 font-semibold text-center text-sm md:text-base px-4',
     },
+    contentRender: {
+        container: "w-full min-h-screen flex justify-center px-2 sm:px-4 lg:px-6",
+        contentContainer: "w-full max-w-4xl flex flex-col gap-4 py-6",
+    },
+
     contentmd: {
-        container: "p-4 md:p-6 bg-slate-900lg:p-8 text-gray-300 dark:text-gray-100 rounded-xl shadow-lg",
-        body: "prose mt-5 dark:prose-invert max-w-none prose-img:rounded-xl prose-img:mx-auto prose-img:my-4 prose-img:shadow-md prose-img:max-w-md",
+        container: "p-4 md:p-6 bg-none rounded-xl shadow-lg max-w-4xl w-full text-gray-300 dark:text-gray-100",
+        body:
+            "prose dark:prose-invert max-w-full break-words whitespace-pre-wrap " +
+            "prose-img:rounded-xl prose-img:mx-auto prose-img:my-4 prose-img:shadow-md prose-img:max-w-full " +
+            "prose-pre:overflow-x-auto prose-table:overflow-x-auto",
         h1: "text-4xl font-bold mb-6 mb-4 text-white",
         h2: "text-3xl font-semibold mt-6 mb-4 text-white",
         h3: "text-2xl font-semibold mt-6 mb-4 text-white",
@@ -195,7 +204,7 @@ const style = {
         listItem: "mb-2",
 
         link: "text-lime-500 hover:text-blue-400 underline transition duration-200",
-        inlineCode: "bg-gray-900 text-lime-400 px-2 py-1 rounded text-sm font-mono",
+        inlineCode: "bg-slate-900 text-lime-400 px-2 py-1 rounded text-sm font-mono",
         
         blockquote: "border-l-4 border-lime-500 pl-4 italic text-gray-400 my-4",
         table: "table-auto border-collapse w-full my-6",
