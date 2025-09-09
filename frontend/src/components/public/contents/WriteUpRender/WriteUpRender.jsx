@@ -7,6 +7,7 @@ import ErrorHandle from '../../ui/ErrorHandle';
 import Loading from '../../ui/Loading';
 import Header from './WriteUpHeader';
 import FooterNav from '../FooterNav';
+import { Helmet } from 'react-helmet-async';
 import style from '../../../../app/Style';
 
 export default function WriteUpRender() {
@@ -36,23 +37,34 @@ export default function WriteUpRender() {
         );
     }, [writeups, slug]);
 
+    if (loading) return <Loading />;
+    if (!loading && error) return <ErrorHandle type="WriteUp" errorType="public" path='/writeups' />;
+    if (!loading && !error && !writeup) return <ErrorHandle type="WriteUp" errorType="public" path='/writeups' />;
+
     return (
         <div className={style.contentRender.container}>
-            <div className={style.contentRender.contentContainer}>
-                {loading && <Loading />}
-                {!loading && error && <ErrorHandle type="WriteUp" errorType="public" path='/writeups' />}
-                {!loading && !error && !writeup && (
-                    <ErrorHandle type="WriteUp" errorType="public" path='/writeups' />
-                )}
-                {!loading && !error && writeup && (
-                    <ContentMDRender
-                        key={slug}
-                        Header={Header}
-                        Contents={writeup}
-                        Footer={FooterWithNav}
-                    />
-                )}
-            </div>
+            <Helmet>
+                <title>{writeup?.MachineName} | Team Simple</title>
+                <meta name="description" content={`Write-up for ${writeup?.MachineName} on ${writeup?.Platform}`} />
+
+                {/* Open Graph / Facebook */}
+                <meta property="og:title" content={writeup?.MachineName} />
+                <meta property="og:description" content={`Write-up for ${writeup?.MachineName} on ${writeup?.Platform}`} />
+                <meta property="og:image" content={writeup?.WriteUpImage || `src/assets/logo.png`} />
+                <meta property="og:url" content={`${BASE_URL}/writeups/${slug}`} />
+
+                {/* Twitter */}
+                <meta name="twitter:card" content="summary_large_image" />
+                <meta name="twitter:image" content={writeup?.WriteUpImage || `/src/assets/logo.png`} />
+            </Helmet>
+
+
+            <ContentMDRender
+                key={slug}
+                Header={Header}
+                Contents={writeup}
+                Footer={FooterWithNav}
+            />
         </div>
     );
 }

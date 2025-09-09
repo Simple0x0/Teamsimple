@@ -7,12 +7,14 @@ import ErrorHandle from '../../ui/ErrorHandle';
 import Loading from '../../ui/Loading';
 import Header from './ProjectHeader';
 import FooterNav from '../FooterNav';
+import { Helmet } from 'react-helmet-async';
 import style from '../../../../app/Style';
 
 export default function ProjectRender() {
     const { slug } = useParams();
     const dispatch = useDispatch();
     const { projects, loading, error } = useSelector((state) => state.projects);
+    const BASE_URL = import.meta.env.VITE_APP_BASE_URL; // environment-based base URL
 
     useEffect(() => {
         if (projects.length === 0 && !loading && !error) {
@@ -36,21 +38,33 @@ export default function ProjectRender() {
         );
     }, [projects, slug]);
 
+    if (loading) return <Loading />;
+    if (!loading && error) return <ErrorHandle type="Project" errorType="public" path='/projects' />;
+    if (!loading && !error && !project) return <ErrorHandle type="Project" errorType="public" path='/projects' />;
+
     return (
         <div className={style}>
-            {loading && <Loading />}
-            {!loading && error && <ErrorHandle type="Project" errorType="public" path='/projects' />}
-            {!loading && !error && !project && (
-                <ErrorHandle type="Project" errorType="public" path='/projects' />
-            )}
-            {!loading && !error && project && (
-                <ContentMDRender
-                    key={slug}
-                    Header={Header}
-                    Contents={project}
-                    Footer={FooterWithNav}
-                />
-            )}
+            <Helmet>
+                <title>{project?.Title} | Team Simple</title>
+                <meta name="description" content={project?.Description || "Explore this project on Team Simple"} />
+
+                {/* Open Graph / Facebook */}
+                <meta property="og:title" content={project?.Title} />
+                <meta property="og:description" content={project?.Description || "Explore this project on Team Simple"} />
+                <meta property="og:image" content={project?.CoverImage || `${BASE_URL}/src/assets/logo.png`} />
+                <meta property="og:url" content={`${BASE_URL}/projects/${slug}`} />
+
+                {/* Twitter */}
+                <meta name="twitter:card" content="summary_large_image" />
+                <meta name="twitter:image" content={project?.CoverImage || `${BASE_URL}/src/assets/logo.png`} />
+            </Helmet>
+
+            <ContentMDRender
+                key={slug}
+                Header={Header}
+                Contents={project}
+                Footer={FooterWithNav}
+            />
         </div>
     );
 }

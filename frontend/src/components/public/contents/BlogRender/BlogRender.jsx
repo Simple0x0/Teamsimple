@@ -50,8 +50,8 @@ export default function BlogRender() {
             {/* Open Graph / Facebook */}
             <meta property="og:title" content={blog?.Title} />
             <meta property="og:description" content={blog?.Summary || "Read this blog on Team Simple"} />
-            <meta property="og:image" content={blog?.BlogImage || "https://teamsimple.net/src/assets/logo.png"} />
-            <meta property="og:url" content={`https://teamsimple.net/blogs/${slug}`} />
+            <meta property="og:image" content={blog?.BlogImage || "/src/assets/logo.png"} />
+            <meta property="og:url" content={`${BASE_URL}/blogs/${slug}`} />
 
             {/* Twitter */}
             <meta name="twitter:card" content="summary_large_image" />
