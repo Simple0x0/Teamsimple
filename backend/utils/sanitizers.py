@@ -14,8 +14,15 @@ class Sanitizer():
         title = html.escape(title.strip())
         title = re.sub(r'[^a-zA-Z0-9 \-]', '', title)
         title = re.sub(r'\s+', ' ', title)
-        
         return title.title() if title else None
+    
+    def sanitize_MachineName(self, title: str) -> str:
+        if not title or not isinstance(title, str):
+            return None
+        title = html.escape(title.strip())
+        title = re.sub(r'[^a-zA-Z0-9 \-]', '', title)
+        title = re.sub(r'\s+', ' ', title)
+        return title if title else None
         
     def sanitize_slug(self, slug: str) -> str:
         return re.sub(r'[^a-zA-Z0-9\-]', '', slug.strip().lower())

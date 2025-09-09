@@ -60,7 +60,7 @@ class WriteUpsMgmt(SerializableResource):
             raw_writeup = data.get("writeup", {})
 
             WriteUpID = s.sanitize_id(raw_writeup.get("WriteUpID"))
-            MachineName = s.sanitize_title(raw_writeup.get("MachineName"))
+            MachineName = s.sanitize_MachineName(raw_writeup.get("MachineName"))
             Slug = s.sanitize_slug(raw_writeup.get("Slug"))
             Difficulty = s.sanitize_difficulty(raw_writeup.get("Difficulty"))
             OsType = s.sanitize_ostype(raw_writeup.get("OsType"))
