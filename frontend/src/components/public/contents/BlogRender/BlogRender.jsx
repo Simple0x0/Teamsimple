@@ -7,13 +7,14 @@ import ErrorHandle from '../../ui/ErrorHandle';
 import Loading from '../../ui/Loading';
 import Header from './BlogHeader';
 import FooterNav from '../FooterNav';
+import { Helmet } from 'react-helmet-async';
 import style from '../../../../app/Style';
 
 export default function BlogRender() {
     const { slug } = useParams();
     const dispatch = useDispatch();
     const { blogs, loading, error } = useSelector((state) => state.blogs);
-
+    const BASE_URL = import.meta.env.VITE_API_URL;
     useEffect(() => {
         if (blogs.length === 0 && !loading && !error) {
             dispatch(fetchBlogs());
@@ -36,24 +37,34 @@ export default function BlogRender() {
         );
     }, [blogs, slug]);
 
+    if (loading) return <Loading />;
+    if (!loading && error) return <ErrorHandle type="Blog" errorType="public" path='/blogs' />;
+    if (!loading && !error && !blog) return <ErrorHandle type="Blog" errorType="public" path='/blogs' />;
+
     return (
         <div className={style}>
-            {loading && <Loading />}
-            {!loading && error && <ErrorHandle type="Blog" errorType="public" path='/blogs' />}
-            {!loading && !error && !blog && (
-                //<ErrorMessage message="Blog post not found" />
-                <ErrorHandle type="Blog" errorType="public" path='/blogs' />
-            )}
-            {!loading && !error && blog && (
-                <ContentMDRender
-                    key={slug} 
-                    Header={Header}
-                    Contents={blog}
-                    Footer={FooterWithNav}
-                />
-            )}
+            <Helmet>
+            <title>{blog?.Title} | Team Simple</title>
+            <meta name="description" content={blog?.Summary || "Read this blog on Team Simple"} />
+
+            {/* Open Graph / Facebook */}
+            <meta property="og:title" content={blog?.Title} />
+            <meta property="og:description" content={blog?.Summary || "Read this blog on Team Simple"} />
+            <meta property="og:image" content={blog?.BlogImage || "https://teamsimple.net/src/assets/logo.png"} />
+            <meta property="og:url" content={`https://teamsimple.net/blogs/${slug}`} />
+
+            {/* Twitter */}
+            <meta name="twitter:card" content="summary_large_image" />
+            <meta name="twitter:image" content={blog?.BlogImage || "https://teamsimple.net/assets/logo.png"} />
+            </Helmet>
+
+
+            <ContentMDRender
+                key={slug} 
+                Header={Header}
+                Contents={blog}
+                Footer={FooterWithNav}
+            />
         </div>
     );
 }
-
-
