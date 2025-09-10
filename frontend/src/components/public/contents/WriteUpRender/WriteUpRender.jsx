@@ -14,7 +14,8 @@ export default function WriteUpRender() {
     const { slug } = useParams();
     const dispatch = useDispatch();
     const { writeups, loading, error } = useSelector((state) => state.writeups);
-
+    const BASE_URL = import.meta.env.VITE_APP_BASE_URL;
+    
     useEffect(() => {
         if (writeups.length === 0 && !loading && !error) {
             dispatch(fetchWriteups());

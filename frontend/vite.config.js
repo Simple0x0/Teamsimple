@@ -17,7 +17,8 @@ export default defineConfig({
    build: {
     sourcemap: false, // for production
     minify: 'esbuild',
-    outDir: 'dist',
+    outDir: 'build',
+    chunkSizeWarningLimit: 5000,
   },
   esbuild: {
     sourcemap: false, // for dev (less common)
