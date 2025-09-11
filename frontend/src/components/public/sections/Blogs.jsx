@@ -46,8 +46,8 @@ export default function Blogs() {
     if (loading) return <Loading />;
     if (error) return <ErrorHandle type="Blog" errorType="server" />;
 
-    // Handle empty blogs (public error)
-    if (blogsToDisplay.length === 0) {
+    // Case 1: No blogs from server
+    if (blogs.length === 0) {
         return (
             <ErrorHandle
                 type="Blog"
@@ -59,7 +59,6 @@ export default function Blogs() {
         );
     }
 
-    // Normal render
     return (
         <div key={currentPage}>
             <Search
@@ -69,13 +68,26 @@ export default function Blogs() {
                 filterOptions={[]}
                 showFilter={false}
             />
-            <BlogModule blog={blogsToDisplay} />
-            {filteredBlogs.length > BLOGS_PER_PAGE && (
-                <Pagination
-                    currentPage={currentPage}
-                    totalPages={totalPages}
-                    onPageChange={setCurrentPage}
+
+            {/* Case 2: No results from search */}
+            {filteredBlogs.length === 0 ? (
+                <ErrorHandle
+                    type="Blog"
+                    errorType="public"
+                    message="No blogs matched your search."
+                    rightbar={false}
                 />
+            ) : (
+                <>
+                    <BlogModule blog={blogsToDisplay} />
+                    {filteredBlogs.length > BLOGS_PER_PAGE && (
+                        <Pagination
+                            currentPage={currentPage}
+                            totalPages={totalPages}
+                            onPageChange={setCurrentPage}
+                        />
+                    )}
+                </>
             )}
         </div>
     );

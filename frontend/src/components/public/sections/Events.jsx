@@ -17,7 +17,7 @@ export default function Events() {
     const [currentPage, setCurrentPage] = useState(1);
     const [searchTerm, setSearchTerm] = useState('');
 
-    // Fetch events once on mount
+    // Fetch events once
     useEffect(() => {
         if (!success) {
             dispatch(fetchEvents());
@@ -29,6 +29,7 @@ export default function Events() {
         setCurrentPage(1);
     };
 
+    // Apply search filter
     const filteredEvents = filterItems(
         events,
         searchTerm,
@@ -42,12 +43,12 @@ export default function Events() {
     const endIndex = startIndex + EVENTS_PER_PAGE;
     const eventsToDisplay = filteredEvents.slice(startIndex, endIndex);
 
-    // Handle loading and errors first
+    // Early returns for loading and server error
     if (loading) return <Loading />;
     if (error) return <ErrorHandle type="Event" errorType="server" />;
 
-    // Handle empty events (public error)
-    if (eventsToDisplay.length === 0) {
+    // Case 1: No events from server
+    if (events.length === 0) {
         return (
             <ErrorHandle
                 type="Event"
@@ -59,7 +60,6 @@ export default function Events() {
         );
     }
 
-    // Normal render
     return (
         <div key={currentPage}>
             <Search
@@ -68,13 +68,26 @@ export default function Events() {
                 onSearchChange={handleSearchChange}
                 showFilter={false}
             />
-            <EventModule events={eventsToDisplay} />
-            {filteredEvents.length > EVENTS_PER_PAGE && (
-                <Pagination
-                    currentPage={currentPage}
-                    totalPages={totalPages}
-                    onPageChange={setCurrentPage}
+
+            {/* Case 2: No results from search */}
+            {filteredEvents.length === 0 ? (
+                <ErrorHandle
+                    type="Event"
+                    errorType="public"
+                    message="No events matched your search."
+                    rightbar={false}
                 />
+            ) : (
+                <>
+                    <EventModule events={eventsToDisplay} />
+                    {filteredEvents.length > EVENTS_PER_PAGE && (
+                        <Pagination
+                            currentPage={currentPage}
+                            totalPages={totalPages}
+                            onPageChange={setCurrentPage}
+                        />
+                    )}
+                </>
             )}
         </div>
     );

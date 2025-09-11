@@ -53,7 +53,7 @@ export default function WriteUps() {
     if (error) return <ErrorHandle type="WriteUp" errorType="server" />;
 
     // Public error if no write-ups
-    if (writeupsToDisplay.length === 0) {
+    if (writeups.length === 0) {
         return (
             <ErrorHandle
                 type="WriteUp"
@@ -74,13 +74,25 @@ export default function WriteUps() {
                 onSearchChange={handleSearchChange}
                 onFilterChange={handleFilterChange}
             />
-            <WriteUpModule writeups={writeupsToDisplay} />
-            {filteredWriteups.length > WRITEUPS_PER_PAGE && (
-                <Pagination 
-                    currentPage={currentPage} 
-                    totalPages={totalPages} 
-                    onPageChange={setCurrentPage} 
+
+            {filteredWriteups.length === 0 ? (
+                <ErrorHandle
+                    type="WriteUp"
+                    errorType="public"
+                    message="No write-ups matched your search."
+                    rightbar={false}
                 />
+            ) : (
+                <>
+                    <WriteUpModule writeups={writeupsToDisplay} />
+                    {filteredWriteups.length > WRITEUPS_PER_PAGE && (
+                        <Pagination 
+                            currentPage={currentPage} 
+                            totalPages={totalPages} 
+                            onPageChange={setCurrentPage} 
+                        />
+                    )}
+                </>
             )}
         </div>
     );

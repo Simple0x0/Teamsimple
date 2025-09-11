@@ -31,7 +31,7 @@ export default function Achievements() {
     if (error) return <ErrorHandle type="Achievement" errorType="server" />;
 
     // Handle empty achievements (public error)
-    if (achievementsToDisplay.length === 0) {
+    if (!achievements || achievements.length === 0) {
         return (
             <ErrorHandle
                 type="Achievement"
@@ -47,7 +47,7 @@ export default function Achievements() {
     return (
         <div key={currentPage}>
             <AchievementsModule achievements={achievementsToDisplay} />
-            {achievements?.length > ACHIEVEMENTS_PER_PAGE && (
+            {achievements.length > ACHIEVEMENTS_PER_PAGE && (
                 <Pagination
                     currentPage={currentPage}
                     totalPages={totalPages}

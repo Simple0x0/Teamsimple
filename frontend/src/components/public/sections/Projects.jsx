@@ -32,7 +32,7 @@ export default function Projects() {
     const filteredProjects = filterItems(
         projects,
         searchTerm,
-        [], 
+        [],
         ['Title', 'Description', 'TechStack'],
         []
     );
@@ -46,8 +46,8 @@ export default function Projects() {
     if (loading) return <Loading />;
     if (error) return <ErrorHandle type="Project" errorType="server" />;
 
-    // Public error if no projects
-    if (projectsToDisplay.length === 0) {
+    // Case 1: No projects from server
+    if (projects.length === 0) {
         return (
             <ErrorHandle
                 type="Project"
@@ -67,13 +67,26 @@ export default function Projects() {
                 onSearchChange={handleSearchChange}
                 showFilter={false} 
             />
-            <ProjectModule projects={projectsToDisplay} />
-            {filteredProjects.length > PROJECTS_PER_PAGE && (
-                <Pagination 
-                    currentPage={currentPage} 
-                    totalPages={totalPages} 
-                    onPageChange={setCurrentPage} 
+
+            {/* Case 2: No results from search */}
+            {filteredProjects.length === 0 ? (
+                <ErrorHandle
+                    type="Project"
+                    errorType="public"
+                    message="No projects matched your search."
+                    rightbar={false}
                 />
+            ) : (
+                <>
+                    <ProjectModule projects={projectsToDisplay} />
+                    {filteredProjects.length > PROJECTS_PER_PAGE && (
+                        <Pagination 
+                            currentPage={currentPage} 
+                            totalPages={totalPages} 
+                            onPageChange={setCurrentPage} 
+                        />
+                    )}
+                </>
             )}
         </div>
     );

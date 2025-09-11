@@ -8,7 +8,7 @@ import ErrorHandle from '../ui/ErrorHandle';
 import { fetchPodcasts } from '../redux/actions/podcastActions';
 import { filterItems } from '../utils/searchFilter';
 
-const PODCASTS_PER_PAGE = 10;
+const PODCASTS_PER_PAGE = 5;
 
 export default function PodCast() {
     const dispatch = useDispatch();
@@ -16,7 +16,6 @@ export default function PodCast() {
 
     const [currentPage, setCurrentPage] = useState(1);
     const [searchTerm, setSearchTerm] = useState('');
-    const [selectedFilters, setSelectedFilters] = useState([]);
 
     // Fetch podcasts once on mount
     useEffect(() => {
@@ -30,18 +29,13 @@ export default function PodCast() {
         setCurrentPage(1);
     };
 
-    const handleFilterChange = (filters) => {
-        setSelectedFilters(filters);
-        setCurrentPage(1);
-    };
-
-    // Filter and search logic
+    // Apply search filter
     const filteredPodcasts = filterItems(
         podcasts,
         searchTerm,
-        selectedFilters,
+        [], // no filter tags yet, can extend later
         ['Title', 'Description', 'Host', 'Guests'],
-        ['Category'] 
+        ['Category']
     );
 
     const totalPages = Math.ceil(filteredPodcasts.length / PODCASTS_PER_PAGE);
@@ -49,11 +43,11 @@ export default function PodCast() {
     const endIndex = startIndex + PODCASTS_PER_PAGE;
     const podcastsToDisplay = filteredPodcasts.slice(startIndex, endIndex);
 
-    // Handle loading and errors first
+    // Early returns for loading and server error
     if (loading) return <Loading />;
     if (error) return <ErrorHandle type="Podcast" errorType="server" />;
 
-    // Handle empty podcasts (public error)
+    // Public error if no podcasts
     if (podcastsToDisplay.length === 0) {
         return (
             <ErrorHandle
@@ -66,15 +60,12 @@ export default function PodCast() {
         );
     }
 
-    // Normal render
     return (
-        <div key={currentPage}> 
+        <div key={currentPage}>
             <Search 
                 title="Podcasts" 
                 placeholder="Search for podcasts..." 
                 onSearchChange={handleSearchChange}
-                onFilterChange={handleFilterChange}
-                filterOptions={['Latest', 'Oldest', 'Popular']} 
                 showFilter={false} 
             />
             <PodCastModule podcasts={podcastsToDisplay} />
