@@ -8,7 +8,8 @@
     "build": "vite build",
     "lint": "eslint .",
     "preview": "vite preview",
-    "postbuild": "mv dist build && react-snap"
+    "prebuild": "node scripts/generate-routes.js",
+    "_postbuild": "mv dist build && react-snap"
   },
   "dependencies": {
     "@emotion/react": "^11.14.0",

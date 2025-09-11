@@ -7,7 +7,7 @@ import ErrorHandle from '../../ui/ErrorHandle';
 import Loading from '../../ui/Loading';
 import Header from './ProjectHeader';
 import FooterNav from '../FooterNav';
-import { Helmet } from 'react-helmet-async';
+import SEO from '../../../../SEO';
 import style from '../../../../app/Style';
 import { usePrerenderReady } from '../../hook/usePrerenderReady';
 
@@ -46,20 +46,38 @@ export default function ProjectRender() {
 
     return (
         <div className={style}>
-            <Helmet>
-                <title>{project?.Title} | Team Simple</title>
-                <meta name="description" content={project?.Description || "Explore this project on Team Simple"} />
-
-                {/* Open Graph / Facebook */}
-                <meta property="og:title" content={project?.Title} />
-                <meta property="og:description" content={project?.Description || "Explore this project on Team Simple"} />
-                <meta property="og:image" content={project?.CoverImage || `${BASE_URL}/src/assets/logo.png`} />
-                <meta property="og:url" content={`${BASE_URL}/projects/${slug}`} />
-
-                {/* Twitter */}
-                <meta name="twitter:card" content="summary_large_image" />
-                <meta name="twitter:image" content={project?.CoverImage || `${BASE_URL}/src/assets/logo.png`} />
-            </Helmet>
+            <SEO 
+                title={project?.Title}
+                description={project?.Description || "Explore this project on Team Simple"}
+                keywords={`${project?.Technologies?.join(', ')}, cybersecurity, ${project?.Tags?.join(', ')}`}
+                ogImage={project?.CoverImage || '/src/assets/logo.png'}
+                canonicalUrl={`${BASE_URL}/projects/${slug}`}
+            >
+                <meta property="og:type" content="website" />
+                <meta property="article:published_time" content={project?.DateCreated} />
+                <meta property="article:modified_time" content={project?.UpdatedAt} />
+                <script type="application/ld+json">
+                    {JSON.stringify({
+                        "@context": "https://schema.org",
+                        "@type": "SoftwareSourceCode",
+                        "name": project?.Title,
+                        "description": project?.Description,
+                        "image": project?.CoverImage,
+                        "author": {
+                            "@type": "Organization",
+                            "name": "Team Simple"
+                        },
+                        "datePublished": project?.DateCreated,
+                        "dateModified": project?.UpdatedAt,
+                        "ProgressPercentage": `${project?.ProgressPercentage} %`,
+                        "applicationCategory": "Security",
+                        "mainEntityOfPage": {
+                            "@type": "WebPage",
+                            "@id": `${BASE_URL}/projects/${slug}`
+                        }
+                    })}
+                </script>
+            </SEO>
 
             <ContentMDRender
                 key={slug}

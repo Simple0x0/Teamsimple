@@ -2,7 +2,7 @@ import { defineConfig } from 'vite'
 import react from '@vitejs/plugin-react'
 import tailwindcss from "@tailwindcss/vite";
 import prerender from 'vite-plugin-prerender'
-import routes from './prerender-routes.js'
+import { fetchContentRoutes } from './prerender-routes.js'
 
 // https://vite.dev/config/
 export default defineConfig({
@@ -10,18 +10,36 @@ export default defineConfig({
     react(),
     tailwindcss(),
     prerender({
-      staticDir: 'build', // where Vite outputs
-      routes, // list of routes to prerender
+      staticDir: 'build',
+      routes: await fetchContentRoutes(),
       rendererOptions: {
         headless: true,
-        renderAfterDocumentEvent: 'render-event', // wait for this event to be dispatched
+        renderAfterDocumentEvent: 'render-event',
+        renderAfterTime: 5000,
+        maxConcurrentRoutes: 4,
+        timeout: 10000,
+        injectProperty: '__PRERENDER_INJECTED',
+        inject: {
+          prerendered: true,
+          currentRoute: '/'
+        }
       },
+      postProcess: (renderedRoute) => {
+        // Add meta tags for SEO
+        renderedRoute.html = renderedRoute.html
+          .replace('</head>', `
+            <meta name="generator" content="Team Simple" />
+            <meta name="viewport" content="width=device-width, initial-scale=1" />
+            <link rel="sitemap" type="application/xml" href="/sitemap.xml" />
+            </head>
+          `);
+        return renderedRoute;
+      }
     }),
   ],
   server: {
     allowedHosts: [
-      `f242-2001-4278-11-44cd-1d90-1ad1-c7ee-ffca.ngrok-free.app`,
-      'simple.local',
+      `teamsimple.net`,
     ]
   },
    build: {

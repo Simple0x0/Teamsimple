@@ -7,7 +7,7 @@ import ErrorHandle from '../../ui/ErrorHandle';
 import Loading from '../../ui/Loading';
 import Header from './BlogHeader';
 import FooterNav from '../FooterNav';
-import { Helmet } from 'react-helmet-async';
+import SEO from '../../../../SEO';
 import style from '../../../../app/Style';
 import { usePrerenderReady } from '../../hook/usePrerenderReady';
 
@@ -45,20 +45,36 @@ export default function BlogRender() {
 
     return (
         <div className={style}>
-            <Helmet>
-            <title>{blog?.Title} | Team Simple</title>
-            <meta name="description" content={blog?.Summary || "Read this blog on Team Simple"} />
-
-            {/* Open Graph / Facebook */}
-            <meta property="og:title" content={blog?.Title} />
-            <meta property="og:description" content={blog?.Summary || "Read this blog on Team Simple"} />
-            <meta property="og:image" content={blog?.BlogImage || "/src/assets/logo.png"} />
-            <meta property="og:url" content={`${BASE_URL}/blogs/${slug}`} />
-
-            {/* Twitter */}
-            <meta name="twitter:card" content="summary_large_image" />
-            <meta name="twitter:image" content={blog?.BlogImage || "https://teamsimple.net/assets/logo.png"} />
-            </Helmet>
+            <SEO 
+                title={blog?.Title}
+                description={blog?.Summary}
+                keywords={blog?.Tags?.join(', ')}
+                ogImage={blog?.BlogImage || '/src/assets/logo.png'} 
+                canonicalUrl={`${BASE_URL}/blogs/${slug}`}
+            >
+                <meta property="og:type" content="article" />
+                <meta property="article:published_time" content={blog?.DateCreated} />
+                <meta property="article:modified_time" content={blog?.LastUpdated} />
+                <script type="application/ld+json">
+                    {JSON.stringify({
+                        "@context": "https://schema.org",
+                        "@type": "BlogPosting",
+                        "headline": blog?.Title,
+                        "description": blog?.Summary,
+                        "image": blog?.BlogImage,
+                        "author": {
+                            "@type": "Organization",
+                            "name": "Team Simple"
+                        },
+                        "datePublished": blog?.DateCreated,
+                        "dateModified": blog?.LastUpdated,
+                        "mainEntityOfPage": {
+                            "@type": "WebPage",
+                            "@id": `${BASE_URL}/blogs/${slug}`
+                        }
+                    })}
+                </script>
+            </SEO>
 
 
             <ContentMDRender

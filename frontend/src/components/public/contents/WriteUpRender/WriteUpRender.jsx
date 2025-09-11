@@ -7,7 +7,7 @@ import ErrorHandle from '../../ui/ErrorHandle';
 import Loading from '../../ui/Loading';
 import Header from './WriteUpHeader';
 import FooterNav from '../FooterNav';
-import { Helmet } from 'react-helmet-async';
+import SEO from '../../../../SEO';
 import style from '../../../../app/Style';
 import { usePrerenderReady } from '../../hook/usePrerenderReady';
 
@@ -46,22 +46,37 @@ export default function WriteUpRender() {
 
     return (
         <div className={style.contentRender.container}>
-            <Helmet>
-                <title>{writeup?.MachineName} | Team Simple</title>
-                <meta name="description" content={`Write-up for ${writeup?.MachineName} on ${writeup?.Platform}`} />
-
-                {/* Open Graph / Facebook */}
-                <meta property="og:title" content={writeup?.MachineName} />
-                <meta property="og:description" content={`Write-up for ${writeup?.MachineName} on ${writeup?.Platform}`} />
-                <meta property="og:image" content={writeup?.WriteUpImage || `src/assets/logo.png`} />
-                <meta property="og:url" content={`${BASE_URL}/writeups/${slug}`} />
-
-                {/* Twitter */}
-                <meta name="twitter:card" content="summary_large_image" />
-                <meta name="twitter:image" content={writeup?.WriteUpImage || `/src/assets/logo.png`} />
-            </Helmet>
-
-
+            <SEO 
+                title={`${writeup?.MachineName} CTF Writeup`}
+                description={writeup?.Summary || `CTF writeup for ${writeup?.MachineName} by Team Simple`}
+                keywords={`CTF, ${writeup?.MachineName}, writeup, hacking, security, ${writeup?.Tags?.join(', ')}`}
+                ogImage={writeup?.WriteUpImage || '/src/assets/logo.png'}
+                canonicalUrl={`${BASE_URL}/writeups/${slug}`}
+            >
+                <meta property="og:type" content="article" />
+                <meta property="article:published_time" content={writeup?.DateCreated} />
+                <meta property="article:modified_time" content={writeup?.DateModified} />
+                <script type="application/ld+json">
+                    {JSON.stringify({
+                        "@context": "https://schema.org",
+                        "@type": "TechArticle",
+                        "headline": `${writeup?.MachineName} Writeup`,
+                        "description": writeup?.Summary,
+                        "image": writeup?.WriteUpImage,
+                        "author": {
+                            "@type": "Organization",
+                            "name": "Team Simple"
+                        },
+                        "datePublished": writeup?.DateCreated,
+                        "dateModified": writeup?.DateModified,
+                        "mainEntityOfPage": {
+                            "@type": "WebPage",
+                            "@id": `${BASE_URL}/writeups/${slug}`
+                        },
+                        "keywords": ["CTF", "cybersecurity", writeup?.MachineName, "writeup", "hacking", "security"]
+                    })}
+                </script>
+            </SEO>
             <ContentMDRender
                 key={slug}
                 Header={Header}
