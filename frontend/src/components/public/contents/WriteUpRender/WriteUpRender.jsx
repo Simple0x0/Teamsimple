@@ -9,6 +9,7 @@ import Header from './WriteUpHeader';
 import FooterNav from '../FooterNav';
 import { Helmet } from 'react-helmet-async';
 import style from '../../../../app/Style';
+import { usePrerenderReady } from '../../hook/usePrerenderReady';
 
 export default function WriteUpRender() {
     const { slug } = useParams();
@@ -26,6 +27,7 @@ export default function WriteUpRender() {
         window.scrollTo(0, 0);
     }, [slug]);
 
+    usePrerenderReady([loading]);
     const writeup = writeups.find((post) => post.Slug === slug);
 
     const FooterWithNav = useMemo(() => {

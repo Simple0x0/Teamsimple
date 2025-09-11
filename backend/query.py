@@ -1009,31 +1009,35 @@ ORDER BY DateCreated DESC;
 """
 
 ANALYTICS_QUERY = """
-SELECT 'Blogs' AS Label, COUNT(*) AS Total,
-       COALESCE(SUM(CASE WHEN ContentType = 'Blog' THEN 1 ELSE 0 END), 0) AS Likes
-FROM Blogs
-LEFT JOIN LikeLogs ON LikeLogs.ContentType = 'Blog'
+SELECT 'Blogs' AS Label,
+       COUNT(DISTINCT b.BlogID) AS Total,
+       COALESCE(SUM(CASE WHEN l.ContentType = 'Blog' THEN 1 ELSE 0 END), 0) AS Likes
+FROM Blogs b
+LEFT JOIN LikeLogs l ON l.ContentType = 'Blog' AND l.ContentID = b.BlogID
 
 UNION ALL
 
-SELECT 'Writeups', COUNT(*),
-       COALESCE(SUM(CASE WHEN ContentType = 'WriteUp' THEN 1 ELSE 0 END), 0)
-FROM WriteUp
-LEFT JOIN LikeLogs ON LikeLogs.ContentType = 'WriteUp'
+SELECT 'Writeups',
+       COUNT(DISTINCT w.WriteUpID),
+       COALESCE(SUM(CASE WHEN l.ContentType = 'WriteUp' THEN 1 ELSE 0 END), 0)
+FROM WriteUp w
+LEFT JOIN LikeLogs l ON l.ContentType = 'WriteUp' AND l.ContentID = w.WriteUpID
 
 UNION ALL
 
-SELECT 'Projects', COUNT(*),
-       COALESCE(SUM(CASE WHEN ContentType = 'Project' THEN 1 ELSE 0 END), 0)
-FROM Projects
-LEFT JOIN LikeLogs ON LikeLogs.ContentType = 'Project'
+SELECT 'Projects',
+       COUNT(DISTINCT p.ProjectID),
+       COALESCE(SUM(CASE WHEN l.ContentType = 'Project' THEN 1 ELSE 0 END), 0)
+FROM Projects p
+LEFT JOIN LikeLogs l ON l.ContentType = 'Project' AND l.ContentID = p.ProjectID
 
 UNION ALL
 
-SELECT 'Achievements', COUNT(*),
-       COALESCE(SUM(CASE WHEN ContentType = 'Achievement' THEN 1 ELSE 0 END), 0)
-FROM Achievements
-LEFT JOIN LikeLogs ON LikeLogs.ContentType = 'Achievement';
+SELECT 'Achievements',
+       COUNT(DISTINCT a.AchievementID),
+       COALESCE(SUM(CASE WHEN l.ContentType = 'Achievement' THEN 1 ELSE 0 END), 0)
+FROM Achievements a
+LEFT JOIN LikeLogs l ON l.ContentType = 'Achievement' AND l.ContentID = a.AchievementID;
 """
 
 

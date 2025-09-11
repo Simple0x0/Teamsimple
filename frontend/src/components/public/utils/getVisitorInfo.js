@@ -28,8 +28,6 @@ export async function getVisitorInfo() {
         Browser: navigator.userAgent,
         OS: getOS(),
         DeviceType: getDeviceType(),
-        FirstVisit: new Date().toISOString(),
-        LastVisit: new Date().toISOString(),
-        IsActive: true,
     };
 }
+

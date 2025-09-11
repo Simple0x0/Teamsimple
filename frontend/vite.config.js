@@ -1,12 +1,22 @@
 import { defineConfig } from 'vite'
 import react from '@vitejs/plugin-react'
 import tailwindcss from "@tailwindcss/vite";
+import prerender from 'vite-plugin-prerender'
+import routes from './prerender-routes.js'
 
 // https://vite.dev/config/
 export default defineConfig({
   plugins: [
     react(),
     tailwindcss(),
+    prerender({
+      staticDir: 'build', // where Vite outputs
+      routes, // list of routes to prerender
+      rendererOptions: {
+        headless: true,
+        renderAfterDocumentEvent: 'render-event', // wait for this event to be dispatched
+      },
+    }),
   ],
   server: {
     allowedHosts: [

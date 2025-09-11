@@ -9,6 +9,7 @@ import Header from './BlogHeader';
 import FooterNav from '../FooterNav';
 import { Helmet } from 'react-helmet-async';
 import style from '../../../../app/Style';
+import { usePrerenderReady } from '../../hook/usePrerenderReady';
 
 export default function BlogRender() {
     const { slug } = useParams();
@@ -25,6 +26,7 @@ export default function BlogRender() {
         window.scrollTo(0, 0);
     }, [slug]);
     
+    usePrerenderReady([loading]);
     const blog = blogs.find((post) => post.Slug === slug);
 
     const FooterWithNav = useMemo(() => {

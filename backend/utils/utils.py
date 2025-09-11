@@ -41,7 +41,7 @@ def validate_fingerprint(fingerprint_value, browser, os_name, device_type):
         return False, "Invalid fingerprint"
 
     # Browser string: allow alphanumerics + common User-Agent symbols
-    if not re.fullmatch(r'^[\w\d\s\-\.\(\);:/]+$', browser):
+    if not re.fullmatch(r'^[\w\s\-\.\(\);:/,+=_]+$', browser):
         return False, "Invalid browser"
 
     # OS name: only allow known OS types (limited whitelist)

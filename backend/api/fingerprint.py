@@ -3,7 +3,7 @@ import traceback
 from flask import request, jsonify, make_response, send_from_directory
 from flask_jwt_extended import jwt_required, get_jwt_identity
 from datetime import datetime
-from time import sleep
+from flask import current_app as app
 from core.extensions import db, s, UPLOAD_BASE, SLEEP
 from utils.utils import validate_fingerprint, get_country
 from utils.serializable_resource import SerializableResource
@@ -15,7 +15,6 @@ class Fingerprint(SerializableResource):
     def post(self):
         try:
             data = request.get_json(force=True)
-
             fingerprint_value = data.get('FingerprintValue')
             browser = data.get('Browser')
             os_name = data.get('OS')
@@ -29,13 +28,13 @@ class Fingerprint(SerializableResource):
             is_valid, error_msg = validate_fingerprint(
                 fingerprint_value, browser, os_name, device_type
             )
+                             
             if not is_valid:
                 return {"message": error_msg}, 400
             
             ip_address = request.remote_addr
             now = datetime.utcnow()
             visitor = db.get_visitor_by_fingerprint(fingerprint_value)
-
             if visitor:
                 # Update existing visitor
                 db.update_visitor(
@@ -58,7 +57,6 @@ class Fingerprint(SerializableResource):
                     visit_count=1,
                     is_active=True
                 )
-
             return {"message": "Visitor fingerprint recorded"}, 200
 
         except Exception as e:
