@@ -44,7 +44,7 @@ export default function EventModule({ events }) {
   return (
     <>
       <div className="w-full flex flex-col gap-8">
-        {events.map((event) => {
+  {(Array.isArray(events) ? events : []).map((event) => {
           const status = getEventStatus(event);
           return (
             <div key={event.EventID} className="w-full bg-slate-950 border border-slate-800 rounded-2xl shadow-xl flex flex-col md:flex-row gap-8 p-8 items-center">
@@ -73,7 +73,7 @@ export default function EventModule({ events }) {
                   </span>
                   <span className="flex items-center gap-1 text-sm text-gray-300"><FaMapMarkerAlt className="mr-1" /> {event.Location}</span>
                   <span className="flex items-center gap-1 text-sm text-gray-300"><FaUserTie className="mr-1" /> {event.OrganizerName} ({event.OrganizerOrganization})</span>
-                  <span className="flex items-center gap-1 text-sm text-gray-300"><FaTags className="mr-1" /> {event.Tags?.split(',').map(tag => <span key={tag} className="bg-slate-800 text-lime-400 px-2 py-1 rounded-full mx-1 text-xs">{tag}</span>)}</span>
+                  <span className="flex items-center gap-1 text-sm text-gray-300"><FaTags className="mr-1" /> {(event.Tags ? event.Tags.split(',') : []).map(tag => <span key={tag} className="bg-slate-800 text-lime-400 px-2 py-1 rounded-full mx-1 text-xs">{tag}</span>)}</span>
                 </div>
                 <div className="flex flex-wrap gap-4 mt-2 items-center">
                   <span className="text-xs bg-slate-800 text-white px-3 py-1 rounded-full">Mode: {event.Mode}</span>

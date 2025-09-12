@@ -4,10 +4,10 @@ import { FaChevronRight, FaHashtag } from "react-icons/fa";
 import { TbCategory } from "react-icons/tb";
 import style from '../../../app/Style';
 
-export default function ProjectModule({ projects }) {
+export default function ProjectModule({ projects = [] }) {
     return (
         <div>
-            {projects.map((post) => (
+            {(projects || []).map((post) => (
                 <div key={post.ProjectID} className={style.projectmodule.container}>
 
                     {/* Cover Image */}
@@ -83,7 +83,7 @@ export default function ProjectModule({ projects }) {
                         {/* Tags */}
                         {post.Tags && (
                             <div className={style.projectmodule.tagsContainer}>
-                                {post.Tags.split(',').map((tag, index) => (
+                                {(post.Tags ? post.Tags.split(',') : []).map((tag, index) => (
                                     <Link 
                                         to={`/tag/${tag.trim()}`} 
                                         key={index} 

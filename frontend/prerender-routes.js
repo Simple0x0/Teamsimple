@@ -3,95 +3,77 @@ import fs from 'fs/promises';
 import path from 'path';
 import dotenv from 'dotenv';
 
-// Load environment variables
 dotenv.config();
 
-// Function to fetch data from API
 async function fetchContentRoutes() {
   const API_URL = process.env.VITE_API_URL || 'http://localhost:5000/api';
   const BASE_URL = process.env.VITE_APP_BASE_URL || 'https://teamsimple.net';
-  
+
+  // Core routes that should always be prerendered
+  const coreRoutes = [
+    '/',
+    '/blogs',
+    '/writeups',
+    '/projects',
+    '/podcasts',
+    '/about',
+    '/contact',
+    '/team',
+  ];
+
   try {
-    // Fetch all content types in parallel
+    // ✅ Fetch with timeout & safe fallbacks
     const [blogs, writeups, projects, podcasts] = await Promise.all([
-      axios.get(`${API_URL}/blogs`).catch(() => ({ data: { Blogs: [] } })),
-      axios.get(`${API_URL}/writeups`).catch(() => ({ data: { WriteUps: [] } })),
-      axios.get(`${API_URL}/projects`).catch(() => ({ data: { Projects: [] } })),
-      axios.get(`${API_URL}/podcasts`).catch(() => ({ data: { Podcasts: [] } }))
+      axios.get(`${API_URL}/blogs`, { timeout: 10000 }).then(r => r.data.Blogs || []).catch(() => []),
+      axios.get(`${API_URL}/writeups`, { timeout: 10000 }).then(r => r.data.WriteUps || []).catch(() => []),
+      axios.get(`${API_URL}/projects`, { timeout: 10000 }).then(r => r.data.Projects || []).catch(() => []),
+      axios.get(`${API_URL}/podcasts`, { timeout: 10000 }).then(r => r.data.Podcasts || []).catch(() => []),
     ]);
 
-    // Generate routes for each content type
-    const blogRoutes = blogs.data.Blogs?.map(blog => `/blogs/${blog.Slug}`) || [];
-    const writeupRoutes = writeups.data.WriteUps?.map(writeup => `/writeups/${writeup.Slug}`) || [];
-    const projectRoutes = projects.data.Projects?.map(project => `/projects/${project.Slug}`) || [];
-    const podcastRoutes = podcasts.data.Podcasts?.map(podcast => `/podcasts/${podcast.Slug}`) || [];
+    // ✅ Always guard against missing `.Slug`
+    const blogRoutes = blogs.map(b => b?.Slug ? `/blogs/${b.Slug}` : []).filter(Boolean);
+    const writeupRoutes = writeups.map(w => w?.Slug ? `/writeups/${w.Slug}` : []).filter(Boolean);
+    const projectRoutes = projects.map(p => p?.Slug ? `/projects/${p.Slug}` : []).filter(Boolean);
+    const podcastRoutes = podcasts.map(pc => pc?.Slug ? `/podcasts/${pc.Slug}` : []).filter(Boolean);
 
-    // Core routes that should always be prerendered
-    const coreRoutes = [
-      '/',
-      '/blogs',
-      '/writeups',
-      '/projects',
-      '/podcasts',
-      '/about',
-      '/contact',
-      '/team'
-    ];
-
-    // Combine all routes
     const allRoutes = [
       ...coreRoutes,
       ...blogRoutes,
       ...writeupRoutes,
       ...projectRoutes,
-      ...podcastRoutes
+      ...podcastRoutes,
     ];
 
-    // Remove duplicates
-    const uniqueRoutes = [...new Set(allRoutes)];
+    // ✅ Deduplicate & sort for stable builds
+    const uniqueRoutes = [...new Set(allRoutes)].sort();
 
-    // Generate sitemap.xml
-    const today = new Date().toISOString();
-    let xml = '<?xml version="1.0" encoding="UTF-8"?>\n';
-    xml += '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n';
-    
-    uniqueRoutes.forEach((route) => {
-      xml += '  <url>\n';
-      xml += `    <loc>${BASE_URL}${route}</loc>\n`;
-      xml += `    <lastmod>${today}</lastmod>\n`;
-      xml += '    <changefreq>weekly</changefreq>\n';
-      // Give higher priority to main pages
-      const priority = route === '/' ? '1.0' : 
-                      coreRoutes.includes(route) ? '0.8' : '0.6';
-      xml += `    <priority>${priority}</priority>\n`;
-      xml += '  </url>\n';
-    });
-    
-    xml += '</urlset>';
+    // ✅ Generate sitemap.xml
+    const today = new Date().toISOString().split('T')[0]; // YYYY-MM-DD only
+    const xml = `<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+${uniqueRoutes
+  .map((route) => {
+    const priority = route === '/' ? '1.0' : coreRoutes.includes(route) ? '0.8' : '0.6';
+    return `  <url>
+    <loc>${BASE_URL}${route}</loc>
+    <lastmod>${today}</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>${priority}</priority>
+  </url>`;
+  })
+  .join('\n')}
+</urlset>`;
 
-    // Write sitemap.xml to public directory
-    await fs.writeFile(
-      path.join(process.cwd(), 'public', 'sitemap.xml'),
-      xml
-    );
+    // ✅ Ensure `public` folder exists before writing
+    const publicDir = path.join(process.cwd(), 'public');
+    await fs.mkdir(publicDir, { recursive: true });
+    await fs.writeFile(path.join(publicDir, 'sitemap.xml'), xml, 'utf8');
 
-    // Return routes for prerendering
     return uniqueRoutes;
   } catch (error) {
-    console.error('Error fetching routes:', error);
-    // Fallback to core routes if API fails
-    const fallbackRoutes = [
-      '/',
-      '/blogs',
-      '/writeups',
-      '/projects',
-      '/podcasts',
-      '/about',
-      '/contact',
-      '/team'
-    ];
+    console.error('❌ Error fetching routes:', error.message);
+    return coreRoutes; // ✅ fallback still returned
   }
 }
 
-// Export the routes
-export default await fetchContentRoutes();
+export { fetchContentRoutes };

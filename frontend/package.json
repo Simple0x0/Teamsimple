@@ -8,7 +8,7 @@
     "build": "vite build",
     "lint": "eslint .",
     "preview": "vite preview",
-    "prebuild": "node scripts/generate-routes.js",
+    "prebuild": "node scripts/prerender-routes.js",
     "_postbuild": "mv dist build && react-snap"
   },
   "dependencies": {
@@ -60,7 +60,7 @@
     "eslint-plugin-react-hooks": "^5.0.0",
     "eslint-plugin-react-refresh": "^0.4.16",
     "globals": "^15.14.0",
-    "vite-plugin-prerender": "^1.0.8",
+    "vite-prerender-plugin": "^0.5.12",
     "vite": "^6.0.5"
   },
   "description": "This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.",

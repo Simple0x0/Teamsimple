@@ -2,7 +2,7 @@ import React from 'react';
 import style from '../../../app/Style';
 import { Link } from 'react-router-dom';
 
-export default function WriteUpModule({ writeups }) {
+export default function WriteUpModule({ writeups = [] }) {
     if (!Array.isArray(writeups) || writeups.length === 0) {
         return <p>No write-ups available</p>;
     }
@@ -10,7 +10,7 @@ export default function WriteUpModule({ writeups }) {
     return (
         <div>
             <div className={style.WriteupModule.container}>
-                {writeups.map((post) => (
+                {(writeups || []).map((post) => (
                     <div key={post.WriteUpID} className={style.WriteupModule.item}>
                         <div className={style.WriteupModule.ImageName}> 
                             <Link to={`/writeups/${post.Slug}`} className="block">

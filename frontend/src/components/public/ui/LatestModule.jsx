@@ -4,9 +4,9 @@ import { Link } from 'react-router-dom';
 import ContentContainer from './ContentContainer';
 import style from '../../../app/Style';
 
-export default function LatestModule({ latestContent, loading, error }) {
+export default function LatestModule({ latestContent = [], loading, error }) {
   const [currentIndex, setCurrentIndex] = useState(0);
-  const totalItems = latestContent.length;
+  const totalItems = (latestContent || []).length;
 
   const goPrev = () => {
     setCurrentIndex((prev) => (prev - 1 + totalItems) % totalItems);
@@ -15,7 +15,7 @@ export default function LatestModule({ latestContent, loading, error }) {
     setCurrentIndex((prev) => (prev + 1) % totalItems);
   };
 
-  const currentItem = latestContent[currentIndex] || {};
+  const currentItem = (latestContent || [])[currentIndex] || {};
 
   return (
     <div className={style.latestModule.mainContainer}>

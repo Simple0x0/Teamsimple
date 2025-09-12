@@ -6,11 +6,11 @@ import Like from '../interactions/Like';
 import AuthorProfileModal from '../modals/AuthorProfileModal';
 import style from '../../../app/Style';
 
-export default function BlogModule({ blog }) {
+export default function BlogModule({ blog = [] }) {
     const [activeUsername, setActiveUsername] = useState(null);
     return (
         <div>
-            {blog.map((post) => (
+            {(blog || []).map((post) => (
                 <div key={post.BlogID} className={style.blogmodule.container}>
                     {/* Image */}
                     <img src={post.BlogImage} alt={post.Title} className={style.blogmodule.image} />
@@ -28,9 +28,9 @@ export default function BlogModule({ blog }) {
                         {/* Contributors & Date */}
                         <div className={style.blogmodule.authordate}>
                             <p>
-                                Author{post.Contributors?.split(',').length > 1 ? 's' : ''}:{' '}
-                                {post.Contributors?.split(',').map((contributor, index) => {
-                                const contributorId = post.ContributorIDs?.split(',')[index];
+                                Author{(post.Contributors ? post.Contributors.split(',') : []).length > 1 ? 's' : ''}:{' '}
+                                {(post.Contributors ? post.Contributors.split(',') : []).map((contributor, index) => {
+                                const contributorId = (post.ContributorIDs ? post.ContributorIDs.split(',') : [])[index];
                                 if (!contributor) return null;
                                 return (
                                     <span key={contributorId}>
@@ -40,7 +40,7 @@ export default function BlogModule({ blog }) {
                                     >
                                         {contributor.trim()}
                                     </button>
-                                    {index < post.Contributors?.split(',').length - 1 ? ', ' : ''}
+                                    {index < (post.Contributors ? post.Contributors.split(',') : []).length - 1 ? ', ' : ''}
                                     </span>
                                 );
                                 })}
@@ -75,7 +75,7 @@ export default function BlogModule({ blog }) {
                         {/* Tags */}
                         <div className={style.blogmodule.tagsContainer}>
                             {/*to={`/tag/${tag.trim()}`}  FOR TAG FILTER LATER*/} 
-                            {post.Tags?.split(',').map((tag, index) => (
+                            {(post.Tags ? post.Tags.split(',') : []).map((tag, index) => (
                                 <Link 
                                     to={`#`} 
                                     key={index} 

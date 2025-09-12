@@ -7,7 +7,7 @@ import ErrorHandle from '../../ui/ErrorHandle';
 import Loading from '../../ui/Loading';
 import Header from './WriteUpHeader';
 import FooterNav from '../FooterNav';
-import SEO from '../../../../SEO';
+import SEO from '../../../SEO';
 import style from '../../../../app/Style';
 import { usePrerenderReady } from '../../hook/usePrerenderReady';
 
@@ -49,7 +49,7 @@ export default function WriteUpRender() {
             <SEO 
                 title={`${writeup?.MachineName} CTF Writeup`}
                 description={writeup?.Summary || `CTF writeup for ${writeup?.MachineName} by Team Simple`}
-                keywords={`CTF, ${writeup?.MachineName}, writeup, hacking, security, ${writeup?.Tags?.join(', ')}`}
+                keywords={`CTF, ${writeup?.MachineName}, writeup, hacking, security, ${(writeup?.Tags || []).join(', ')}`}
                 ogImage={writeup?.WriteUpImage || '/src/assets/logo.png'}
                 canonicalUrl={`${BASE_URL}/writeups/${slug}`}
             >

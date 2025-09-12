@@ -7,7 +7,7 @@ import ErrorHandle from '../../ui/ErrorHandle';
 import Loading from '../../ui/Loading';
 import Header from './ProjectHeader';
 import FooterNav from '../FooterNav';
-import SEO from '../../../../SEO';
+import SEO from '../../../SEO';
 import style from '../../../../app/Style';
 import { usePrerenderReady } from '../../hook/usePrerenderReady';
 

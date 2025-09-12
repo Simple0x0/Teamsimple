@@ -4,13 +4,13 @@ import { FaRegHeart, FaHeart } from "react-icons/fa";
 import Like from '../interactions/Like';
 import style from '../../../app/Style';
 
-export default function AchievementsModule({ achievements }) {
+export default function AchievementsModule({ achievements = [] }) {
     return (
         <div>
             <div className={style.achievementmodule.headercontainer}>
                 <h1 className={style.achievementmodule.header}>Team Achievements</h1>
             </div>
-            {achievements.map((achieved) => (
+            {(achievements || []).map((achieved) => (
                 <div key={achieved.AchievementID} className={style.achievementmodule.container}>
 
                     {/* Image */}

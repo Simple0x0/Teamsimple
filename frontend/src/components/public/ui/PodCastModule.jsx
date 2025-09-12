@@ -9,12 +9,12 @@ import AuthorProfileModal from '../modals/AuthorProfileModal';
 
 import style from '../../../app/Style';
 
-export default function PodCastModule({ podcasts }) {
+export default function PodCastModule({ podcasts = [] }) {
     const currentAudioRef = useRef(null);
 
     return (
         <div>
-            {podcasts.map((podcast) => (
+            {(podcasts || []).map((podcast) => (
                 <div key={podcast.PodcastID} className={style.podcastmodule.container}>
                     <img src={podcast.CoverImage} className={style.podcastmodule.image} alt="cover" />
                     <PodcastPlayer podcast={podcast} currentAudioRef={currentAudioRef} />
@@ -185,8 +185,8 @@ function PodcastPlayer({ podcast, currentAudioRef }) {
                     <strong className={style.podcastmodule.speakerLabel}>
                         Speaker{podcast.Contributors?.split(',').length > 1 ? 's' : ''}:
                     </strong>{' '}
-                    {podcast.Contributors?.split(',').map((name, index) => {
-                        const username = podcast.Contributors?.split(',')[index]?.trim();
+                    {(podcast.Contributors ? podcast.Contributors.split(',') : []).map((name, index) => {
+                        const username = (podcast.Contributors ? podcast.Contributors.split(',') : [])[index]?.trim();
                         if (!username) return null;
                         return (
                             <span key={index}>
@@ -197,7 +197,7 @@ function PodcastPlayer({ podcast, currentAudioRef }) {
                                 >
                                     {name.trim()}
                                 </button>
-                                {index < podcast.Contributors?.split(',').length - 1 ? ', ' : ''}
+                                {index < (podcast.Contributors ? podcast.Contributors.split(',') : []).length - 1 ? ', ' : ''}
                             </span>
                         );
                     })}

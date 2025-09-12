@@ -54,7 +54,7 @@ export default function FooterModule() {
       <div className={style.footer.iconContainer}>
         {loading && <span className="text-xs text-slate-400">Loading...</span>}
         {error && <span className="text-xs text-red-400">{error}</span>}
-        {!loading && !error && contacts.map((contact, idx) => {
+  {!loading && !error && Array.isArray(contacts) && contacts.map((contact, idx) => {
           const normalized = normalizeIconName(contact?.Icon);
           const Icon = iconMap?.[normalized];
           if (!Icon) return null; // Only show icons that are enabled in iconMap
