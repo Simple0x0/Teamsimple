@@ -7,10 +7,9 @@ export const fetchLatest = createAsyncThunk(
   'latest/fetchAll',
   async (_, { rejectWithValue }) => {
     try {
-      const response = await axios.get(`${backendURL}/api/latest`, {
+      const response = await axios.get(`${backendURL}/api/home_latest`, {
         headers: {
-          Accept: 'application/json',
-          "ngrok-skip-browser-warning": "69420"
+          Accept: 'application/json'
         },
       });
       return response.data.Latest; 
