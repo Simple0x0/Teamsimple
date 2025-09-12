@@ -13,7 +13,7 @@ db = Database()
 s = Sanitizer()
 limiter = Limiter(
     key_func=get_remote_address,
-    default_limits=["200/day", "50/hour"],
+    default_limits=["400/day", "100/hour"],
     storage_uri=os.getenv("REDIS_URL", "redis://localhost:6379/0"),
 )
 
