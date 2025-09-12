@@ -7,12 +7,12 @@ export const fetchLatest = createAsyncThunk(
   'latest/fetchAll',
   async (_, { rejectWithValue }) => {
     try {
-      const response = await axios.get(`${backendURL}/api/latest`, {
+      const response = await axios.get(`${backendURL}/api/home_latest`, {
         headers: {
           Accept: 'application/json'
         },
       });
-      return response.data.Latest; 
+      return response.data.home_latest; 
     } catch (err) {
       return rejectWithValue(
         err.response?.data?.message || 'No latest content found'
