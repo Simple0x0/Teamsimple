@@ -49,7 +49,7 @@ export default function WriteUpRender() {
             <SEO 
                 title={`${writeup?.MachineName} CTF Writeup`}
                 description={writeup?.Summary || `CTF writeup for ${writeup?.MachineName} by Team Simple`}
-                keywords={`CTF, ${writeup?.MachineName}, writeup, hacking, security, ${(writeup?.Tags || []).join(', ')}`}
+                //keywords={`CTF, ${writeup?.MachineName}, writeup, hacking, security, ${Array.isArray(writeup?.Tags) ? writeup?.Tags?.join(', ') : ''}`}
                 ogImage={writeup?.WriteUpImage || '/src/assets/logo.png'}
                 canonicalUrl={`${BASE_URL}/writeups/${slug}`}
             >

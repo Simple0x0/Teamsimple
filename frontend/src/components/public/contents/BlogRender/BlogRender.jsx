@@ -48,7 +48,7 @@ export default function BlogRender() {
             <SEO 
                 title={blog?.Title}
                 description={blog?.Summary}
-                keywords={blog?.Tags?.join(', ')}
+                // keywords={blog?.Tags?.join(', ')}
                 ogImage={blog?.BlogImage || '/src/assets/logo.png'} 
                 canonicalUrl={`${BASE_URL}/blogs/${slug}`}
             >
@@ -75,8 +75,6 @@ export default function BlogRender() {
                     })}
                 </script>
             </SEO>
-
-
             <ContentMDRender
                 key={slug} 
                 Header={Header}

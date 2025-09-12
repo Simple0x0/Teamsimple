@@ -8,7 +8,7 @@
     "build": "vite build",
     "lint": "eslint .",
     "preview": "vite preview",
-    "prebuild": "node scripts/prerender-routes.js",
+    "prebuild": "node ./prerender-routes.js",
     "_postbuild": "mv dist build && react-snap"
   },
   "dependencies": {

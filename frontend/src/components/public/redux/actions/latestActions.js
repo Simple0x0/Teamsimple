@@ -7,7 +7,7 @@ export const fetchLatest = createAsyncThunk(
   'latest/fetchAll',
   async (_, { rejectWithValue }) => {
     try {
-      const response = await axios.get(`${backendURL}/api/home_latest`, {
+      const response = await axios.get(`${backendURL}/api/latest`, {
         headers: {
           Accept: 'application/json'
         },

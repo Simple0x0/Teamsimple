@@ -49,7 +49,7 @@ export default function ProjectRender() {
             <SEO 
                 title={project?.Title}
                 description={project?.Description || "Explore this project on Team Simple"}
-                keywords={`${project?.Technologies?.join(', ')}, cybersecurity, ${project?.Tags?.join(', ')}`}
+                //keywords={`${Array.isArray(project?.Technologies) ? project?.Technologies?.join(', ') : ''}, cybersecurity, ${Array.isArray(project?.Tags) ? project?.Tags?.join(', ') : ''}`}
                 ogImage={project?.CoverImage || '/src/assets/logo.png'}
                 canonicalUrl={`${BASE_URL}/projects/${slug}`}
             >
