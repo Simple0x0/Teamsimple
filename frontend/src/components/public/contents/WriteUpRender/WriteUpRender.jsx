@@ -47,8 +47,8 @@ export default function WriteUpRender() {
     return (
         <div className={style.contentRender.container}>
             <SEO 
-                title={`${writeup?.MachineName} CTF Writeup`}
-                description={writeup?.Summary || `CTF writeup for ${writeup?.MachineName} by Team Simple`}
+                title={`${writeup?.MachineName} Writeup`}
+                description={writeup?.Summary || `writeup for ${writeup?.MachineName}`}
                 //keywords={`CTF, ${writeup?.MachineName}, writeup, hacking, security, ${Array.isArray(writeup?.Tags) ? writeup?.Tags?.join(', ') : ''}`}
                 ogImage={writeup?.WriteUpImage || '/src/assets/logo.png'}
                 canonicalUrl={`${BASE_URL}/writeups/${slug}`}
